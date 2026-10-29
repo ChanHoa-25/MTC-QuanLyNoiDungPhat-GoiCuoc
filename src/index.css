@@ -1,0 +1,205 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
+
+:root {
+  --primary-orange: #FF7506;
+  --primary-orange-hover: #FF851B;
+  --primary-orange-dark: #E05300;
+  --peach-header: #FFF2EB;
+  --peach-text: #BA4B00;
+  --bg-cream: #FAF6F2;
+  --bg-card: #FFFFFF;
+  --text-dark: #374151;
+  --text-muted: #6B7280;
+  --border-light: #E5E7EB;
+  --border-orange: #FF7506;
+  
+  --font-sans: 'Montserrat', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-cream);
+  color: var(--text-dark);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--bg-cream);
+}
+
+/* Custom Ant Design overrides for pixel-perfect Figma reproduction */
+
+/* Peach Table Header */
+.mtc-table .ant-table-thead > tr > th {
+  background: #FFF2EB !important;
+  color: #BA4B00 !important;
+  font-weight: 600 !important;
+  font-size: 13px !important;
+  border-bottom: 1px solid #FFE4D6 !important;
+  padding: 12px 14px !important;
+  white-space: nowrap;
+}
+
+.mtc-table .ant-table-tbody > tr > td {
+  padding: 12px 14px !important;
+  font-size: 13px !important;
+  color: #374151 !important;
+  border-bottom: 1px solid #F3F4F6 !important;
+}
+
+.mtc-table .ant-table-tbody > tr:hover > td {
+  background: #FFFBF8 !important;
+}
+
+/* Orange Checkbox */
+.ant-checkbox-checked .ant-checkbox-inner {
+  background-color: #FF7506 !important;
+  border-color: #FF7506 !important;
+}
+
+.ant-checkbox-indeterminate .ant-checkbox-inner:after {
+  background-color: #FF7506 !important;
+}
+
+.ant-checkbox:hover .ant-checkbox-inner,
+.ant-checkbox-input:focus + .ant-checkbox-inner {
+  border-color: #FF7506 !important;
+}
+
+.ant-checkbox-inner {
+  border-radius: 4px !important;
+  border-color: #FF7506 !important;
+  width: 16px !important;
+  height: 16px !important;
+}
+
+/* Status Pill Capsules */
+.status-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 3px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+.status-pill.green {
+  background-color: #F0FDF4;
+  border: 1px solid #86EFAC;
+  color: #16A34A;
+}
+
+.status-pill.red {
+  background-color: #FEF2F2;
+  border: 1px solid #FCA5A5;
+  color: #EF4444;
+}
+
+.status-pill-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.status-pill.green .status-pill-dot {
+  background-color: #16A34A;
+}
+
+.status-pill.red .status-pill-dot {
+  background-color: #EF4444;
+}
+
+/* Floating Action Toolbar */
+.floating-action-bar {
+  position: fixed;
+  right: 20px;
+  top: 190px;
+  background: #FFFFFF;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  padding: 10px 6px;
+  gap: 12px;
+  z-index: 100;
+  border: 1px solid #F3F4F6;
+}
+
+.floating-action-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  border: none;
+  background: transparent;
+  color: #FF7506;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.floating-action-btn:hover {
+  background: #FFF2EB;
+  color: #E05300;
+  transform: translateY(-1px);
+}
+
+/* Pagination box */
+.mtc-page-size-box {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #FF7506;
+  border-radius: 4px;
+  padding: 2px 8px;
+  color: #FF7506;
+  font-weight: 600;
+  font-size: 13px;
+  margin: 0 4px;
+  background: #FFFFFF;
+}
+
+/* Orange pagination button */
+.mtc-pagination-btn-active {
+  background: #FF7506 !important;
+  color: #FFFFFF !important;
+  border-radius: 4px !important;
+  min-width: 28px !important;
+  height: 28px !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  font-weight: 600 !important;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #E5E7EB;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #D1D5DB;
+}
