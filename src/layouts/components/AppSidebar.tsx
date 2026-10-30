@@ -123,7 +123,7 @@ function AppSidebar({ collapsed, onCollapse }: AppSidebarProps) {
     {
       key: "/dashboard",
       icon: renderIcon(Command, selectedParentKey === "/dashboard"),
-      label: "Tổng quan",
+      label: "Dashboard",
     },
 
     {
