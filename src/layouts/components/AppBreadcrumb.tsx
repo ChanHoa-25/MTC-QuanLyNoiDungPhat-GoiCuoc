@@ -53,40 +53,28 @@ function AppBreadcrumb() {
   const { pathname } = useLocation();
   const segments = pathname.split("/").filter(Boolean);
 
-  const items = [
-    {
+  const items = segments.map((segment, index) => {
+    const path = `/${segments.slice(0, index + 1).join("/")}`;
+    const config = breadcrumbs[segment];
+    const label = config?.label ?? segment;
+    const isLast = index === segments.length - 1;
+
+    return {
       title: (
         <span className="breadcrumb-item">
-          <Command className="breadcrumb-icon" />
-          <Link to="/" className="breadcrumb-home">
-            Trang chủ
-          </Link>
+          {index === 0 && config?.icon}
+
+          {isLast ? (
+            <span className="breadcrumb-current">{label}</span>
+          ) : (
+            <Link to={path} className="breadcrumb-parent">
+              {label}
+            </Link>
+          )}
         </span>
       ),
-    },
-
-    ...segments.map((segment, index) => {
-      const path = `/${segments.slice(0, index + 1).join("/")}`;
-      const config = breadcrumbs[segment];
-      const label = config?.label ?? segment;
-      const isLast = index === segments.length - 1;
-
-      return {
-        title: (
-          <span className="breadcrumb-item">
-            {index === 0 && config?.icon}
-            {isLast ? (
-              <span className="breadcrumb-current">{label}</span>
-            ) : (
-              <Link to={path} className="breadcrumb-parent">
-                {label}
-              </Link>
-            )}
-          </span>
-        ),
-      };
-    }),
-  ];
+    };
+  });
 
   return (
     <Breadcrumb
