@@ -1,0 +1,92 @@
+.app-search.ant-input-affix-wrapper {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 100%;
+  height: 44px;
+  padding: 10px 16px 10px 12px;
+  gap: 10px;
+  background: #ffffff;
+  border: 1px solid #c2c2c2;
+  border-radius: 6px;
+  box-shadow: none;
+}
+
+.app-search .ant-input {
+  flex: 1;
+  min-width: 0;
+  padding: 0;
+  background: transparent;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 19px;
+  color: #333333;
+}
+
+.app-search .ant-input::placeholder {
+  color: #c2c2c2;
+  opacity: 1;
+}
+
+.app-search .ant-input-suffix {
+  margin-inline-start: 0;
+}
+
+.app-search__button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  margin: 0;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.app-search__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  color: var(--color-primary);
+}
+
+.app-search.ant-input-affix-wrapper:hover:not(
+    .ant-input-affix-wrapper-disabled
+  ) {
+  border-color: var(--color-primary);
+}
+
+.app-search.ant-input-affix-wrapper-focused,
+.app-search.ant-input-affix-wrapper:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: none;
+}
+
+.app-search__button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.app-search.ant-input-affix-wrapper-disabled {
+  background: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.app-search__button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+@media (max-width: 576px) {
+  .app-search.ant-input-affix-wrapper {
+    max-width: 100%;
+  }
+}

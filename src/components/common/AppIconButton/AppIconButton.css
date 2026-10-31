@@ -1,0 +1,54 @@
+.app-icon-button__wrapper {
+  display: inline-flex;
+  flex-shrink: 0;
+  vertical-align: middle;
+}
+
+.app-icon-button {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.app-icon-button:hover:not(:disabled) {
+  background: #fff1e8;
+}
+
+.app-icon-button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.app-icon-button--danger {
+  color: #ff4444;
+}
+
+.app-icon-button--danger:hover:not(:disabled) {
+  background: #fff1f0;
+}
+
+.app-icon-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.app-icon-button__icon {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.app-icon-button__icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}

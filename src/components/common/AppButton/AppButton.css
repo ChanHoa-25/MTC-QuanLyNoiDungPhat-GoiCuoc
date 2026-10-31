@@ -1,0 +1,74 @@
+.app-button.ant-btn {
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  height: 44px;
+  padding: 10px 24px;
+  gap: 8px;
+  border-radius: 8px;
+  box-shadow: 0 0 6px #e7e9f2;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 22px;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.app-button--primary.ant-btn {
+  background: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  color: #ffffff;
+}
+
+.app-button--primary.ant-btn:not(:disabled):not(.ant-btn-loading):hover {
+  background: #e65e16;
+  border-color: #e65e16;
+  color: #ffffff;
+}
+
+.app-button--primary.ant-btn:not(:disabled):not(.ant-btn-loading):active {
+  background: #d95612;
+  border-color: #d95612;
+  color: #ffffff;
+}
+
+.app-button--outline.ant-btn {
+  background: #ffffff;
+  border: 1px solid var(--color-primary);
+  color: var(--color-primary);
+}
+
+.app-button--outline.ant-btn:not(:disabled):not(.ant-btn-loading):hover {
+  background: #fff7f2;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.app-button--outline.ant-btn:not(:disabled):not(.ant-btn-loading):active {
+  background: #ffe8da;
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.app-button.ant-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+.app-button.ant-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.app-button.ant-btn-loading {
+  cursor: wait;
+}
+
+@media (max-width: 576px) {
+  .app-button.ant-btn {
+    max-width: 100%;
+  }
+}

@@ -1,0 +1,24 @@
+.app-date-range-picker {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  height: 44px;
+  min-width: 0;
+}
+
+.app-date-range-picker > .app-date-picker {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+.app-date-range-arrow {
+  flex: 0 0 18px;
+  color: #858585;
+}
+
+@media (max-width: 576px) {
+  .app-date-range-picker {
+    max-width: 100%;
+  }
+}

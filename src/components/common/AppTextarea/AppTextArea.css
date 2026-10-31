@@ -1,0 +1,39 @@
+.app-textarea.ant-input {
+  display: block;
+  padding: 10px 12px;
+  background: #ffffff;
+  border: 1px solid #c2c2c2;
+  border-radius: 6px;
+  box-shadow: none;
+  color: #666666;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 19px;
+  resize: none;
+}
+
+.app-textarea.ant-input::placeholder {
+  color: #c2c2c2;
+  opacity: 1;
+}
+
+.app-textarea.ant-input:hover:not(:disabled) {
+  border-color: var(--color-primary);
+}
+
+.app-textarea.ant-input:focus,
+.app-textarea.ant-input-focused {
+  border-color: var(--color-primary);
+  box-shadow: none;
+}
+
+.app-textarea.ant-input:disabled {
+  background: #f5f5f5;
+  border-color: #d9d9d9;
+  color: #bfbfbf;
+  cursor: not-allowed;
+}
+
+.app-textarea.ant-input:disabled::placeholder {
+  color: #bfbfbf;
+}

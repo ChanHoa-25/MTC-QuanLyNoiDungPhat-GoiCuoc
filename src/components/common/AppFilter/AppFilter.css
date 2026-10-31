@@ -1,0 +1,80 @@
+.app-filter {
+  box-sizing: border-box;
+  width: 100%;
+  background: transparent;
+}
+
+.app-filter__fields {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  width: 100%;
+  min-width: 0;
+}
+
+.app-filter__field {
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.app-filter__field .ant-form-item {
+  margin-bottom: 0;
+}
+
+.app-filter__field .ant-form-item-label {
+  padding-bottom: 8px;
+}
+
+.app-filter__field .ant-form-item-label > label {
+  height: 22px;
+  font-family: "Open Sans", Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+  color: #4d4d4d;
+}
+
+.app-filter__field .ant-input,
+.app-filter__field .ant-select,
+.app-filter__field .ant-picker,
+.app-filter__field .ant-input-affix-wrapper {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.app-filter__actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.app-filter__actions .ant-btn {
+  min-width: 100px;
+  height: 40px;
+  font-family: "Open Sans", Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+@media (max-width: 576px) {
+  .app-filter__fields {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .app-filter__field {
+    width: 100% !important;
+    max-width: 100%;
+  }
+
+  .app-filter__actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
