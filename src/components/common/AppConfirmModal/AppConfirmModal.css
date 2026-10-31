@@ -1,0 +1,205 @@
+:root {
+  --confirm-success: #0eab00;
+  --confirm-danger: #ff4444;
+  --confirm-primary: #f26d21;
+
+  --confirm-text-color: #4d4d4d;
+  --confirm-description-color: #666666;
+
+  --confirm-button-shadow: 0 0 6px #e7e9f2;
+}
+
+/* Success */
+.app-confirm-modal--success {
+  --confirm-icon-color: var(--confirm-success);
+  --confirm-button-color: var(--confirm-success);
+  --confirm-cancel-color: var(--confirm-success);
+}
+
+/* Delete */
+.app-confirm-modal--delete {
+  --confirm-icon-color: var(--confirm-danger);
+  --confirm-button-color: var(--confirm-danger);
+  --confirm-cancel-color: var(--confirm-danger);
+}
+
+/* Restart */
+.app-confirm-modal--restart {
+  --confirm-icon-color: var(--confirm-primary);
+  --confirm-button-color: var(--confirm-primary);
+  --confirm-cancel-color: var(--confirm-primary);
+}
+
+/* Modal container */
+.ant-modal.app-modal.app-confirm-modal {
+  max-width: calc(100vw - 32px);
+}
+
+/* Modal wrapper */
+.ant-modal.app-modal.app-confirm-modal .ant-modal-container {
+  box-sizing: border-box;
+  width: 100%;
+  height: 250px;
+  padding: 0;
+  overflow: visible;
+  border: none;
+  border-top: 8px solid var(--confirm-icon-color);
+  border-radius: 8px;
+  background: #fff;
+}
+
+/* Modal content */
+.ant-modal.app-modal.app-confirm-modal .ant-modal-content {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border-radius: 0 0 8px 8px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+/* Modal body */
+.ant-modal.app-modal.app-confirm-modal .ant-modal-body {
+  box-sizing: border-box;
+  width: 100%;
+  height: 242px;
+  padding: 50px 40px 0;
+}
+
+/* Icon */
+.app-confirm-modal__icon {
+  position: absolute;
+  z-index: 2;
+  top: -46px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 76px;
+  height: 76px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: var(--confirm-icon-color);
+  color: #fff;
+}
+
+.app-confirm-modal__icon svg {
+  width: 42px;
+  height: 42px;
+  color: #fff;
+}
+
+/* Content */
+.app-confirm-modal__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  gap: 11px;
+  text-align: center;
+}
+
+/* Title */
+.app-confirm-modal__title {
+  margin: 0;
+  color: var(--confirm-text-color);
+  font-family: "Open Sans", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 35px;
+  text-align: center;
+}
+
+/* Description */
+.app-confirm-modal__description {
+  margin: 0;
+  color: var(--confirm-description-color);
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  text-align: center;
+}
+
+/* Footer */
+.ant-modal.app-modal.app-confirm-modal .ant-modal-footer {
+  position: absolute;
+  right: 0;
+  bottom: 24px;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+/* Actions */
+.app-confirm-modal__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.app-confirm-modal__actions .ant-btn {
+  box-sizing: border-box;
+  width: 120px;
+  height: 44px;
+  padding: 10px 24px;
+  border-radius: 8px;
+  box-shadow: var(--confirm-button-shadow);
+  font-family: "Open Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* Cancel button */
+.app-confirm-modal__cancel {
+  border: 1px solid var(--confirm-cancel-color) !important;
+  background: #fff !important;
+  color: var(--confirm-cancel-color) !important;
+}
+
+/* Confirm button */
+.app-confirm-modal__confirm {
+  border: 1px solid var(--confirm-button-color) !important;
+  background: var(--confirm-button-color) !important;
+  color: #fff !important;
+}
+
+.app-confirm-modal__confirm:hover {
+  opacity: 0.9;
+}
+
+/* Responsive */
+@media (max-width: 540px) {
+  .ant-modal.app-modal.app-confirm-modal .ant-modal-container {
+    height: auto;
+    min-height: 250px;
+  }
+
+  .ant-modal.app-modal.app-confirm-modal .ant-modal-content {
+    min-height: 242px;
+    height: auto;
+  }
+
+  .ant-modal.app-modal.app-confirm-modal .ant-modal-body {
+    height: auto;
+    min-height: 242px;
+    padding: 50px 20px 80px;
+  }
+
+  .app-confirm-modal__content {
+    max-width: 100%;
+  }
+
+  .app-confirm-modal__actions {
+    gap: 12px;
+  }
+}
