@@ -22,11 +22,22 @@ function AppTable<T extends object>({
   rowSelection,
   showSelectedCount = true,
   selectedLabel = "mục",
+  className = "",
   ...tableProps
 }: AppTableProps<T>) {
-  const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
+  const [internalSelectedRowKeys, setInternalSelectedRowKeys] = useState<Key[]>(
+    [],
+  );
 
-  const pageSize = pagination === false ? 10 : (pagination?.pageSize ?? 10);
+  const selectionEnabled = selectable || !!rowSelection;
+
+  const selectedRowKeys =
+    rowSelection?.selectedRowKeys ?? internalSelectedRowKeys;
+
+  const pageSize =
+    pagination === false
+      ? 10
+      : (pagination?.pageSize ?? pagination?.defaultPageSize ?? 10);
 
   const paginationConfig: false | TablePaginationConfig =
     pagination === false
@@ -34,38 +45,44 @@ function AppTable<T extends object>({
       : {
           ...pagination,
           pageSize,
-          showSizeChanger: false,
-          showQuickJumper: false,
-          showTotal: () => (
-            <span className="app-table__pagination-summary">
-              <span>Hiển thị</span>
-              <span className="app-table__page-size">{pageSize}</span>
-              <span>nội dung trong mỗi trang</span>
-            </span>
-          ),
-          position: ["bottomRight"],
+          showSizeChanger: pagination?.showSizeChanger ?? false,
+          showQuickJumper: pagination?.showQuickJumper ?? false,
+          showTotal:
+            pagination?.showTotal ??
+            (() => (
+              <span className="app-table__pagination-summary">
+                <span>Hiển thị</span>
+                <span className="app-table__page-size">{pageSize}</span>
+                <span>nội dung trong mỗi trang</span>
+              </span>
+            )),
+          position: pagination?.position ?? ["bottomRight"],
         };
 
-  const columnsCount = (tableProps.columns?.length ?? 0) + (selectable ? 1 : 0);
+  const columnsCount =
+    (tableProps.columns?.length ?? 0) + (selectionEnabled ? 1 : 0);
 
   const handleSelectionChange: NonNullable<
-    TableProps<T>["rowSelection"]
-  >["onChange"] = (keys, rows, info) => {
-    setSelectedRowKeys(keys);
+    NonNullable<TableProps<T>["rowSelection"]>["onChange"]
+  > = (keys, rows, info) => {
+    if (rowSelection?.selectedRowKeys === undefined) {
+      setInternalSelectedRowKeys([...keys]);
+    }
+
     rowSelection?.onChange?.(keys, rows, info);
   };
 
   return (
-    <div className="app-table">
+    <div className={`app-table ${className}`.trim()}>
       <Table<T>
         {...tableProps}
         rowSelection={
-          selectable
+          selectionEnabled
             ? {
-                ...rowSelection,
                 type: "checkbox",
                 columnWidth: 80,
                 align: "center",
+                ...rowSelection,
                 selectedRowKeys,
                 onChange: handleSelectionChange,
               }
@@ -73,7 +90,9 @@ function AppTable<T extends object>({
         }
         pagination={paginationConfig}
         summary={() =>
-          selectable && showSelectedCount && selectedRowKeys.length > 0 ? (
+          selectionEnabled &&
+          showSelectedCount &&
+          selectedRowKeys.length > 0 ? (
             <Table.Summary.Row>
               <Table.Summary.Cell index={0} colSpan={Math.max(columnsCount, 1)}>
                 <div className="app-table__selected-count">

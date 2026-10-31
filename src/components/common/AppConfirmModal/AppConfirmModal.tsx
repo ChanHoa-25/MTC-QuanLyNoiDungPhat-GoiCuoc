@@ -1,8 +1,8 @@
 import type { ReactNode } from "react";
-import { Button } from "antd";
 import { Trash2, Check, RefreshCw } from "lucide-react";
 
 import AppModal from "../AppModal";
+import AppButton from "../AppButton";
 import "./AppConfirmModal.css";
 
 export type ConfirmModalType = "success" | "delete" | "restart";
@@ -10,39 +10,34 @@ export type ConfirmModalType = "success" | "delete" | "restart";
 export interface AppConfirmModalProps {
   open: boolean;
   type?: ConfirmModalType;
-
   title: ReactNode;
   description?: ReactNode;
   icon?: ReactNode;
-
   confirmText?: string;
   cancelText?: string;
-
   confirmLoading?: boolean;
   confirmDisabled?: boolean;
-
   width?: number | string;
-
   onConfirm: () => void;
   onCancel: () => void;
-
   className?: string;
 }
 
 const defaultConfig: Record<
   ConfirmModalType,
-  { icon: ReactNode; className: string }
+  {
+    icon: ReactNode;
+    className: string;
+  }
 > = {
   success: {
     icon: <Check size={42} strokeWidth={2} />,
     className: "app-confirm-modal--success",
   },
-
   delete: {
     icon: <Trash2 size={42} strokeWidth={2} />,
     className: "app-confirm-modal--delete",
   },
-
   restart: {
     icon: <RefreshCw size={42} strokeWidth={2} />,
     className: "app-confirm-modal--restart",
@@ -66,22 +61,32 @@ function AppConfirmModal({
 }: AppConfirmModalProps) {
   const config = defaultConfig[type];
 
+  const handleCancel = () => {
+    if (!confirmLoading) {
+      onCancel();
+    }
+  };
+
   const footer = (
     <div className="app-confirm-modal__actions">
-      <Button
+      <AppButton
+        variant="outline"
+        width={120}
         className="app-confirm-modal__cancel"
-        onClick={onCancel}
+        onClick={handleCancel}
         disabled={confirmLoading}>
         {cancelText}
-      </Button>
+      </AppButton>
 
-      <Button
+      <AppButton
+        variant="primary"
+        width={120}
         className="app-confirm-modal__confirm"
         loading={confirmLoading}
-        disabled={confirmDisabled}
+        disabled={confirmDisabled || confirmLoading}
         onClick={onConfirm}>
         {confirmText}
-      </Button>
+      </AppButton>
     </div>
   );
 
@@ -89,12 +94,13 @@ function AppConfirmModal({
     <AppModal
       open={open}
       width={width}
-      onCancel={onCancel}
+      onCancel={handleCancel}
       footer={footer}
       className={["app-confirm-modal", config.className, className]
         .filter(Boolean)
         .join(" ")}
       maskClosable={false}
+      keyboard={!confirmLoading}
       destroyOnHidden
       closable={false}>
       <div className="app-confirm-modal__icon">{icon ?? config.icon}</div>
@@ -102,8 +108,8 @@ function AppConfirmModal({
       <div className="app-confirm-modal__content">
         <h2 className="app-confirm-modal__title">{title}</h2>
 
-        {description && (
-          <p className="app-confirm-modal__description">{description}</p>
+        {description != null && (
+          <div className="app-confirm-modal__description">{description}</div>
         )}
       </div>
     </AppModal>

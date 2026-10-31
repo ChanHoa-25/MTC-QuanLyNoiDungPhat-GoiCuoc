@@ -1,3 +1,3 @@
-export { default } from "./AppCofirmModal";
+export { default } from "./AppConfirmModal";
 
-export type { ConfirmModalType, AppConfirmModalProps } from "./AppCofirmModal";
+export type { ConfirmModalType, AppConfirmModalProps } from "./AppConfirmModal";
