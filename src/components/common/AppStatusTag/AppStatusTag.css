@@ -1,0 +1,112 @@
+.app-status-tag.ant-tag {
+  display: inline-flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0;
+  border: 1px solid var(--tag-color);
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  color: var(--tag-color);
+  background: var(--tag-bg);
+}
+
+.app-status-tag__content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+}
+
+.app-status-tag__text {
+  display: inline-flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+}
+
+.app-status-tag__dot {
+  display: block;
+  width: 5px;
+  height: 5px;
+  flex: 0 0 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.app-status-tag--status.ant-tag {
+  min-height: 30px;
+  padding: 4px 8px;
+  border-radius: 24px;
+}
+
+.app-status-tag--status-green {
+  --tag-color: #34cd26;
+  --tag-bg: #e3ffe1;
+}
+
+.app-status-tag--status-red {
+  --tag-color: #ff4444;
+  --tag-bg: #ffe5e5;
+}
+
+.app-status-tag--status-orange {
+  --tag-color: #feb700;
+  --tag-bg: #fff4de;
+}
+
+.app-status-tag--status-yellow {
+  --tag-color: #fdbb11;
+  --tag-bg: #fffdf9;
+}
+
+.app-status-tag--status-darkRed {
+  --tag-color: #b23900;
+  --tag-bg: #ffe8de;
+}
+
+.app-status-tag--status-gray {
+  --tag-color: #666666;
+  --tag-bg: #e0e0e0;
+}
+
+.app-status-tag--status-blue {
+  --tag-color: #5490eb;
+  --tag-bg: #e1edff;
+}
+
+.app-status-tag--status-outlineOrange {
+  --tag-color: var(--color-primary);
+  --tag-bg: #ffffff;
+}
+
+.app-status-tag--label.ant-tag {
+  min-height: 26px;
+  padding: 2px 8px;
+  border-radius: 0;
+}
+
+.app-status-tag--label-green {
+  --tag-color: #34cd26;
+  --tag-bg: #e3ffe1;
+}
+
+.app-status-tag--label-blue {
+  --tag-color: #5475eb;
+  --tag-bg: #e1e9ff;
+}
+
+.app-status-tag--label-orange {
+  --tag-color: var(--color-primary);
+  --tag-bg: #ffd2be;
+}
+
+.app-status-tag--label-yellow {
+  --tag-color: #feb700;
+  --tag-bg: #fff8e4;
+}
