@@ -1,0 +1,52 @@
+.app-date-picker.ant-picker {
+  height: 44px;
+  padding: 8px 16px;
+  background: #ffffff;
+  border: 1px solid #c2c2c2;
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+.app-date-picker .ant-picker-input > input {
+  color: #858585;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22px;
+}
+
+.app-date-picker .ant-picker-input > input::placeholder {
+  color: #858585;
+}
+
+.app-date-picker .ant-picker-suffix {
+  display: inline-flex;
+  align-items: center;
+  color: var(--color-primary);
+}
+
+.app-date-picker.ant-picker:hover:not(.ant-picker-disabled),
+.app-date-picker.ant-picker-focused {
+  border-color: var(--color-primary);
+  box-shadow: none;
+}
+
+.app-date-picker.ant-picker-disabled {
+  background: #f5f5f5;
+  border-color: #d9d9d9;
+  cursor: not-allowed;
+}
+
+.app-date-picker.ant-picker-disabled .ant-picker-input > input {
+  color: #bfbfbf;
+  cursor: not-allowed;
+}
+
+.app-date-picker.ant-picker-disabled .ant-picker-suffix {
+  color: #bfbfbf;
+}
+
+@media (max-width: 576px) {
+  .app-date-picker.ant-picker {
+    max-width: 100%;
+  }
+}
