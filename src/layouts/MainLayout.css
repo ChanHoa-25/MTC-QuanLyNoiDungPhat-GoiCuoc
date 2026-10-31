@@ -51,8 +51,9 @@
 }
 
 .header-breadcrumb .app-breadcrumb {
-  font-size: 14px;
-  line-height: 1;
+  font-family: var(--font-family);
+  font-size: 23px;
+  line-height: 28px;
 }
 
 .header-breadcrumb .app-breadcrumb ol {
@@ -88,11 +89,22 @@
 .header-breadcrumb .app-breadcrumb .breadcrumb-current {
   display: inline-flex;
   align-items: center;
-  color: var(--color-primary);
   font-size: 23px;
   font-weight: 700;
   line-height: 28px;
   text-decoration: none;
+}
+
+.header-breadcrumb .app-breadcrumb .breadcrumb-parent {
+  color: #000000;
+}
+
+.header-breadcrumb .app-breadcrumb .breadcrumb-parent:hover {
+  color: var(--color-primary);
+}
+
+.header-breadcrumb .app-breadcrumb .breadcrumb-current {
+  color: var(--color-primary);
 }
 
 .header-breadcrumb .app-breadcrumb .breadcrumb-home {
@@ -108,16 +120,17 @@
 .header-breadcrumb .app-breadcrumb .ant-breadcrumb-separator {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   margin-inline: 8px;
-  color: var(--color-primary);
-  line-height: 28px;
+  color: #000000;
+  line-height: 1;
 }
 
 .header-breadcrumb .app-breadcrumb .breadcrumb-separator-icon {
   display: block;
-  width: 28px;
-  height: 28px;
-  color: var(--color-primary);
+  width: 14px;
+  height: 14px;
+  color: #000000;
 }
 
 .header-actions {
@@ -209,7 +222,7 @@
   cursor: pointer;
 }
 
-.header .header-account .image-avatar {
+.header-account .image-avatar {
   position: relative;
   display: block;
   width: 48px;
@@ -726,4 +739,36 @@
   font-size: 16px;
   line-height: 36px;
   vertical-align: middle;
+}
+
+@media (max-width: 1200px) {
+  .header-actions {
+    gap: 12px;
+  }
+
+  .header-breadcrumb .app-breadcrumb .breadcrumb-parent,
+  .header-breadcrumb .app-breadcrumb .breadcrumb-current {
+    font-size: 18px;
+  }
+
+  .header-breadcrumb .app-breadcrumb .breadcrumb-icon {
+    width: 24px;
+    height: 24px;
+    flex-basis: 24px;
+  }
+}
+
+@media (max-width: 900px) {
+  .main-layout-right {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .header-search {
+    width: 150px;
+  }
+
+  .header-actions {
+    gap: 8px;
+  }
 }

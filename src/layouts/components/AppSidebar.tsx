@@ -1,14 +1,11 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { Layout, Menu, Dropdown, Button } from "antd";
 import type { MenuProps } from "antd";
-
 import {
-  LayoutDashboard,
   Network,
   CloudDownload,
   Radio,
   FileText,
-  ChartNoAxesColumn,
   Settings,
   MoreVertical,
   ChevronLeft,
@@ -16,8 +13,10 @@ import {
   Command,
   ChartLine,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 import Logo from "../../assets/images/Logo.png";
+import { ROUTES } from "../../constants/route.constants";
 import "../MainLayout.css";
 
 const { Sider } = Layout;
@@ -27,64 +26,76 @@ interface AppSidebarProps {
   onCollapse: () => void;
 }
 
-// Các route được quản lý bởi Sidebar
-const routes = [
-  { key: "/dashboard", parentKey: "/dashboard" },
-  { key: "/sites", parentKey: "/sites" },
-
-  { key: "/sources", parentKey: "/sources" },
-  { key: "/sources/list", parentKey: "/sources" },
-  { key: "/sources/categories", parentKey: "/sources" },
-
-  { key: "/devices", parentKey: "/devices" },
-  { key: "/news", parentKey: "/news" },
-  { key: "/reports", parentKey: "/reports" },
-
-  { key: "/settings", parentKey: "/settings" },
-  { key: "/settings/general", parentKey: "/settings" },
-  { key: "/settings/permissions", parentKey: "/settings" },
+// Các đường dẫn menu chính
+const mainRoutes = [
+  ROUTES.DASHBOARD,
+  ROUTES.SITES,
+  ROUTES.SOURCES,
+  ROUTES.DEVICES,
+  ROUTES.BROADCASTS,
+  ROUTES.REPORTS,
+  ROUTES.SETTINGS,
 ];
 
-// Các menu con hiển thị trong nút ba chấm
+// Danh sách menu con
 const submenuItems: Record<string, NonNullable<MenuProps["items"]>> = {
-  "/sources": [
-    { key: "/media/source", label: "Nguồn media" },
-    { key: "/media/shared", label: "Nguồn được chia sẻ" },
-    { key: "/media/playlist", label: "Danh sách phát" },
-    { key: "/media/templates", label: "Bản mẫu" },
+  [ROUTES.SOURCES]: [
+    {
+      key: ROUTES.SOURCE_MEDIA,
+      label: "Nguồn media",
+    },
+    {
+      key: ROUTES.SOURCE_SHARED,
+      label: "Nguồn được chia sẻ",
+    },
+    {
+      key: ROUTES.SOURCE_PLAYLISTS,
+      label: "Danh sách phát",
+    },
+    {
+      key: ROUTES.SOURCE_TEMPLATES,
+      label: "Bản mẫu",
+    },
   ],
 
-  "/settings": [
-    { key: "/settings/categories", label: "Danh mục lĩnh vực" },
-    { key: "/settings/roles", label: "Quản lý vai trò" },
+  [ROUTES.SETTINGS]: [
     {
-      key: "/settings/distributors",
+      key: ROUTES.SETTINGS_CATEGORIES,
+      label: "Danh mục lĩnh vực",
+    },
+    {
+      key: ROUTES.SETTINGS_ROLES,
+      label: "Quản lý vai trò",
+    },
+    {
+      key: ROUTES.SETTINGS_DISTRIBUTORS,
       label: "Danh mục nhà phân phối thiết bị",
     },
-    { key: "/settings/logs", label: "Nhật ký người dùng" },
-    { key: "/settings/news-mode", label: "Chế độ tạo bản tin" },
+    {
+      key: ROUTES.SETTINGS_LOGS,
+      label: "Nhật ký người dùng",
+    },
+    {
+      key: ROUTES.SETTINGS_NEWS_MODE,
+      label: "Chế độ tạo bản tin",
+    },
   ],
 };
 
 function AppSidebar({ collapsed, onCollapse }: AppSidebarProps) {
-  const location = useLocation();
+  const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  // Tìm route khớp dài nhất với đường dẫn hiện tại
-  const currentRoute = [...routes]
-    .sort((a, b) => b.key.length - a.key.length)
-    .find(
-      (route) =>
-        location.pathname === route.key ||
-        location.pathname.startsWith(`${route.key}/`),
-    );
+  // Xác định menu cha đang được chọn
+  const selectedParentKey =
+    [...mainRoutes]
+      .sort((a, b) => b.length - a.length)
+      .find(
+        (route) => pathname === route || pathname.startsWith(`${route}/`),
+      ) ?? "";
 
-  const selectedKey = currentRoute?.key ?? "/dashboard";
-
-  const selectedParentKey = currentRoute?.parentKey ?? "/dashboard";
-
-  // Tạo icon và đổi màu khi menu được chọn
-  const renderIcon = (Icon: typeof LayoutDashboard, active: boolean) => (
+  // Tạo icon và đổi màu theo trạng thái menu
+  const renderIcon = (Icon: LucideIcon, active: boolean) => (
     <Icon
       className="sidebar-menu-icon"
       size={24}
@@ -101,8 +112,9 @@ function AppSidebar({ collapsed, onCollapse }: AppSidebarProps) {
       overlayClassName="sidebar-more-dropdown"
       menu={{
         items: submenuItems[parentKey],
-        selectedKeys: [selectedKey],
-        onClick: ({ key }) => {
+        selectedKeys: [pathname],
+        onClick: ({ key, domEvent }) => {
+          domEvent.stopPropagation();
           navigate(String(key));
         },
       }}>
@@ -111,6 +123,9 @@ function AppSidebar({ collapsed, onCollapse }: AppSidebarProps) {
         className="sidebar-more-button"
         aria-label="Mở menu con"
         onClick={(event) => {
+          event.stopPropagation();
+        }}
+        onKeyDown={(event) => {
           event.stopPropagation();
         }}>
         <MoreVertical size={20} />
@@ -121,59 +136,62 @@ function AppSidebar({ collapsed, onCollapse }: AppSidebarProps) {
   // Danh sách menu chính
   const menuItems: MenuProps["items"] = [
     {
-      key: "/dashboard",
-      icon: renderIcon(Command, selectedParentKey === "/dashboard"),
+      key: ROUTES.DASHBOARD,
+      icon: renderIcon(Command, selectedParentKey === ROUTES.DASHBOARD),
       label: "Dashboard",
     },
-
     {
-      key: "/sites",
-      icon: renderIcon(Network, selectedParentKey === "/sites"),
-      label: "Quản lý cơ sở",
+      key: ROUTES.SITES,
+      icon: renderIcon(Network, selectedParentKey === ROUTES.SITES),
+      label: "Cơ sở",
     },
-
     {
-      key: "/sources",
-      icon: renderIcon(CloudDownload, selectedParentKey === "/sources"),
+      key: ROUTES.SOURCES,
+      icon: renderIcon(CloudDownload, selectedParentKey === ROUTES.SOURCES),
       label: (
         <div className="sidebar-menu-label">
           <span className="sidebar-menu-text">Nguồn thông tin</span>
-
-          {!collapsed && createSubmenu("/sources")}
+          {!collapsed && createSubmenu(ROUTES.SOURCES)}
         </div>
       ),
     },
-
     {
-      key: "/devices",
-      icon: renderIcon(Radio, selectedParentKey === "/devices"),
+      key: ROUTES.DEVICES,
+      icon: renderIcon(Radio, selectedParentKey === ROUTES.DEVICES),
       label: "Thiết bị",
     },
-
     {
-      key: "/news",
-      icon: renderIcon(FileText, selectedParentKey === "/news"),
+      key: ROUTES.BROADCASTS,
+      icon: renderIcon(FileText, selectedParentKey === ROUTES.BROADCASTS),
       label: "Bản tin",
     },
-
     {
-      key: "/reports",
-      icon: renderIcon(ChartLine, selectedParentKey === "/reports"),
+      key: ROUTES.REPORTS,
+      icon: renderIcon(ChartLine, selectedParentKey === ROUTES.REPORTS),
       label: "Báo cáo",
     },
-
     {
-      key: "/settings",
-      icon: renderIcon(Settings, selectedParentKey === "/settings"),
+      key: ROUTES.SETTINGS,
+      icon: renderIcon(Settings, selectedParentKey === ROUTES.SETTINGS),
       label: (
         <div className="sidebar-menu-label">
           <span className="sidebar-menu-text">Cài đặt hệ thống</span>
-
-          {!collapsed && createSubmenu("/settings")}
+          {!collapsed && createSubmenu(ROUTES.SETTINGS)}
         </div>
       ),
     },
   ];
+
+  // Xử lý click menu chính
+  const handleMenuClick: MenuProps["onClick"] = ({ key, domEvent }) => {
+    const target = domEvent.target;
+
+    if (target instanceof Element && target.closest(".sidebar-more-button")) {
+      return;
+    }
+
+    navigate(String(key));
+  };
 
   return (
     <Sider
@@ -195,21 +213,20 @@ function AppSidebar({ collapsed, onCollapse }: AppSidebarProps) {
           type="text"
           className="sidebar-collapse-button"
           onClick={onCollapse}
-          aria-label={collapsed ? "Mở rộng Sidebar" : "Thu gọn Sidebar"}>
+          aria-label={collapsed ? "Mở rộng Sidebar" : "Thu gọn Sidebar"}
+          aria-expanded={!collapsed}>
           {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
         </Button>
 
-        {/* Menu */}
+        {/* Menu điều hướng */}
         <nav className="sidebar-navigation" aria-label="Điều hướng chính">
           <Menu
             className="sidebar-menu"
             mode="inline"
             inlineCollapsed={collapsed}
-            selectedKeys={[selectedParentKey]}
+            selectedKeys={selectedParentKey ? [selectedParentKey] : []}
             items={menuItems}
-            onClick={({ key }) => {
-              navigate(String(key));
-            }}
+            onClick={handleMenuClick}
           />
         </nav>
 

@@ -5,7 +5,7 @@ import { Outlet } from "react-router-dom";
 import AppSidebar from "./components/AppSidebar";
 import AppHeader from "./components/AppHeader";
 
-import "./MainLayout.css";
+import "./Mainlayout.css";
 
 const { Header, Content, Footer } = Layout;
 
