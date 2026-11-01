@@ -1,0 +1,604 @@
+/* =========================================
+   1. PAGE
+========================================= */
+
+.profile-page {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  background: var(--color-bg-page);
+  overflow-x: clip;
+}
+
+/* =========================================
+   2. HEADER
+========================================= */
+
+.profile-page-header {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  height: 120px;
+  padding: 24px 40px;
+}
+
+.profile-page-header .header-inner {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  width: 100%;
+  background: transparent;
+  box-shadow: none;
+}
+
+.profile-page-header .header-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-left: auto;
+}
+
+/* =========================================
+   3. LOGO & TITLE
+========================================= */
+
+.profile-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 72px;
+  width: 100%;
+  margin: 19px 0 48px;
+}
+
+.profile-logo {
+  display: block;
+  width: 203px;
+  height: 73px;
+  object-fit: contain;
+}
+
+.profile-heading h1 {
+  position: relative;
+  margin: 0;
+  padding-bottom: 16px;
+  color: #e05200;
+  font-size: 50px;
+  font-weight: 700;
+  line-height: 54px;
+  text-align: center;
+}
+
+.profile-heading h1::after {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 290px;
+  height: 4px;
+  background: #e05200;
+  transform: translateX(-50%);
+  content: "";
+}
+
+/* =========================================
+   4. MAIN CONTENT
+========================================= */
+
+.profile-content {
+  width: calc(100% - 240px);
+  max-width: 1680px;
+  margin: 0 auto 60px;
+}
+
+.profile-card {
+  display: grid;
+  grid-template-columns:
+    minmax(265px, 345px)
+    minmax(0, 575px)
+    minmax(0, 1fr);
+  align-items: center;
+  column-gap: 40px;
+  width: 100%;
+  min-height: 454px;
+  padding: 40px 50px 40px 110px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 16px 52px rgba(255, 164, 122, 0.1);
+}
+
+/* =========================================
+   5. USER AVATAR
+========================================= */
+
+.profile-user {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 23px;
+  min-width: 0;
+}
+
+.profile-avatar-wrapper {
+  position: relative;
+  width: 265px;
+  height: 265px;
+  max-width: 100%;
+  aspect-ratio: 1;
+}
+
+.profile-avatar.ant-avatar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+}
+
+.profile-avatar.ant-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.profile-user h2 {
+  margin: 0;
+  color: var(--color-primary);
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 31px;
+  text-align: center;
+}
+
+/* =========================================
+   6. PROFILE FORM
+========================================= */
+
+.profile-form {
+  width: 100%;
+  min-width: 0;
+}
+
+.profile-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 24px;
+  row-gap: 20px;
+}
+
+.profile-form .ant-form-item {
+  min-width: 0;
+  margin-bottom: 0;
+}
+
+.profile-form .ant-form-item-label {
+  padding-bottom: 8px;
+}
+
+.profile-form .ant-form-item-label > label {
+  height: 22px;
+  color: #4d4d4d;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+/* =========================================
+   7. APP INPUT
+========================================= */
+
+.profile-form .app-input.ant-input {
+  width: 100%;
+  height: 48px;
+  min-height: 48px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+/* Disabled input */
+
+.profile-form .app-input.ant-input:disabled {
+  background: #f7f7f7;
+  color: #858585;
+  border-color: transparent;
+  box-shadow: none;
+  -webkit-text-fill-color: #858585;
+}
+
+/* =========================================
+   8. APP SELECT
+========================================= */
+
+.profile-form .app-select.ant-select {
+  width: 100%;
+  height: 48px;
+  font-size: 14px;
+}
+
+.profile-form .app-select.ant-select-single .ant-select-selector {
+  display: flex;
+  align-items: center;
+  height: 48px !important;
+  min-height: 48px;
+  border-radius: 6px;
+}
+
+/* Disabled select */
+
+.profile-form .app-select.ant-select-disabled .ant-select-selector {
+  background: #f7f7f7 !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+}
+
+.profile-form .app-select.ant-select-disabled .ant-select-selection-item {
+  color: #858585 !important;
+  -webkit-text-fill-color: #858585 !important;
+}
+
+/* =========================================
+   9. DATE PICKER
+========================================= */
+
+.profile-date-picker.ant-picker {
+  width: 100%;
+  height: 48px;
+  min-height: 48px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.profile-form .profile-date-picker.ant-picker-disabled {
+  background: #f7f7f7;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.profile-form .profile-date-picker .ant-picker-input > input:disabled {
+  color: #858585;
+  -webkit-text-fill-color: #858585;
+}
+
+.profile-form-full {
+  grid-column: 1 / -1;
+}
+
+/* =========================================
+   10. SUBSCRIPTION AREA
+========================================= */
+
+.profile-subscription-area {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 39px;
+  min-width: 0;
+  min-height: 454px;
+  padding-left: 40px;
+  border-left: 4px dashed #fce2d3;
+}
+
+/* =========================================
+   11. SUBSCRIPTION CARD
+========================================= */
+
+.profile-subscription {
+  position: relative;
+  width: 353px;
+  max-width: 100%;
+  height: 334px;
+  overflow: hidden;
+  border: 1px solid #ffffff;
+  border-radius: 12px;
+  background: #f58a4d;
+  box-shadow: 0 1px 8px rgba(152, 74, 29, 0.58);
+}
+
+.profile-subscription::before {
+  position: absolute;
+  left: -88px;
+  bottom: -20px;
+  width: 226px;
+  height: 226px;
+  border: 38px solid rgba(252, 226, 211, 0.4);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+.profile-subscription::after {
+  position: absolute;
+  top: -45px;
+  right: -45px;
+  width: 90px;
+  height: 90px;
+  border: 15px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  content: "";
+  pointer-events: none;
+}
+
+/* =========================================
+   12. PACKAGE HEADER
+========================================= */
+
+.profile-package-header {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 132px;
+  padding: 14px 19px;
+  color: #ffffff;
+}
+
+.profile-package-header > span {
+  color: #f0f0f0;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 22px;
+}
+
+.profile-package-capacity {
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  width: 100%;
+  margin-top: 8px;
+  white-space: nowrap;
+  letter-spacing: -0.02em;
+}
+
+.profile-package-capacity strong,
+.profile-package-capacity span {
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 76px;
+}
+
+/* =========================================
+   13. PACKAGE DETAILS
+========================================= */
+
+.profile-package-details {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 14px;
+  width: calc(100% - 14px);
+  height: 197px;
+  margin: 0 auto;
+  padding: 12px 18px;
+  background: #ffffff;
+  border-radius: 10px;
+}
+
+.profile-package-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 29.5px;
+}
+
+.profile-package-row > span {
+  color: #666666;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+.profile-package-row > strong {
+  color: var(--color-primary);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22px;
+}
+
+/* =========================================
+   14. AUTO RENEW SWITCH
+========================================= */
+
+.profile-package-row .ant-switch {
+  min-width: 46px;
+  height: 24px;
+  background: #fac5a6;
+  border-radius: 4px;
+}
+
+.profile-package-row .ant-switch .ant-switch-handle {
+  top: 3px;
+  width: 20px;
+  height: 18px;
+}
+
+.profile-package-row .ant-switch .ant-switch-handle::before {
+  border-radius: 3px;
+}
+
+.profile-package-row .ant-switch.ant-switch-checked {
+  background: var(--color-primary);
+}
+
+/* =========================================
+   15. PACKAGE BUTTONS
+========================================= */
+
+.profile-package-button.app-button.ant-btn,
+.profile-history-button.app-button.ant-btn {
+  padding: 0 8px;
+  border-radius: 4px;
+  background: var(--color-primary);
+  color: #ffffff;
+  box-shadow: 0 0 6px #e7e9f2;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 19px;
+}
+
+.profile-package-button.app-button.ant-btn {
+  width: 80px;
+  height: 36px;
+}
+
+.profile-history-button.app-button.ant-btn {
+  width: 132px;
+  height: 36px;
+}
+
+/* =========================================
+   16. ACTION PANEL
+========================================= */
+
+.profile-action-panel.app-action-panel {
+  position: fixed;
+  top: 172px;
+  right: 0;
+  z-index: 100;
+}
+
+/* =========================================
+   17. FOOTER
+========================================= */
+
+.profile-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-height: 49px;
+  margin-top: auto;
+  padding: 6px 0;
+  background: #ffffff;
+  color: var(--color-primary);
+  font-size: 20px;
+  font-weight: 400;
+  font-style: italic;
+  line-height: 36px;
+  text-align: center;
+}
+
+/* =========================================
+   18. RESPONSIVE - LAPTOP
+========================================= */
+
+@media (max-width: 1600px) {
+  .profile-content {
+    width: calc(100% - 80px);
+  }
+
+  .profile-card {
+    grid-template-columns:
+      minmax(200px, 260px)
+      minmax(0, 1fr)
+      minmax(300px, 353px);
+    column-gap: 28px;
+    padding: 32px;
+  }
+
+  .profile-avatar-wrapper {
+    width: 220px;
+    height: 220px;
+  }
+
+  .profile-subscription-area {
+    padding-left: 24px;
+  }
+}
+
+/* =========================================
+   19. RESPONSIVE - TABLET
+========================================= */
+
+@media (max-width: 1200px) {
+  .profile-card {
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 32px;
+  }
+
+  .profile-subscription-area {
+    grid-column: 1 / -1;
+    min-height: auto;
+    padding: 32px 0 0;
+    border-left: none;
+    border-top: 4px dashed #fce2d3;
+  }
+}
+
+/* =========================================
+   20. RESPONSIVE - MOBILE
+========================================= */
+
+@media (max-width: 768px) {
+  .profile-page-header {
+    height: auto;
+    min-height: 96px;
+    padding: 16px;
+  }
+
+  .profile-heading {
+    gap: 32px;
+    margin: 24px 0 40px;
+  }
+
+  .profile-logo {
+    width: 160px;
+    height: auto;
+  }
+
+  .profile-heading h1 {
+    font-size: 32px;
+    line-height: 42px;
+  }
+
+  .profile-heading h1::after {
+    width: 180px;
+  }
+
+  .profile-content {
+    width: calc(100% - 24px);
+    margin-bottom: 32px;
+  }
+
+  .profile-card {
+    grid-template-columns: 1fr;
+    gap: 32px;
+    padding: 24px 16px;
+  }
+
+  .profile-avatar-wrapper {
+    width: 200px;
+    height: 200px;
+  }
+
+  .profile-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .profile-form-full,
+  .profile-subscription-area {
+    grid-column: auto;
+  }
+
+  .profile-subscription-area {
+    padding-top: 24px;
+  }
+
+  .profile-action-panel.app-action-panel {
+    top: 120px;
+    transform: scale(0.7);
+    transform-origin: top right;
+  }
+
+  .profile-footer {
+    font-size: 16px;
+  }
+}

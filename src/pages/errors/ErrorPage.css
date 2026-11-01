@@ -1,0 +1,317 @@
+.error-page {
+  box-sizing: border-box;
+  position: relative;
+  width: 100%;
+  min-height: 100vh;
+  background: var(--bg-color);
+  overflow-x: hidden;
+}
+
+.error-page-header {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding-top: 68px;
+}
+
+.error-page-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 507px;
+  max-width: 100%;
+  gap: 24px;
+}
+
+.error-page-logo {
+  display: block;
+  width: 223px;
+  height: 80px;
+  object-fit: contain;
+}
+
+.error-page-brand-name {
+  width: 100%;
+  color: #000000;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 44px;
+  text-align: center;
+}
+
+.error-page-content {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  align-items: center;
+  width: 100%;
+  max-width: 1920px;
+  min-height: 700px;
+  margin: 0 auto;
+}
+
+.error-page-info {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-width: 0;
+  padding: 0 7%;
+}
+
+.error-page-title {
+  margin: 0;
+  color: #e05200;
+  font-size: 72px;
+  font-weight: 700;
+  line-height: 108px;
+  text-align: center;
+}
+
+.error-page-subtitle {
+  margin: 0;
+  color: rgba(0, 0, 0, 0.8);
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 33px;
+  text-align: center;
+}
+
+.error-page-description {
+  width: 100%;
+  max-width: 758px;
+  margin: 24px 0 0;
+  color: rgba(3, 3, 29, 0.6);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  text-align: left;
+}
+
+.error-page-button.app-button.ant-btn {
+  max-width: 100%;
+  margin-top: 76px;
+}
+
+.error-page-illustration {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  min-width: 0;
+}
+
+.error-page-illustration img {
+  display: block;
+  width: 100%;
+  max-width: 960px;
+  max-height: 809px;
+  height: auto;
+  object-fit: contain;
+}
+
+@media (min-width: 1600px) {
+  .error-page-content {
+    position: relative;
+    display: block;
+    min-height: 0;
+    height: 900px;
+  }
+
+  .error-page-info {
+    position: absolute;
+    top: 303px;
+    left: 0;
+    width: 1052px;
+    padding: 0 147px;
+  }
+
+  .error-page-illustration {
+    position: absolute;
+    top: 0;
+    left: 48.32%;
+    width: 50%;
+    height: 809px;
+  }
+
+  .error-page-illustration img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+}
+
+@media (min-width: 993px) and (max-width: 1599px) {
+  .error-page-header {
+    padding-top: 48px;
+  }
+
+  .error-page-brand {
+    width: 420px;
+    gap: 18px;
+  }
+
+  .error-page-logo {
+    width: 190px;
+    height: auto;
+  }
+
+  .error-page-brand-name {
+    font-size: 26px;
+    line-height: 36px;
+  }
+
+  .error-page-content {
+    min-height: 620px;
+  }
+
+  .error-page-info {
+    padding: 0 5%;
+  }
+
+  .error-page-title {
+    font-size: 60px;
+    line-height: 90px;
+  }
+
+  .error-page-subtitle {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .error-page-description {
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  .error-page-button.app-button.ant-btn {
+    margin-top: 56px;
+  }
+}
+
+@media (min-width: 577px) and (max-width: 992px) {
+  .error-page-header {
+    padding-top: 32px;
+  }
+
+  .error-page-brand {
+    width: 380px;
+    gap: 16px;
+  }
+
+  .error-page-logo {
+    width: 180px;
+    height: auto;
+  }
+
+  .error-page-brand-name {
+    font-size: 24px;
+    line-height: 33px;
+  }
+
+  .error-page-content {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    gap: 40px;
+    padding: 64px 24px 48px;
+    box-sizing: border-box;
+  }
+
+  .error-page-info {
+    order: 1;
+    padding: 0;
+  }
+
+  .error-page-illustration {
+    order: 2;
+  }
+
+  .error-page-title {
+    font-size: 48px;
+    line-height: 72px;
+  }
+
+  .error-page-subtitle {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .error-page-description {
+    max-width: 600px;
+  }
+
+  .error-page-button.app-button.ant-btn {
+    margin-top: 40px;
+  }
+
+  .error-page-illustration img {
+    max-width: 520px;
+  }
+}
+
+@media (max-width: 576px) {
+  .error-page-header {
+    padding: 24px 16px 0;
+    box-sizing: border-box;
+  }
+
+  .error-page-brand {
+    width: 100%;
+    gap: 16px;
+  }
+
+  .error-page-logo {
+    width: 180px;
+    height: auto;
+  }
+
+  .error-page-brand-name {
+    font-size: 22px;
+    line-height: 30px;
+  }
+
+  .error-page-content {
+    grid-template-columns: 1fr;
+    min-height: auto;
+    padding: 48px 16px 32px;
+    gap: 32px;
+    box-sizing: border-box;
+  }
+
+  .error-page-info {
+    order: 1;
+    padding: 0;
+  }
+
+  .error-page-illustration {
+    order: 2;
+  }
+
+  .error-page-title {
+    font-size: 40px;
+    line-height: 60px;
+  }
+
+  .error-page-subtitle {
+    font-size: 18px;
+    line-height: 26px;
+  }
+
+  .error-page-description {
+    margin-top: 16px;
+    font-size: 14px;
+    line-height: 22px;
+  }
+
+  .error-page-button.app-button.ant-btn {
+    width: 100% !important;
+    margin-top: 32px;
+  }
+
+  .error-page-illustration img {
+    max-width: 100%;
+  }
+}
