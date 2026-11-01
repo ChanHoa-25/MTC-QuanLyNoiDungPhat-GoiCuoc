@@ -1,0 +1,121 @@
+/* =========================================
+   SITE INFO - THÔNG TIN CƠ SỞ
+========================================= */
+
+.site-info {
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  min-height: 100%;
+
+  padding: 24px;
+  margin: 0;
+
+  background: #ffffff;
+  border-radius: 12px;
+
+  font-family: "Open Sans", Arial, sans-serif;
+}
+
+/* =========================================
+   TITLE
+========================================= */
+
+.site-info-title {
+  margin: 0 0 16px;
+  padding: 0;
+
+  color: #e05200;
+
+  font-family: "Open Sans", Arial, sans-serif;
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 31px;
+}
+
+/* =========================================
+   FIELDS CONTAINER
+========================================= */
+
+.site-info-fields {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  gap: 16px;
+}
+
+/* =========================================
+   FIELD ROW
+========================================= */
+
+.site-info-field {
+  display: grid;
+  grid-template-columns: 198px minmax(0, 1fr);
+  align-items: center;
+
+  width: 100%;
+  min-height: 22px;
+  column-gap: 24px;
+
+  font-size: 16px;
+  line-height: 22px;
+}
+
+/* =========================================
+   LABEL
+========================================= */
+
+.site-info-label {
+  color: #4d4d4d;
+
+  font-family: "Open Sans", Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+/* =========================================
+   VALUE
+========================================= */
+
+.site-info-value {
+  min-width: 0;
+
+  color: #666666;
+
+  font-family: "Open Sans", Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22px;
+
+  overflow-wrap: anywhere;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 700px) {
+  .site-info {
+    padding: 16px;
+  }
+
+  .site-info-title {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .site-info-field {
+    grid-template-columns: 1fr;
+    row-gap: 4px;
+  }
+
+  .site-info-label,
+  .site-info-value {
+    font-size: 14px;
+  }
+}

@@ -26,14 +26,15 @@
 }
 
 .app-tabs__item {
+  box-sizing: border-box;
   display: inline-flex;
   flex: 0 0 auto;
   align-items: center;
   justify-content: center;
-  width: max-content;
-  min-width: max-content;
+  width: auto;
+  min-width: 150px;
   height: 44px;
-  padding: 0 28px;
+  padding: 0 80px;
   color: #ffffff;
   background: transparent;
   border: none;

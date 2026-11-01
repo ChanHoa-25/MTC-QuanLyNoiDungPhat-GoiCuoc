@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
 import { ConfigProvider } from "antd";
 import viVN from "antd/locale/vi_VN";
+import { SiteProvider } from "../contexts/SiteContext";
 
 interface AppProvidersProps {
   children: ReactNode;
@@ -46,7 +47,7 @@ function AppProviders({ children }: AppProvidersProps) {
           },
         },
       }}>
-      {children}
+      <SiteProvider>{children}</SiteProvider>
     </ConfigProvider>
   );
 }

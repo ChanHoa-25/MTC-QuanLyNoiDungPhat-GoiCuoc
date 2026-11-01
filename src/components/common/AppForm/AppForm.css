@@ -1,0 +1,120 @@
+.app-form {
+  width: 100%;
+  min-width: 0;
+  --app-form-gap: 16px;
+  --app-form-item-gap: 16px;
+  --app-form-actions-gap: 40px;
+}
+
+/* =========================
+   BỐ CỤC FORM
+========================= */
+
+/* 1 cột */
+.app-form--cols-1 {
+  display: block;
+}
+
+/* 2 cột */
+.app-form--cols-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: var(--app-form-gap);
+}
+
+/* 3 cột */
+.app-form--cols-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: var(--app-form-gap);
+}
+
+/* =========================
+   FORM ITEM
+========================= */
+
+.app-form .ant-form-item {
+  min-width: 0;
+  margin-bottom: var(--app-form-item-gap);
+}
+
+/* =========================
+   LABEL
+========================= */
+
+.app-form .ant-form-item-label {
+  padding-bottom: 8px;
+  white-space: normal;
+}
+
+.app-form .ant-form-item-label > label {
+  height: auto;
+  min-height: 22px;
+  font-family: "Open Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+  color: #4d4d4d;
+  white-space: normal;
+}
+
+/* Dấu bắt buộc */
+.app-form .ant-form-item-label > label.ant-form-item-required::before {
+  color: #ff4444;
+}
+
+/* =========================
+   INPUT / SELECT / TEXTAREA
+========================= */
+
+.app-form .ant-form-item-control,
+.app-form .ant-form-item-control-input,
+.app-form .ant-form-item-control-input-content {
+  min-width: 0;
+}
+
+/* =========================
+   THÔNG BÁO LỖI
+========================= */
+
+.app-form .ant-form-item-explain-error {
+  font-family: "Open Sans", sans-serif;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+/* =========================
+   TRƯỜNG CHIẾM TOÀN BỘ HÀNG
+========================= */
+
+.app-form .app-form-full-width {
+  grid-column: 1 / -1;
+}
+
+/* =========================
+   NHÓM NÚT THAO TÁC
+========================= */
+
+.app-form .app-form-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: var(--app-form-actions-gap);
+  grid-column: 1 / -1;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media (max-width: 768px) {
+  .app-form--cols-2,
+  .app-form--cols-3 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-form .app-form-actions {
+    gap: 16px;
+  }
+}
