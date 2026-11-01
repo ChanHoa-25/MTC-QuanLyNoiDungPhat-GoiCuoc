@@ -11,27 +11,55 @@
   font-weight: 400;
   line-height: 19px;
 }
+
+/* Input nằm bên trong Input.Password */
+.app-input.ant-input-affix-wrapper .ant-input {
+  font-size: inherit;
+  font-weight: inherit;
+  color: inherit;
+  background: transparent;
+}
+
+/* Placeholder */
 .app-input.ant-input::placeholder,
 .app-input .ant-input::placeholder {
   color: #666666;
   opacity: 1;
 }
 
-.app-input.ant-input:hover:not(:disabled),
+/* Hover */
+.app-input.ant-input:hover:not(:disabled):not(.ant-input-status-error),
 .app-input.ant-input-affix-wrapper:hover:not(
     .ant-input-affix-wrapper-disabled
-  ) {
+  ):not(.ant-input-affix-wrapper-status-error) {
   border-color: var(--color-primary);
 }
 
-.app-input.ant-input:focus,
-.app-input.ant-input-focused,
-.app-input.ant-input-affix-wrapper-focused,
-.app-input.ant-input-affix-wrapper:focus-within {
+/* Focus */
+.app-input.ant-input:focus:not(.ant-input-status-error),
+.app-input.ant-input-focused:not(.ant-input-status-error),
+.app-input.ant-input-affix-wrapper-focused:not(
+    .ant-input-affix-wrapper-status-error
+  ),
+.app-input.ant-input-affix-wrapper:focus-within:not(
+    .ant-input-affix-wrapper-status-error
+  ) {
   border-color: var(--color-primary);
   box-shadow: none;
 }
 
+/* Error */
+.app-input.ant-input-status-error,
+.app-input.ant-input-status-error:hover,
+.app-input.ant-input-status-error:focus,
+.app-input.ant-input-affix-wrapper-status-error,
+.app-input.ant-input-affix-wrapper-status-error:hover,
+.app-input.ant-input-affix-wrapper-status-error:focus-within {
+  border-color: #ff4444;
+  box-shadow: none;
+}
+
+/* Disabled */
 .app-input.ant-input:disabled,
 .app-input.ant-input-affix-wrapper-disabled {
   background: #f5f5f5;
