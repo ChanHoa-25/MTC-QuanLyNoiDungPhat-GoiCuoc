@@ -14,7 +14,8 @@ import {
 } from "lucide-react";
 
 import { ROUTES } from "../../constants/route.constants";
-import "../Mainlayout.css";
+import { useSiteContext } from "../../contexts/SiteContext";
+import "../MainLayout.css";
 
 interface BreadcrumbConfig {
   label: string;
@@ -101,6 +102,8 @@ const breadcrumbs: Record<string, BreadcrumbConfig> = {
 function AppBreadcrumb() {
   const { pathname } = useLocation();
 
+  const { selectedSitePath, setSelectedSiteId } = useSiteContext();
+
   const segments = pathname.split("/").filter(Boolean);
 
   if (segments.length === 0) {
@@ -147,6 +150,36 @@ function AppBreadcrumb() {
       ),
     };
   });
+
+  if (pathname === ROUTES.SITES) {
+    selectedSitePath.forEach((site, index) => {
+      const isLast = index === selectedSitePath.length - 1;
+
+      items.push({
+        title: (
+          <span className="breadcrumb-item">
+            {isLast ? (
+              <span className="breadcrumb-current">{site.name}</span>
+            ) : (
+              <button
+                type="button"
+                className="breadcrumb-parent"
+                style={{
+                  padding: 0,
+                  border: "none",
+                  background: "transparent",
+                  font: "inherit",
+                  cursor: "pointer",
+                }}
+                onClick={() => setSelectedSiteId(site.id)}>
+                {site.name}
+              </button>
+            )}
+          </span>
+        ),
+      });
+    });
+  }
 
   return (
     <Breadcrumb

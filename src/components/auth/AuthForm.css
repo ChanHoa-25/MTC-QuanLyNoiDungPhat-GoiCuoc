@@ -1,0 +1,175 @@
+.auth-form {
+  width: 100%;
+  max-width: 540px;
+}
+
+.auth-heading {
+  margin-bottom: 48px;
+  text-align: center;
+}
+
+.auth-heading h1 {
+  margin: 0;
+  color: #e05200;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 65px;
+}
+
+.auth-heading p {
+  margin: 16px 0 0;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.auth-form .auth-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  border-radius: 8px;
+  background: var(--color-bg-page);
+}
+
+.auth-form .auth-fields .ant-form-item {
+  margin: 0;
+}
+
+.auth-form .auth-fields .ant-form-item-row,
+.auth-form .auth-fields .ant-form-item-control,
+.auth-form .auth-fields .ant-form-item-control-input,
+.auth-form .auth-fields .ant-form-item-control-input-content {
+  width: 100%;
+}
+
+.auth-form .auth-fields .ant-input-affix-wrapper {
+  width: 100%;
+  height: 72px;
+  padding: 10px 24px;
+  border: none;
+  border-radius: 0;
+  background: #fff;
+  box-shadow: none;
+}
+
+.auth-form .auth-fields .ant-form-item:first-child .ant-input-affix-wrapper {
+  border-radius: 8px 8px 0 0;
+}
+
+.auth-form .auth-fields .ant-form-item:last-child .ant-input-affix-wrapper {
+  border-radius: 0 0 8px 8px;
+}
+
+.auth-form .auth-fields .ant-form-item:only-child .ant-input-affix-wrapper {
+  border-radius: 8px;
+}
+
+.auth-form .auth-fields .ant-input {
+  font-size: 18px;
+}
+
+.auth-form .auth-fields .ant-input::placeholder {
+  color: #c2c2c2;
+}
+
+.auth-form .auth-fields .ant-input-prefix {
+  margin-right: 10px;
+  color: #f58a4d;
+  font-size: 32px;
+}
+
+.auth-form .auth-fields .ant-input-password-icon {
+  font-size: 24px;
+}
+
+.auth-form .auth-fields .ant-input-affix-wrapper:focus,
+.auth-form .auth-fields .ant-input-affix-wrapper-focused {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.auth-form .auth-fields--error {
+  padding: 2px;
+  border-radius: 8px;
+  background: #ff4d4f;
+}
+
+.auth-form .auth-fields--error .ant-input-affix-wrapper {
+  border: none;
+  box-shadow: none;
+}
+
+.auth-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  color: #ff4d4f;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.auth-error .anticon {
+  flex-shrink: 0;
+  font-size: 24px;
+}
+
+.auth-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.auth-footer a {
+  color: var(--color-primary);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.auth-submit.ant-form-item {
+  margin-top: 32px;
+  margin-bottom: 0;
+}
+
+.auth-submit .ant-btn {
+  width: 100%;
+  height: 56px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+@media (max-width: 576px) {
+  .auth-heading {
+    margin-bottom: 32px;
+  }
+
+  .auth-heading h1 {
+    font-size: 36px;
+    line-height: 48px;
+  }
+
+  .auth-form .auth-fields .ant-input-affix-wrapper {
+    height: 60px;
+    padding: 10px 16px;
+  }
+
+  .auth-form .auth-fields .ant-input {
+    font-size: 16px;
+  }
+
+  .auth-form .auth-fields .ant-input-prefix {
+    font-size: 24px;
+  }
+
+  .auth-footer {
+    flex-wrap: wrap;
+  }
+
+  .auth-submit .ant-btn {
+    height: 52px;
+    font-size: 18px;
+  }
+}
