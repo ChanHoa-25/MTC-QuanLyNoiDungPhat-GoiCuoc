@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 import { ROUTES } from "../../constants/route.constants";
-import "../Mainlayout1.css";
+import "../Mainlayout.css";
 
 interface BreadcrumbConfig {
   label: string;
