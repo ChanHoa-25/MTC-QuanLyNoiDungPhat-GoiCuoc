@@ -5,11 +5,13 @@ import "./AppButton.css";
 export interface AppButtonProps extends Omit<ButtonProps, "variant"> {
   variant?: "primary" | "outline";
   width?: number | string;
+  height?: number | string;
 }
 
 function AppButton({
   variant = "primary",
   width = 158,
+  height,
   className = "",
   style,
   children,
@@ -25,6 +27,7 @@ function AppButton({
         .join(" ")}
       style={{
         width,
+        ...(height !== undefined ? { height } : {}),
         ...style,
       }}>
       {children}
