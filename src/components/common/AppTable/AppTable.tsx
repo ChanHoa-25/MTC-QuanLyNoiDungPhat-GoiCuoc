@@ -3,6 +3,8 @@ import type { Key } from "react";
 import { Table } from "antd";
 import type { TableProps, TablePaginationConfig } from "antd";
 
+import AppPagination from "../AppPagination";
+
 import "./AppTable.css";
 
 export interface AppTableProps<T extends object> extends Omit<
@@ -14,6 +16,7 @@ export interface AppTableProps<T extends object> extends Omit<
   rowSelection?: TableProps<T>["rowSelection"];
   showSelectedCount?: boolean;
   selectedLabel?: string;
+  serverSidePagination?: boolean;
 }
 
 function AppTable<T extends object>({
@@ -22,11 +25,17 @@ function AppTable<T extends object>({
   rowSelection,
   showSelectedCount = true,
   selectedLabel = "mục",
+  serverSidePagination = false,
   className = "",
+  dataSource = [],
   ...tableProps
 }: AppTableProps<T>) {
   const [internalSelectedRowKeys, setInternalSelectedRowKeys] = useState<Key[]>(
     [],
+  );
+
+  const [internalPage, setInternalPage] = useState(
+    pagination === false ? 1 : (pagination?.defaultCurrent ?? 1),
   );
 
   const selectionEnabled = selectable || !!rowSelection;
@@ -39,25 +48,18 @@ function AppTable<T extends object>({
       ? 10
       : (pagination?.pageSize ?? pagination?.defaultPageSize ?? 10);
 
-  const paginationConfig: false | TablePaginationConfig =
+  const currentPage =
+    pagination === false ? 1 : (pagination?.current ?? internalPage);
+
+  const total =
     pagination === false
-      ? false
-      : {
-          ...pagination,
-          pageSize,
-          showSizeChanger: pagination?.showSizeChanger ?? false,
-          showQuickJumper: pagination?.showQuickJumper ?? false,
-          showTotal:
-            pagination?.showTotal ??
-            (() => (
-              <span className="app-table__pagination-summary">
-                <span>Hiển thị</span>
-                <span className="app-table__page-size">{pageSize}</span>
-                <span>nội dung trong mỗi trang</span>
-              </span>
-            )),
-          position: pagination?.position ?? ["bottomRight"],
-        };
+      ? dataSource.length
+      : (pagination?.total ?? dataSource.length);
+
+  const paginatedData =
+    pagination === false || serverSidePagination
+      ? dataSource
+      : dataSource.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   const columnsCount =
     (tableProps.columns?.length ?? 0) + (selectionEnabled ? 1 : 0);
@@ -72,10 +74,19 @@ function AppTable<T extends object>({
     rowSelection?.onChange?.(keys, rows, info);
   };
 
+  const handlePageChange = (page: number, size: number) => {
+    if (pagination === false) return;
+
+    setInternalPage(page);
+    pagination?.onChange?.(page, size);
+  };
+
   return (
     <div className={`app-table ${className}`.trim()}>
       <Table<T>
         {...tableProps}
+        dataSource={paginatedData}
+        pagination={false}
         rowSelection={
           selectionEnabled
             ? {
@@ -88,7 +99,6 @@ function AppTable<T extends object>({
               }
             : undefined
         }
-        pagination={paginationConfig}
         summary={() =>
           selectionEnabled &&
           showSelectedCount &&
@@ -104,6 +114,15 @@ function AppTable<T extends object>({
           ) : null
         }
       />
+
+      {pagination !== false && (
+        <AppPagination
+          current={currentPage}
+          pageSize={pageSize}
+          total={total}
+          onChange={handlePageChange}
+        />
+      )}
     </div>
   );
 }
