@@ -4,13 +4,20 @@ import { Outlet } from "react-router-dom";
 
 import AppSidebar from "./components/AppSidebar";
 import AppHeader from "./components/AppHeader";
+import AppActionPanel from "../components/common/AppActionPanel";
+
+import {
+  ActionPanelProvider,
+  useActionPanel,
+} from "../contexts/ActionPanelContext";
 
 import "./Mainlayout.css";
 
 const { Header, Content, Footer } = Layout;
 
-function MainLayout() {
+function MainLayoutContent() {
   const [collapsed, setCollapsed] = useState(false);
+  const { actions } = useActionPanel();
 
   const handleCollapse = () => {
     setCollapsed((prev) => !prev);
@@ -27,9 +34,14 @@ function MainLayout() {
           <AppHeader />
         </Header>
 
-        <Content className="app-content">
-          <Outlet />
-        </Content>
+        {/* Content và thanh thao tác */}
+        <div className="app-body">
+          <Content className="app-content">
+            <Outlet />
+          </Content>
+
+          {actions.length > 0 && <AppActionPanel actions={actions} />}
+        </div>
 
         <Footer className="app-footer">
           <span className="powered-by">Powered by</span>
@@ -37,6 +49,14 @@ function MainLayout() {
         </Footer>
       </Layout>
     </Layout>
+  );
+}
+
+function MainLayout() {
+  return (
+    <ActionPanelProvider>
+      <MainLayoutContent />
+    </ActionPanelProvider>
   );
 }
 
