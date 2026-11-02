@@ -1,0 +1,61 @@
+.site-templates {
+  width: 100%;
+  min-width: 0;
+}
+
+.site-templates__panel {
+  width: 100%;
+  min-width: 0;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.site-templates__title {
+  margin: 0 0 16px;
+  color: #ee6b2d;
+  font-family: "Open Sans", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+.site-templates__filters {
+  margin-bottom: 12px;
+}
+
+/* Đẩy ô tìm kiếm sang bên phải */
+.site-templates__search {
+  margin-left: auto;
+}
+.site-templates__date-range {
+  width: 100%;
+  height: 44px;
+  border: 1px solid #c2c2c2;
+  border-radius: 6px;
+}
+
+.site-templates__date-range:hover,
+.site-templates__date-range:focus-within {
+  border-color: #ee6b2d;
+}
+
+.site-templates__date-range .ant-picker-suffix {
+  color: #ee6b2d;
+}
+
+.site-templates__search .ant-input-affix-wrapper {
+  height: 44px;
+  border: 1px solid #c2c2c2;
+  border-radius: 6px;
+}
+
+.site-templates__search .ant-input-affix-wrapper:hover,
+.site-templates__search .ant-input-affix-wrapper-focused {
+  border-color: #ee6b2d;
+  box-shadow: none;
+}
+
+.site-templates__search .ant-input-suffix {
+  color: #ee6b2d;
+}
