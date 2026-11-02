@@ -15,11 +15,11 @@
 
 .app-table .ant-table table {
   border-collapse: separate !important;
-  border-spacing: 0 8px !important;
+  border-spacing: 0 4px !important;
 }
 
 .app-table .ant-table-thead > tr > th {
-  height: 44px;
+  height: 40px;
   padding: 0 8px;
   background: #fce2d3 !important;
   color: var(--color-primary);
@@ -40,7 +40,7 @@
 }
 
 .app-table .ant-table-tbody > tr > td {
-  height: 44px;
+  height: 40px;
   padding: 0 8px;
   background: #f6f6f680;
   color: #666666;
@@ -94,137 +94,6 @@
 
 .app-table .ant-checkbox-indeterminate .ant-checkbox-inner::after {
   background: var(--color-primary);
-}
-
-.app-table .ant-table-pagination {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  width: 100%;
-  min-height: 32px;
-  margin: 16px 0 24px;
-}
-
-.app-table .ant-pagination-total-text {
-  display: inline-flex;
-  align-items: center;
-  margin-inline-end: auto;
-  color: #666666;
-}
-
-.app-table__pagination-summary {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  color: #666666;
-  font-size: 14px;
-  font-weight: 400;
-  line-height: 19px;
-  white-space: nowrap;
-}
-
-.app-table__page-size {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 32px;
-  padding: 3px 8px;
-  color: var(--color-primary);
-  background: #ffffff;
-  border: 1px solid var(--color-primary);
-  border-radius: 4px;
-  font-size: 16px;
-  font-weight: 700;
-  line-height: 22px;
-}
-
-.app-table .ant-pagination-options {
-  display: none !important;
-}
-
-.app-table .ant-pagination-item {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  min-width: 32px;
-  height: 32px;
-  margin-inline-end: 0;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  background: transparent;
-  line-height: 22px;
-}
-
-.app-table .ant-pagination-item a {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  height: 100%;
-  color: #858585;
-  font-size: 16px;
-  font-weight: 400;
-  line-height: 22px;
-}
-
-.app-table .ant-pagination-item-active {
-  border-color: var(--color-primary);
-  background: var(--color-primary);
-}
-
-.app-table .ant-pagination-item-active a,
-.app-table .ant-pagination-item-active:hover a {
-  color: #ffffff !important;
-  font-weight: 700;
-}
-
-.app-table .ant-pagination-item:hover {
-  border-color: var(--color-primary);
-}
-
-.app-table .ant-pagination-item:hover a {
-  color: var(--color-primary);
-}
-
-.app-table .ant-pagination-item-active:hover {
-  background: var(--color-primary);
-}
-
-.app-table .ant-pagination-prev,
-.app-table .ant-pagination-next {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  min-width: 32px;
-  height: 32px;
-  margin-inline-end: 0;
-}
-
-.app-table .ant-pagination-prev .ant-pagination-item-link,
-.app-table .ant-pagination-next .ant-pagination-item-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  padding: 0;
-  color: #858585;
-  background: transparent;
-  border: none;
-  border-radius: 4px;
-}
-
-.app-table .ant-pagination-disabled .ant-pagination-item-link {
-  color: #c2c2c2;
-}
-
-.app-table .ant-pagination-jump-prev,
-.app-table .ant-pagination-jump-next {
-  height: 32px;
-  line-height: 32px;
 }
 
 .app-table .ant-table-summary {

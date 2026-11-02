@@ -1,4 +1,3 @@
-/* Header */
 .main-layout {
   display: flex;
   width: 100%;
@@ -8,6 +7,8 @@
   background: var(--color-bg-page);
   font-family: var(--font-family);
 }
+
+/* HEADER */
 
 .main-layout-right {
   display: flex;
@@ -44,6 +45,45 @@
   min-width: 0;
   gap: 16px;
 }
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-shrink: 0;
+}
+
+.header-search {
+  width: 200px;
+  height: 48px;
+  padding: 14px 12px;
+  border: 0;
+  outline: none;
+  border-radius: 6px;
+}
+
+.header-search .ant-input {
+  color: #c2c2c2;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.header-search .ant-input-suffix {
+  color: var(--color-primary);
+}
+
+.header-actions .header-language.app-language {
+  width: 106px;
+  height: 48px;
+  flex-shrink: 0;
+}
+
+.header-app {
+  color: var(--color-primary);
+  font-size: 20px;
+}
+
+/* BREADCRUMB */
 
 .header-breadcrumb {
   display: flex;
@@ -134,45 +174,8 @@
   color: #000000;
 }
 
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  flex-shrink: 0;
-}
+/* SIDEBAR */
 
-.header-search {
-  width: 200px;
-  height: 48px;
-  padding: 14px 12px;
-  border: 0;
-  outline: none;
-  border-radius: 6px;
-}
-
-.header-search .ant-input {
-  color: #c2c2c2;
-  font-size: 14px;
-  font-weight: 400;
-}
-
-.header-search .ant-input-suffix {
-  color: var(--color-primary);
-}
-
-/* Language dùng chung trong Header */
-.header-actions .header-language.app-language {
-  width: 106px;
-  height: 48px;
-  flex-shrink: 0;
-}
-
-.header-app {
-  color: var(--color-primary);
-  font-size: 20px;
-}
-
-/* Sidebar */
 .app-sidebar.ant-layout-sider {
   overflow: visible;
   margin: 18px 0;
@@ -461,18 +464,19 @@
   text-align: center;
 }
 
-.sidebar-footer .powered-by {
-  font-weight: 400;
-  font-style: italic;
+.sidebar-footer .powered-by,
+.sidebar-footer .brand-name {
   font-size: 16px;
   line-height: 36px;
+  font-style: italic;
+}
+
+.sidebar-footer .powered-by {
+  font-weight: 400;
 }
 
 .sidebar-footer .brand-name {
   font-weight: 600;
-  font-style: italic;
-  font-size: 16px;
-  line-height: 36px;
 }
 
 .sidebar-navigation::-webkit-scrollbar {
@@ -483,81 +487,54 @@
   background: rgb(255 255 255 / 50%);
   border-radius: 4px;
 }
-.main-layout-right {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  width: 0;
-  min-width: 0;
-  height: 100vh;
-  padding: 16px 16px 0 26px;
-  box-sizing: border-box;
-  background: var(--color-bg-page);
-}
 
-/* Vùng chứa Content và AppActionPanel */
+/* CONTENT */
+
 .app-body {
   display: flex;
   flex: 1 1 0%;
   align-items: stretch;
   gap: 16px;
-
   width: 100%;
   min-width: 0;
   min-height: 0;
-
   margin-bottom: 16px;
 }
 
-/* Content tự co giãn theo thanh thao tác */
 .app-content.ant-layout-content {
   display: flex;
-  flex-direction: column;
   flex: 1 1 0%;
-
+  flex-direction: column;
   width: auto;
   min-width: 0;
   min-height: 0;
-
   margin: 0;
-  padding: 24px;
-
+  padding: 10px !important;
   overflow: auto;
   box-sizing: border-box;
-
   background-color: var(--color-bg-page) !important;
   border-radius: 16px;
   box-shadow: 0 4px 20px 0 #f3c6b333;
 }
 
-/* Trang được render bên trong Outlet */
 .app-content > * {
   flex: 1 1 auto;
   min-height: 0;
 }
 
-/* Thanh thao tác dùng chung */
 .app-body > .app-action-panel {
   position: sticky;
   top: 16px;
   z-index: 10;
-
   flex: 0 0 80px;
   align-self: flex-start;
-
   width: 80px;
   height: fit-content;
-
-  /* Căn ngang với khung nội dung bên dưới Tabs */
   margin: 64px 0 0;
 }
 
-/* Trang được render bên trong Outlet */
-.app-content > * {
-  flex: 1 1 auto;
-  min-height: 0;
-}
-/* Footer */
+/* FOOTER */
+
 .app-footer {
   display: flex;
   align-items: center;
@@ -575,23 +552,25 @@
   font-family: var(--font-family);
 }
 
+.app-footer .powered-by,
+.app-footer .brand-name {
+  font-size: 16px;
+  line-height: 36px;
+  font-style: italic;
+  vertical-align: middle;
+}
+
 .app-footer .powered-by {
   color: var(--color-primary);
   font-weight: 400;
-  font-style: italic;
-  font-size: 16px;
-  line-height: 36px;
-  vertical-align: middle;
 }
 
 .app-footer .brand-name {
   color: var(--color-primary);
   font-weight: 600;
-  font-style: italic;
-  font-size: 16px;
-  line-height: 36px;
-  vertical-align: middle;
 }
+
+/* RESPONSIVE */
 
 @media (max-width: 1200px) {
   .header-actions {
