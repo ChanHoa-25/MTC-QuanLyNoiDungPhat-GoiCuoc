@@ -59,6 +59,34 @@
   box-shadow: none;
 }
 
+/* ReadOnly */
+.app-input.ant-input[readonly],
+.app-input.ant-input-affix-wrapper:has(.ant-input[readonly]) {
+  background: #f5f5f5;
+  border-color: transparent;
+  box-shadow: none;
+  color: #666666;
+  cursor: default;
+}
+
+/* ReadOnly - Hover và Focus */
+.app-input.ant-input[readonly]:hover,
+.app-input.ant-input[readonly]:focus,
+.app-input.ant-input[readonly].ant-input-focused,
+.app-input.ant-input-affix-wrapper:has(.ant-input[readonly]):hover,
+.app-input.ant-input-affix-wrapper:has(.ant-input[readonly]):focus-within {
+  background: #f5f5f5;
+  border-color: transparent;
+  box-shadow: none;
+}
+
+/* ReadOnly - Placeholder */
+.app-input.ant-input[readonly]::placeholder,
+.app-input.ant-input-affix-wrapper .ant-input[readonly]::placeholder {
+  color: #a6a6a6;
+  opacity: 1;
+}
+
 /* Disabled */
 .app-input.ant-input:disabled,
 .app-input.ant-input-affix-wrapper-disabled {

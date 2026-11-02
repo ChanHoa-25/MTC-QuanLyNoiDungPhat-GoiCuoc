@@ -1,11 +1,15 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Key } from "react";
 import type { TableColumnsType } from "antd";
-import { Input, Select, message } from "antd";
+import { Form, Input, message } from "antd";
 import { SquarePen, Search } from "lucide-react";
 
 import AppTable from "../../../../components/common/AppTable";
-import AppIconButton from "../../../../components/common/AppIconButton";
+import AppTableActions from "../../../../components/common/AppTableActions";
+import AppSelect from "../../../../components/common/AppSelect";
+import AppFilter, {
+  AppFilterField,
+} from "../../../../components/common/AppFilter";
 
 import SiteUserFormModal from "../SiteUserFormModal";
 import type { SiteUserFormValues } from "../SiteUserFormModal";
@@ -153,6 +157,7 @@ function SiteUsers({
 
   const handleCloseCreateModal = () => {
     if (creating) return;
+
     onCloseCreate();
   };
 
@@ -197,6 +202,7 @@ function SiteUsers({
 
   const handleCloseEditModal = () => {
     if (updating) return;
+
     setEditingUser(null);
   };
 
@@ -292,18 +298,22 @@ function SiteUsers({
       key: "updatedAt",
       width: 150,
     },
+
     {
       title: "Cập nhật",
       key: "actions",
       width: 85,
       align: "center",
       render: (_, record) => (
-        <AppIconButton
-          icon={<SquarePen />}
-          tooltip="Cập nhật tài khoản"
-          size={36}
-          iconSize={20}
-          onClick={() => handleOpenEditModal(record)}
+        <AppTableActions
+          actions={[
+            {
+              key: "edit",
+              icon: <SquarePen />,
+              tooltip: "Cập nhật tài khoản",
+              onClick: () => handleOpenEditModal(record),
+            },
+          ]}
         />
       ),
     },
@@ -314,61 +324,63 @@ function SiteUsers({
       <div className="site-users__panel">
         <h2 className="site-users__title">Tài khoản quản trị</h2>
 
-        <div className="site-users__filters">
-          <div className="site-users__filter">
-            <label>Vai trò</label>
+        <AppFilter showActions={false} gap={28} className="site-users__filters">
+          <AppFilterField width={180}>
+            <Form.Item label="Vai trò">
+              <AppSelect
+                width="100%"
+                value={roleFilter}
+                onChange={setRoleFilter}
+                options={[
+                  {
+                    label: "Tất cả",
+                    value: "all",
+                  },
+                  {
+                    label: "Group Admin",
+                    value: "Group Admin",
+                  },
+                ]}
+              />
+            </Form.Item>
+          </AppFilterField>
 
-            <Select
-              value={roleFilter}
-              onChange={setRoleFilter}
-              options={[
-                {
-                  label: "Tất cả",
-                  value: "all",
-                },
-                {
-                  label: "Group Admin",
-                  value: "Group Admin",
-                },
-              ]}
-            />
-          </div>
+          <AppFilterField width={180}>
+            <Form.Item label="Trạng thái">
+              <AppSelect
+                width="100%"
+                value={statusFilter}
+                onChange={setStatusFilter}
+                options={[
+                  {
+                    label: "Tất cả",
+                    value: "all",
+                  },
+                  {
+                    label: "Đang hoạt động",
+                    value: "active",
+                  },
+                  {
+                    label: "Ngưng hoạt động",
+                    value: "inactive",
+                  },
+                ]}
+              />
+            </Form.Item>
+          </AppFilterField>
 
-          <div className="site-users__filter">
-            <label>Trạng thái</label>
-
-            <Select
-              value={statusFilter}
-              onChange={setStatusFilter}
-              options={[
-                {
-                  label: "Tất cả",
-                  value: "all",
-                },
-                {
-                  label: "Đang hoạt động",
-                  value: "active",
-                },
-                {
-                  label: "Ngưng hoạt động",
-                  value: "inactive",
-                },
-              ]}
-            />
-          </div>
-
-          <div className="site-users__search">
-            <label>Từ khóa</label>
-
-            <Input
-              value={keyword}
-              onChange={(event) => setKeyword(event.target.value)}
-              placeholder="Tên đăng nhập/ tên người dùng/..."
-              suffix={<Search size={20} />}
-              allowClear
-            />
-          </div>
-        </div>
+          <AppFilterField width={353} className="site-users__search">
+            <Form.Item label="Từ khóa">
+              <Input
+                value={keyword}
+                onChange={(event) => setKeyword(event.target.value)}
+                placeholder="Tên đăng nhập/ tên người dùng/..."
+                suffix={<Search size={20} />}
+                allowClear
+              />
+            </Form.Item>
+          </AppFilterField>
+        </AppFilter>
 
         <AppTable<SiteUser>
           rowKey="id"

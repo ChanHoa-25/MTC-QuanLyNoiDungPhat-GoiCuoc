@@ -61,7 +61,7 @@ function AppConfirmModal({
   onCancel,
   className = "",
 }: AppConfirmModalProps) {
-  const config = defaultConfig[type];
+  const config = defaultConfig[type] ?? defaultConfig.success;
 
   const handleCancel = () => {
     if (!confirmLoading) {

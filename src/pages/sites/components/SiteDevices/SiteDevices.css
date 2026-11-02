@@ -1,0 +1,132 @@
+.site-devices {
+  width: 100%;
+  min-width: 0;
+}
+
+.site-devices__panel {
+  width: 100%;
+  min-width: 0;
+  padding: 20px;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.site-devices__title {
+  margin: 0 0 12px;
+  color: #ee6b2d;
+  font-family: "Open Sans", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+.site-devices__filters {
+  margin-bottom: 12px;
+}
+
+.site-devices__filters .app-filter__fields {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.site-devices__filters .ant-form-item {
+  margin-bottom: 0;
+}
+
+.site-devices__filters .ant-form-item-label {
+  padding-bottom: 6px;
+}
+
+.site-devices__filters .ant-form-item-label > label {
+  height: 20px;
+  color: #4d4d4d;
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.site-devices__filters .app-select.ant-select {
+  width: 100%;
+  height: 40px;
+}
+
+.site-devices__filters .app-select.ant-select-single .ant-select-selector {
+  height: 40px !important;
+}
+
+.site-devices__filters .site-devices__search {
+  margin-left: auto;
+}
+
+.site-devices__search .ant-input-affix-wrapper {
+  width: 100%;
+  height: 40px;
+  border: 1px solid #c2c2c2;
+  border-radius: 6px;
+  box-shadow: none;
+}
+
+.site-devices__search .ant-input {
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+}
+
+.site-devices__search .ant-input-suffix {
+  color: #808080;
+}
+
+.site-devices__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 1px solid;
+  border-radius: 20px;
+  font-family: "Open Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.site-devices__status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.site-devices__status--active,
+.site-devices__status--connected {
+  color: #0eab00;
+  border-color: #0eab00;
+  background: #e6ffe6;
+}
+
+.site-devices__status--inactive,
+.site-devices__status--disconnected {
+  color: #ff4444;
+  border-color: #ff4444;
+  background: #ffe9e9;
+}
+
+@media (max-width: 1200px) {
+  .site-devices__filters .app-filter__fields {
+    gap: 16px !important;
+  }
+
+  .site-devices__filters .site-devices__search {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .site-devices__panel {
+    padding: 16px;
+  }
+
+  .site-devices__filters .app-filter__field {
+    width: 100% !important;
+  }
+}
