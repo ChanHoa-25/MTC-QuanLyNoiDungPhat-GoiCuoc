@@ -1,23 +1,27 @@
 .location-tree {
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
 
-  height: 100%;
-  min-height: 0;
-  gap: 12px;
   width: 278px;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
 
+  gap: 12px;
   padding: 0;
   margin: 0;
+
   background: #ffffff;
   border-radius: 12px;
   box-shadow: 0 4px 20px rgba(243, 198, 179, 0.2);
+
   overflow-x: hidden;
   overflow-y: auto;
+
   scrollbar-width: thin;
   scrollbar-color: #f4c8b3 transparent;
 }
-
 .location-root-block {
   box-sizing: border-box;
   flex-shrink: 0;
@@ -26,7 +30,6 @@
 }
 
 .location-root-header {
-  box-sizing: border-box;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -287,4 +290,11 @@
   .location-tree {
     height: 350px;
   }
+}
+.location-tree {
+  height: 100%;
+  min-height: 0;
+  max-height: 100%;
+  align-self: stretch;
+  overflow-y: auto;
 }
