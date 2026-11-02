@@ -1,0 +1,170 @@
+/* Container */
+.app-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0px;
+  width: 100%;
+  min-width: 0;
+  margin-top: 2px;
+}
+
+.app-pagination__summary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666666;
+  font-size: 14px;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+.app-pagination__page-size {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  padding: 0 6px;
+  box-sizing: border-box;
+  color: var(--color-primary);
+  background: #ffffff;
+  border: 1px solid var(--color-primary);
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* Ant Design Pagination */
+.app-pagination .ant-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: nowrap;
+  gap: 4px;
+  margin: 0;
+}
+
+/* Tất cả nút */
+.app-pagination .ant-pagination-item,
+.app-pagination .ant-pagination-prev,
+.app-pagination .ant-pagination-next,
+.app-pagination .ant-pagination-jump-prev,
+.app-pagination .ant-pagination-jump-next {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 32px;
+  height: 32px;
+  margin: 0;
+  border-radius: 4px;
+  line-height: 30px;
+}
+
+/* Nút số trang */
+.app-pagination .ant-pagination-item {
+  background: transparent;
+  border: 1px solid transparent;
+}
+
+/* Chữ số trang */
+.app-pagination .ant-pagination-item a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  color: #858585;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+/* Trang đang chọn */
+.app-pagination .ant-pagination-item-active,
+.app-pagination .ant-pagination-item-active:hover {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.app-pagination .ant-pagination-item-active a,
+.app-pagination .ant-pagination-item-active:hover a {
+  color: #ffffff !important;
+  font-weight: 700;
+}
+
+/* Hover */
+.app-pagination .ant-pagination-item:not(.ant-pagination-item-active):hover {
+  border-color: var(--color-primary);
+}
+
+.app-pagination .ant-pagination-item:not(.ant-pagination-item-active):hover a {
+  color: var(--color-primary);
+}
+
+/* Prev / Next */
+.app-pagination .ant-pagination-prev button,
+.app-pagination .ant-pagination-next button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: #858585;
+  font-size: 16px;
+}
+
+.app-pagination .ant-pagination-prev:not(.ant-pagination-disabled):hover button,
+.app-pagination
+  .ant-pagination-next:not(.ant-pagination-disabled):hover
+  button {
+  color: var(--color-primary);
+}
+
+/* Disabled */
+.app-pagination .ant-pagination-disabled button {
+  color: #c2c2c2;
+  cursor: not-allowed;
+}
+
+/* Tam giác phân trang */
+.app-pagination__arrow {
+  color: #858585;
+  transition: color 0.2s;
+}
+
+/* Tam giác trái */
+.app-pagination__arrow--prev {
+  transform: rotate(-90deg);
+}
+
+/* Tam giác phải */
+.app-pagination__arrow--next {
+  transform: rotate(90deg);
+}
+
+/* Hover */
+.app-pagination .ant-pagination-prev:hover .app-pagination__arrow,
+.app-pagination .ant-pagination-next:hover .app-pagination__arrow {
+  color: var(--color-primary);
+}
+
+/* Disabled */
+.app-pagination .ant-pagination-disabled .app-pagination__arrow {
+  color: #c2c2c2;
+}
+/* Responsive */
+@media (max-width: 768px) {
+  .app-pagination {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .app-pagination .ant-pagination {
+    flex-wrap: wrap;
+  }
+
+  .app-pagination__summary {
+    white-space: normal;
+  }
+}
