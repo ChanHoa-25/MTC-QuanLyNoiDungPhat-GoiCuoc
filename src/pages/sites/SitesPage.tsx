@@ -1,17 +1,23 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import type { Key } from "react";
 import { message } from "antd";
+import { Plus, Trash2 } from "lucide-react";
 
 import AppTabs from "../../components/common/AppTabs";
 import AppConfirmModal from "../../components/common/AppConfirmModal";
 
 import { useSiteContext } from "../../contexts/SiteContext";
+import { useActionPanel } from "../../contexts/ActionPanelContext";
 
 import LocationTree from "./components/LocationTree/LocationTree";
 import SiteInfo from "./components/SiteInfo/SiteInfo";
 import SiteFormModal from "./components/SiteFormModal";
+import SiteUsers from "./components/SiteUsers";
 
 import type { SiteFormValues } from "./components/SiteFormModal";
 import type { Site, SiteAction, SiteTab, SiteTabKey } from "./types/site.types";
+
+import type { AppActionPanelItem } from "../../components/common/AppActionPanel";
 
 import "./SitesPage.css";
 
@@ -24,14 +30,11 @@ const siteTabs: SiteTab[] = [
   { key: "playlists", label: "Danh sách phát" },
 ];
 
-// Dữ liệu tạm để kiểm tra dropdown.
-// Thay bằng dữ liệu nghiệp vụ thật sau.
 const categoryOptions = [
   { label: "Cơ sở địa phương", value: "local" },
   { label: "Cơ sở trực thuộc", value: "direct" },
 ];
 
-// Chế độ popup
 type SiteModalType = "create" | "edit" | "delete" | null;
 
 function SitesPage() {
@@ -40,37 +43,43 @@ function SitesPage() {
   const { sites, selectedSiteId, setSelectedSiteId, selectedSite } =
     useSiteContext();
 
+  const { setActions } = useActionPanel();
+
   const [activeTab, setActiveTab] = useState<SiteTabKey>("info");
 
-  // Popup đang được mở
   const [activeModal, setActiveModal] = useState<SiteModalType>(null);
 
-  // Cơ sở đang được thao tác
   const [targetSite, setTargetSite] = useState<Site | null>(null);
 
-  // Chọn cơ sở trên cây
+  const [selectedUserKeys, setSelectedUserKeys] = useState<Key[]>([]);
+
+  const [openCreateUser, setOpenCreateUser] = useState(false);
+
+  const [openDeleteUser, setOpenDeleteUser] = useState(false);
+
+  const [deleteUserRequestId, setDeleteUserRequestId] = useState(0);
+
   const handleSelectSite = (site: Site) => {
     setSelectedSiteId(site.id);
     setActiveTab("info");
+    setSelectedUserKeys([]);
+    setOpenCreateUser(false);
+    setOpenDeleteUser(false);
   };
 
-  // Xử lý menu ba chấm
   const handleSiteAction = (action: SiteAction, site: Site) => {
     switch (action) {
       case "create":
-        // Thêm cơ sở trực thuộc
         setTargetSite(site);
         setActiveModal("create");
         break;
 
       case "edit":
-        // Cập nhật thông tin cơ sở
         setTargetSite(site);
         setActiveModal("edit");
         break;
 
       case "delete":
-        // Xóa cơ sở
         setTargetSite(site);
         setActiveModal("delete");
         break;
@@ -80,13 +89,11 @@ function SitesPage() {
     }
   };
 
-  // Đóng popup
   const handleCloseModal = () => {
     setActiveModal(null);
     setTargetSite(null);
   };
 
-  // Xử lý thêm / cập nhật cơ sở
   const handleSubmitSite = (values: SiteFormValues) => {
     if (!targetSite) return;
 
@@ -94,8 +101,6 @@ function SitesPage() {
       console.log("Thêm cơ sở trực thuộc");
       console.log("ID cơ sở cha:", targetSite.id);
       console.log("Dữ liệu thêm mới:", values);
-
-      // TODO: Thêm cơ sở vào SiteContext hoặc gọi API.
 
       messageApi.info("Đã nhận thông tin thêm cơ sở. Chưa lưu vào danh sách.");
     }
@@ -105,30 +110,41 @@ function SitesPage() {
       console.log("ID cơ sở:", targetSite.id);
       console.log("Dữ liệu cập nhật:", values);
 
-      // TODO: Cập nhật cơ sở trong SiteContext hoặc gọi API.
-
       messageApi.info("Đã nhận thông tin cập nhật. Chưa lưu vào danh sách.");
     }
 
     handleCloseModal();
   };
 
-  // Xác nhận xóa cơ sở
   const handleDeleteSite = () => {
     if (!targetSite) return;
 
     console.log("ID cơ sở cần xóa:", targetSite.id);
     console.log("Tên cơ sở cần xóa:", targetSite.name);
 
-    // TODO: Gọi API hoặc hàm xóa trong SiteContext
-    // để xóa cơ sở khỏi danh sách.
-
     messageApi.info("Đã xác nhận xóa cơ sở. Chưa xóa dữ liệu khỏi danh sách.");
 
     handleCloseModal();
   };
 
-  // Dữ liệu ban đầu của popup
+  const handleCloseDeleteUser = () => {
+    setOpenDeleteUser(false);
+  };
+
+  const handleConfirmDeleteUser = () => {
+    if (selectedUserKeys.length === 0) {
+      setOpenDeleteUser(false);
+      return;
+    }
+
+    setDeleteUserRequestId((previousId) => previousId + 1);
+    setOpenDeleteUser(false);
+  };
+
+  const handleDeleteUserComplete = () => {
+    setOpenDeleteUser(false);
+  };
+
   const initialValues: Partial<SiteFormValues> =
     activeModal === "create"
       ? {
@@ -144,16 +160,65 @@ function SitesPage() {
           category: "",
         };
 
-  // Chuyển tab
   const handleChangeTab = (key: string) => {
     const selectedTab = siteTabs.find((tab) => tab.key === key);
 
     if (selectedTab) {
       setActiveTab(selectedTab.key);
+      setSelectedUserKeys([]);
+      setOpenCreateUser(false);
+      setOpenDeleteUser(false);
     }
   };
 
-  // Nội dung tab
+  const tabActions = useMemo<AppActionPanelItem[]>(() => {
+    if (!selectedSite) {
+      return [];
+    }
+
+    switch (activeTab) {
+      case "users":
+        return [
+          {
+            key: "add",
+            icon: <Plus />,
+            tooltip: "Thêm tài khoản quản trị",
+            onClick: () => {
+              setOpenCreateUser(true);
+            },
+          },
+          {
+            key: "delete",
+            icon: <Trash2 />,
+            tooltip: "Xóa tài khoản đã chọn",
+            danger: true,
+            disabled: selectedUserKeys.length === 0,
+            onClick: () => {
+              setOpenDeleteUser(true);
+            },
+          },
+        ];
+
+      case "info":
+      case "devices":
+      case "media":
+      case "templates":
+      case "playlists":
+      default:
+        return [];
+    }
+  }, [activeTab, selectedSite, selectedUserKeys]);
+
+  useEffect(() => {
+    setActions(tabActions);
+  }, [setActions, tabActions]);
+
+  useEffect(() => {
+    return () => {
+      setActions([]);
+    };
+  }, [setActions]);
+
   const renderTabContent = () => {
     if (!selectedSite) {
       return (
@@ -168,6 +233,18 @@ function SitesPage() {
         return <SiteInfo site={selectedSite} />;
 
       case "users":
+        return (
+          <SiteUsers
+            site={selectedSite}
+            selectedRowKeys={selectedUserKeys}
+            onSelectionChange={setSelectedUserKeys}
+            openCreate={openCreateUser}
+            onCloseCreate={() => setOpenCreateUser(false)}
+            deleteRequestId={deleteUserRequestId}
+            onDeleteComplete={handleDeleteUserComplete}
+          />
+        );
+
       case "devices":
       case "media":
       case "templates":
@@ -215,7 +292,6 @@ function SitesPage() {
         </div>
       </main>
 
-      {/* Popup thêm / cập nhật cơ sở */}
       <SiteFormModal
         open={activeModal === "create" || activeModal === "edit"}
         mode={activeModal === "edit" ? "edit" : "create"}
@@ -225,7 +301,6 @@ function SitesPage() {
         onSubmit={handleSubmitSite}
       />
 
-      {/* Popup xác nhận xóa cơ sở */}
       <AppConfirmModal
         open={activeModal === "delete"}
         type="delete"
@@ -236,6 +311,19 @@ function SitesPage() {
         width={500}
         onCancel={handleCloseModal}
         onConfirm={handleDeleteSite}
+      />
+
+      <AppConfirmModal
+        open={openDeleteUser}
+        type="delete"
+        title="Xác nhận xóa tài khoản"
+        description="Các tài khoản quản trị cơ sở được chọn sẽ bị xóa và không thể khôi phục."
+        confirmText="Xác nhận"
+        cancelText="Hủy"
+        width={500}
+        className="app-confirm-modal--site-users-delete"
+        onCancel={handleCloseDeleteUser}
+        onConfirm={handleConfirmDeleteUser}
       />
     </div>
   );

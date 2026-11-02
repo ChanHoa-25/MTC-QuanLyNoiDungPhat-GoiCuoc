@@ -6,41 +6,26 @@
   --app-form-actions-gap: 40px;
 }
 
-/* =========================
-   BỐ CỤC FORM
-========================= */
-
-/* 1 cột */
 .app-form--cols-1 {
   display: block;
 }
 
-/* 2 cột */
 .app-form--cols-2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: var(--app-form-gap);
 }
 
-/* 3 cột */
 .app-form--cols-3 {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   column-gap: var(--app-form-gap);
 }
 
-/* =========================
-   FORM ITEM
-========================= */
-
 .app-form .ant-form-item {
   min-width: 0;
   margin-bottom: var(--app-form-item-gap);
 }
-
-/* =========================
-   LABEL
-========================= */
 
 .app-form .ant-form-item-label {
   padding-bottom: 8px;
@@ -58,14 +43,17 @@
   white-space: normal;
 }
 
-/* Dấu bắt buộc */
-.app-form .ant-form-item-label > label.ant-form-item-required::before {
-  color: #ff4444;
+.app-form .ant-form-item-label > label.ant-form-item-required {
+  display: inline-flex;
+  align-items: center;
 }
 
-/* =========================
-   INPUT / SELECT / TEXTAREA
-========================= */
+.app-form .ant-form-item-label > label.ant-form-item-required::before {
+  order: 1;
+  margin-right: 0 !important;
+  margin-left: 4px !important;
+  color: #ff4444;
+}
 
 .app-form .ant-form-item-control,
 .app-form .ant-form-item-control-input,
@@ -73,27 +61,15 @@
   min-width: 0;
 }
 
-/* =========================
-   THÔNG BÁO LỖI
-========================= */
-
 .app-form .ant-form-item-explain-error {
   font-family: "Open Sans", sans-serif;
   font-size: 12px;
   line-height: 18px;
 }
 
-/* =========================
-   TRƯỜNG CHIẾM TOÀN BỘ HÀNG
-========================= */
-
 .app-form .app-form-full-width {
   grid-column: 1 / -1;
 }
-
-/* =========================
-   NHÓM NÚT THAO TÁC
-========================= */
 
 .app-form .app-form-actions {
   display: flex;
@@ -103,10 +79,6 @@
   gap: var(--app-form-actions-gap);
   grid-column: 1 / -1;
 }
-
-/* =========================
-   RESPONSIVE
-========================= */
 
 @media (max-width: 768px) {
   .app-form--cols-2,

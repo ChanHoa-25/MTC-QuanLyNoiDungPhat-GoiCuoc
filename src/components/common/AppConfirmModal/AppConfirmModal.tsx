@@ -13,6 +13,7 @@ export interface AppConfirmModalProps {
   title: ReactNode;
   description?: ReactNode;
   icon?: ReactNode;
+  showIcon?: boolean;
   confirmText?: string;
   cancelText?: string;
   confirmLoading?: boolean;
@@ -50,6 +51,7 @@ function AppConfirmModal({
   title,
   description,
   icon,
+  showIcon = true,
   confirmText = "Đồng ý",
   cancelText = "Hủy",
   confirmLoading = false,
@@ -103,7 +105,9 @@ function AppConfirmModal({
       keyboard={!confirmLoading}
       destroyOnHidden
       closable={false}>
-      <div className="app-confirm-modal__icon">{icon ?? config.icon}</div>
+      {showIcon && (
+        <div className="app-confirm-modal__icon">{icon ?? config.icon}</div>
+      )}
 
       <div className="app-confirm-modal__content">
         <h2 className="app-confirm-modal__title">{title}</h2>
