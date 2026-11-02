@@ -1,7 +1,13 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Key } from "react";
 import { message } from "antd";
-import { Plus, Trash2, Volume2, RefreshCw } from "lucide-react";
+import {
+  Plus,
+  Trash2,
+  Volume2,
+  RefreshCw,
+  FileCheckCorner,
+} from "lucide-react";
 
 import AppTabs from "../../components/common/AppTabs";
 import AppConfirmModal from "../../components/common/AppConfirmModal";
@@ -18,9 +24,11 @@ import SiteDevices from "./components/SiteDevices";
 import DeviceVolumeControl from "./components/DeviceVolumeControl/DeviceVolumeControl";
 import SiteTemplates from "./components/SiteTemplates";
 import SitePlaylists from "./components/SitePlaylists/SitePlaylists";
+import SiteMedia from "./components/SiteMedia";
 
 import type { SiteFormValues } from "./components/SiteFormModal";
 import type { Site, SiteAction, SiteTab, SiteTabKey } from "./types/site.types";
+import SiteShareModal from "./components/SitesShareModal";
 
 import "./SitesPage.css";
 
@@ -67,6 +75,11 @@ function SitesPage() {
 
   const [volumePopoverOpen, setVolumePopoverOpen] = useState(false);
   const [deviceVolume, setDeviceVolume] = useState(50);
+  const [selectedMediaIds, setSelectedMediaIds] = useState<string[]>([]);
+  const [openCreateMedia, setOpenCreateMedia] = useState(false);
+  const [openDeleteMedia, setOpenDeleteMedia] = useState(false);
+  const [deleteMediaRequestId, setDeleteMediaRequestId] = useState(0);
+  const [approveMediaRequestId, setApproveMediaRequestId] = useState(0);
 
   const [selectedTemplateKeys, setSelectedTemplateKeys] = useState<Key[]>([]);
   const [openCreateTemplate, setOpenCreateTemplate] = useState(false);
@@ -77,6 +90,8 @@ function SitesPage() {
   const [openCreatePlaylist, setOpenCreatePlaylist] = useState(false);
   const [openDeletePlaylist, setOpenDeletePlaylist] = useState(false);
   const [deletePlaylistRequestId, setDeletePlaylistRequestId] = useState(0);
+
+  const [shareOpen, setShareOpen] = useState(false);
 
   const resetTabState = () => {
     setSelectedUserKeys([]);
@@ -93,6 +108,9 @@ function SitesPage() {
     setOpenDeleteTemplate(false);
     setOpenCreatePlaylist(false);
     setOpenDeletePlaylist(false);
+    setSelectedMediaIds([]);
+    setOpenCreateMedia(false);
+    setOpenDeleteMedia(false);
   };
 
   const handleSelectSite = (site: Site) => {
@@ -255,6 +273,16 @@ function SitesPage() {
 
     setOpenDeletePlaylist(false);
   };
+  const handleConfirmDeleteMedia = () => {
+    if (selectedMediaIds.length === 0) return;
+
+    setDeleteMediaRequestId((previous) => previous + 1);
+    setOpenDeleteMedia(false);
+  };
+
+  const handleApproveMedia = () => {
+    setApproveMediaRequestId((previous) => previous + 1);
+  };
 
   const handleChangeTab = (key: string) => {
     const nextTab = siteTabs.find((tab) => tab.key === key);
@@ -335,21 +363,42 @@ function SitesPage() {
         ];
 
       case "media":
+        return [
+          {
+            key: "add-media",
+            icon: <Plus />,
+            tooltip: "Thêm Media",
+            onClick: () => setOpenCreateMedia(true),
+          },
+          {
+            key: "delete-media",
+            icon: <Trash2 />,
+            tooltip: "Xóa Media đã chọn",
+            danger: true,
+            disabled: selectedMediaIds.length === 0,
+            onClick: () => setOpenDeleteMedia(true),
+          },
+          {
+            key: "approve-media",
+            icon: <FileCheckCorner />,
+            tooltip: "Duyệt Media đã chọn",
+            disabled: selectedMediaIds.length === 0,
+            onClick: handleApproveMedia,
+          },
+        ];
+
       case "templates":
         return [
           {
             key: "add-template",
             icon: <Plus />,
-            tooltip: activeTab === "media" ? "Thêm media" : "Thêm bản mẫu",
+            tooltip: "Thêm bản mẫu",
             onClick: () => setOpenCreateTemplate(true),
           },
           {
             key: "delete-template",
             icon: <Trash2 />,
-            tooltip:
-              activeTab === "media"
-                ? "Xóa media đã chọn"
-                : "Xóa bản mẫu đã chọn",
+            tooltip: "Xóa bản mẫu đã chọn",
             danger: true,
             disabled: selectedTemplateKeys.length === 0,
             onClick: () => setOpenDeleteTemplate(true),
@@ -375,6 +424,7 @@ function SitesPage() {
         ];
 
       case "info":
+
       default:
         return [];
     }
@@ -383,6 +433,7 @@ function SitesPage() {
     selectedSite,
     selectedUserKeys.length,
     selectedDeviceKeys.length,
+    selectedMediaIds.length,
     selectedTemplateKeys.length,
     selectedPlaylistKeys.length,
     handleAddDevice,
@@ -458,6 +509,19 @@ function SitesPage() {
         );
 
       case "media":
+        return (
+          <SiteMedia
+            siteId={selectedSite.id}
+            selectedIds={selectedMediaIds}
+            onSelectionChange={setSelectedMediaIds}
+            openCreate={openCreateMedia}
+            onCloseCreate={() => setOpenCreateMedia(false)}
+            deleteRequestId={deleteMediaRequestId}
+            approveRequestId={approveMediaRequestId}
+            onShare={() => setShareOpen(true)}
+          />
+        );
+
       case "templates":
         return (
           <SiteTemplates
@@ -594,6 +658,25 @@ function SitesPage() {
         width={500}
         onCancel={() => setOpenDeletePlaylist(false)}
         onConfirm={handleConfirmDeletePlaylist}
+      />
+      <AppConfirmModal
+        open={openDeleteMedia}
+        type="delete"
+        title="Xác nhận xóa Media"
+        description={`Bạn có chắc chắn muốn xóa ${selectedMediaIds.length} Media đã chọn?`}
+        confirmText="Xác nhận"
+        cancelText="Hủy"
+        width={500}
+        onCancel={() => setOpenDeleteMedia(false)}
+        onConfirm={handleConfirmDeleteMedia}
+      />
+      <SiteShareModal
+        open={shareOpen}
+        onCancel={() => setShareOpen(false)}
+        onShare={(selectedIds) => {
+          console.log("Cơ sở được chia sẻ:", selectedIds);
+          setShareOpen(false);
+        }}
       />
     </div>
   );

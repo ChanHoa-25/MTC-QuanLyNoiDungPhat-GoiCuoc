@@ -1,3 +1,6 @@
+/* =========================================
+   Trang quản lý cơ sở
+========================================= */
 .sites-page {
   box-sizing: border-box;
   display: grid;
@@ -6,13 +9,15 @@
   gap: 24px;
 
   width: 100%;
-  height: 100%;
-  min-height: 0;
+  height: auto;
+  min-height: 100%;
 
   font-family: "Open Sans", Arial, sans-serif;
 }
 
-/* Khu vực bên phải cây cơ sở */
+/* =========================================
+   Khu vực bên phải cây cơ sở
+========================================= */
 .sites-main {
   display: flex;
   flex-direction: column;
@@ -20,12 +25,14 @@
   width: 100%;
   min-width: 0;
   min-height: 0;
-  height: 100%;
+  height: auto;
 
   gap: 16px;
 }
 
-/* Tabs */
+/* =========================================
+   Tabs
+========================================= */
 .sites-tabs {
   box-sizing: border-box;
   display: flex;
@@ -91,11 +98,13 @@
   outline-offset: -3px;
 }
 
-/* Khung nội dung của tab */
+/* =========================================
+   Khung nội dung của Tab
+========================================= */
 .sites-content {
   box-sizing: border-box;
   display: flex;
-  flex: 1 1 0%;
+  flex: 1 1 auto;
   flex-direction: column;
 
   width: 100%;
@@ -107,7 +116,9 @@
   box-shadow: 0 4px 20px rgba(243, 198, 179, 0.2);
 }
 
-/* Trạng thái chưa chọn cơ sở và tab chưa triển khai */
+/* =========================================
+   Trạng thái chưa chọn cơ sở
+========================================= */
 .sites-empty,
 .sites-placeholder {
   box-sizing: border-box;
@@ -133,12 +144,13 @@
   margin: 0;
 }
 
-/* Responsive */
+/* =========================================
+   Responsive: Tablet
+========================================= */
 @media (max-width: 1100px) {
   .sites-page {
     grid-template-columns: 240px minmax(0, 1fr);
     gap: 16px;
-    min-height: 0;
   }
 
   .sites-tabs {
@@ -148,15 +160,14 @@
   .sites-tab {
     font-size: 14px;
   }
-
-  .sites-content {
-    min-height: 0;
-  }
 }
 
+/* =========================================
+   Responsive: Mobile
+========================================= */
 @media (max-width: 700px) {
   .sites-page {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     height: auto;
     min-height: 0;
   }
@@ -167,6 +178,7 @@
   }
 
   .location-tree {
+    width: 100%;
     height: 350px;
   }
 
