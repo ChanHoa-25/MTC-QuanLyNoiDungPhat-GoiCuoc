@@ -119,12 +119,13 @@
     position: relative;
     display: block;
     min-height: 0;
-    height: 900px;
+    height: calc(100dvh - 216px);
   }
 
   .error-page-info {
     position: absolute;
-    top: 303px;
+    top: 50%;
+    transform: translateY(-50%);
     left: 0;
     width: 1052px;
     padding: 0 147px;
@@ -135,7 +136,7 @@
     top: 0;
     left: 48.32%;
     width: 50%;
-    height: 809px;
+    height: 100%;
   }
 
   .error-page-illustration img {
