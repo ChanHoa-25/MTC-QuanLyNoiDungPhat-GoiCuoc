@@ -1,0 +1,227 @@
+.device-schedule {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  background: #ffffff;
+  border-radius: 12px;
+  font-family: "Open Sans", sans-serif;
+}
+
+.device-schedule__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.device-schedule__header h2 {
+  margin: 0;
+  color: #e05200;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.device-schedule__month {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  color: #505050;
+  font-size: 14px;
+}
+
+.device-schedule__month button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #f76b1c;
+  cursor: pointer;
+}
+
+.device-schedule__calendar {
+  display: flex;
+  gap: 4px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scrollbar-width: thin;
+}
+
+.device-schedule__day {
+  display: flex;
+  flex: 0 0 30px;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.device-schedule__weekday {
+  color: #f76b1c;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.device-schedule__day-number {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  color: #999999;
+  border-radius: 50%;
+  font-size: 12px;
+}
+
+.device-schedule__day--active .device-schedule__day-number {
+  color: #ffffff;
+  background: #f76b1c;
+}
+
+.device-schedule__table-scroll {
+  width: 100%;
+  min-width: 0;
+  overflow-x: auto;
+  margin-top: 10px;
+}
+
+.device-schedule__table {
+  display: flex;
+  min-width: max-content;
+}
+
+.device-schedule__categories {
+  flex: 0 0 150px;
+  width: 150px;
+}
+
+.device-schedule__category-heading {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 16px;
+  background: #ff7729;
+  color: #ffffff;
+  border-radius: 8px 8px 0 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.device-schedule__category {
+  display: flex;
+  align-items: center;
+  height: 80px;
+  padding: 0 16px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #eaeaea;
+  color: #666666;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.device-schedule__timeline {
+  width: 800px;
+  flex: 0 0 800px;
+}
+
+.device-schedule__hours {
+  position: relative;
+  height: 40px;
+}
+
+.device-schedule__hour {
+  position: absolute;
+  top: 10px;
+  transform: translateX(6px);
+  color: #888888;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.device-schedule__timeline-body {
+  position: relative;
+  background-image: linear-gradient(to right, #e8e8e8 1px, transparent 1px);
+  background-size: 100px 100%;
+}
+
+.device-schedule__timeline-row {
+  position: relative;
+  height: 80px;
+  box-sizing: border-box;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.device-schedule__event {
+  position: absolute;
+  top: 8px;
+  z-index: 1;
+  height: 64px;
+  padding: 6px 10px;
+  box-sizing: border-box;
+  overflow: hidden;
+  border: 1px solid #20c4bc;
+  border-left: 5px solid #20c4bc;
+  border-radius: 6px;
+  background: #effffd;
+  color: #505050;
+  font-size: 12px;
+}
+
+.device-schedule__event--priority {
+  border-color: #9bd600;
+  border-left-color: #9bd600;
+  background: #f8fced;
+}
+
+.device-schedule__event-title {
+  font-size: 12px;
+  font-weight: 700;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.device-schedule__event-time {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 3px;
+  color: #777777;
+  font-size: 11px;
+}
+
+.device-schedule__priority {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 3px;
+  color: #8abf00;
+  font-size: 11px;
+}
+
+.device-schedule__playing-icon {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  color: #f76b1c;
+}
+
+@media (max-width: 768px) {
+  .device-schedule {
+    padding: 16px;
+  }
+
+  .device-schedule__header {
+    flex-wrap: wrap;
+  }
+}

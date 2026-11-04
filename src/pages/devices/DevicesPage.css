@@ -1,0 +1,125 @@
+.devices-page {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* Nội dung chính */
+.devices-page-main {
+  flex: 1;
+  min-width: 0;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+/* Tiêu đề */
+.devices-page-title {
+  margin: 0 0 20px;
+  color: var(--color-primary);
+
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+/* Bộ lọc */
+.devices-page-filters {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.devices-page-filters .app-filter__fields {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(180px, 1.4fr);
+  gap: 14px !important;
+  align-items: center;
+}
+
+.devices-page-filters .app-filter__field {
+  width: 100% !important;
+  min-width: 0;
+}
+
+/* Bảng thiết bị */
+.devices-page-table {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Header bảng */
+.devices-page-table .ant-table-thead > tr > th {
+  height: 40px;
+  padding: 8px 6px;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+/* Hàng dữ liệu */
+.devices-page-table .ant-table-tbody > tr > td {
+  height: 40px;
+  padding: 6px;
+  font-size: 12px;
+  vertical-align: middle;
+}
+
+/* Trạng thái */
+.devices-page-table .app-status-tag {
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+/* Nút hành động */
+.devices-page-table .app-table-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  white-space: nowrap;
+}
+
+/* Thanh công cụ bên phải */
+.devices-page-actions {
+  flex-shrink: 0;
+}
+
+/* Responsive */
+@media (max-width: 1400px) {
+  .devices-page-filters .app-filter__fields {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 992px) {
+  .devices-page {
+    flex-direction: column;
+  }
+
+  .devices-page-main {
+    width: 100%;
+  }
+
+  .devices-page-actions {
+    align-self: flex-end;
+  }
+
+  .devices-page-filters .app-filter__fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 576px) {
+  .devices-page-main {
+    padding: 16px;
+  }
+
+  .devices-page-filters .app-filter__fields {
+    grid-template-columns: 1fr;
+  }
+}

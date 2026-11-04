@@ -1,0 +1,96 @@
+.device-form-page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: calc(100vh - 190px);
+  padding: 24px;
+  box-sizing: border-box;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.device-form-page__title {
+  margin: 0 0 28px;
+  color: #e05200;
+  font-family: "Open Sans", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+.device-form-page__form {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.device-form-page__fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: clamp(32px, 8vw, 180px);
+  width: 100%;
+}
+
+.device-form-page__column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.device-form-page .ant-form-item {
+  margin-bottom: 16px;
+}
+
+.device-form-page .ant-form-item-label {
+  padding-bottom: 6px;
+}
+
+.device-form-page .ant-form-item-label > label {
+  color: #505050;
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.device-form-page .ant-form-item-required::before {
+  color: #ff4444 !important;
+}
+
+.device-form-page .app-input,
+.device-form-page .app-select {
+  width: 100%;
+  max-width: 100%;
+}
+
+.device-form-page .app-textarea {
+  width: 100%;
+  max-width: 100%;
+  resize: vertical;
+}
+
+.device-form-page__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 34px;
+  margin-top: auto;
+  padding-top: 32px;
+}
+
+@media (max-width: 768px) {
+  .device-form-page {
+    min-height: auto;
+    padding: 20px;
+  }
+
+  .device-form-page__fields {
+    grid-template-columns: 1fr;
+    row-gap: 0;
+  }
+
+  .device-form-page__actions {
+    margin-top: 24px;
+    gap: 16px;
+  }
+}

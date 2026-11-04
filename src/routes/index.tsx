@@ -4,34 +4,31 @@ import { Navigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import AuthLayout from "../layouts/AuthLayout/AuthLayout";
 
-// Dashboard
 import DashboardPage from "../pages/dashboard/DashboardPage";
 
-// Auth
 import LoginPage from "../pages/auth/LoginPage";
 import ForgotPasswordPage from "../pages/auth/ForgotPasswordPage";
 import ResetPasswordPage from "../pages/auth/ResetPasswordPage";
 
-// Profile
 import ProfilePage from "../pages/profile/ProfilePage";
 import EditProfile from "../pages/profile/EditProfile";
 import RenewalHistoryPage from "../pages/profile/RenewalHistoryPage";
 
-// Sites
 import FacilitiesPage from "../pages/facilities";
+import DevicesPage from "../pages/devices";
 
-// Error Pages
+import DeviceDetailPage from "../pages/devices/DeviceDetailPage";
+import DeviceForm from "../pages/devices/components/DeviceForm/DeviceForm";
+
 import ForbiddenPage from "../pages/errors/ForbiddenPage";
 import NotFoundPage from "../pages/errors/NotFoundPage";
 
-// Common
 import ComingSoonPage from "../pages/ComingSoonPage";
 
-// Constants
 import { ROUTES } from "../constants/route.constants";
+import ReportsPage from "../pages/reports/ReportsPage";
 
 export const routes: RouteObject[] = [
-  // Auth
   {
     element: <AuthLayout />,
     children: [
@@ -50,7 +47,6 @@ export const routes: RouteObject[] = [
     ],
   },
 
-  // Profile
   {
     path: ROUTES.PROFILE,
     children: [
@@ -69,30 +65,25 @@ export const routes: RouteObject[] = [
     ],
   },
 
-  // Main Layout
   {
     path: "/",
     element: <MainLayout />,
     children: [
-      // Trang chủ
       {
         index: true,
         element: <Navigate to={ROUTES.DASHBOARD} replace />,
       },
 
-      // Dashboard
       {
         path: ROUTES.DASHBOARD,
         element: <DashboardPage />,
       },
 
-      // Quản lý cơ sở
       {
         path: ROUTES.FACILITIES,
         element: <FacilitiesPage />,
       },
 
-      // Nguồn thông tin
       {
         path: ROUTES.SOURCES,
         element: <ComingSoonPage title="Nguồn thông tin" />,
@@ -114,25 +105,33 @@ export const routes: RouteObject[] = [
         element: <ComingSoonPage title="Bản mẫu" />,
       },
 
-      // Thiết bị
       {
         path: ROUTES.DEVICES,
-        element: <ComingSoonPage title="Quản lý thiết bị" />,
+        element: <DevicesPage />,
+      },
+      {
+        path: "devices/create",
+        element: <DeviceForm mode="create" />,
+      },
+      {
+        path: "devices/:id",
+        element: <DeviceDetailPage />,
+      },
+      {
+        path: "devices/:id/edit",
+        element: <DeviceForm mode="edit" />,
       },
 
-      // Bản tin
       {
         path: ROUTES.BROADCASTS,
         element: <ComingSoonPage title="Quản lý bản tin" />,
       },
 
-      // Báo cáo
       {
         path: ROUTES.REPORTS,
-        element: <ComingSoonPage title="Báo cáo" />,
+        element: <ReportsPage />,
       },
 
-      // Cài đặt hệ thống
       {
         path: ROUTES.SETTINGS,
         element: <ComingSoonPage title="Cài đặt hệ thống" />,
@@ -160,7 +159,6 @@ export const routes: RouteObject[] = [
     ],
   },
 
-  // Error Pages
   {
     path: ROUTES.FORBIDDEN,
     element: <ForbiddenPage />,

@@ -39,3 +39,23 @@ export function findFacilityPath(
 
   return [];
 }
+
+// Chuyển cây cơ sở thành danh sách phẳng
+export function flattenFacilities(facilities: Facility[]): Facility[] {
+  return facilities.flatMap((facility) => [
+    facility,
+    ...flattenFacilities(facility.children ?? []),
+  ]);
+}
+
+// Lấy ID cơ sở được chọn và toàn bộ cơ sở con
+export function getFacilityDescendantIds(
+  facilities: Facility[],
+  facilityId: string,
+): string[] {
+  const facility = findFacilityById(facilities, facilityId);
+
+  if (!facility) return [];
+
+  return flattenFacilities([facility]).map((item) => item.id);
+}

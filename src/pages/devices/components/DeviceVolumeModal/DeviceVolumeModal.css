@@ -1,0 +1,216 @@
+/* =========================================
+   DEVICE VOLUME MODAL
+========================================= */
+
+.device-volume-modal {
+  --volume-primary: #f76b1c;
+  --volume-text: #505050;
+}
+
+/* Khung Modal */
+.ant-modal.app-modal.device-volume-modal {
+  max-width: calc(100vw - 32px);
+}
+
+.ant-modal.app-modal.device-volume-modal .ant-modal-container {
+  position: relative;
+  width: 100%;
+  height: auto;
+  padding: 0;
+  overflow: visible;
+  border: none;
+  border-top: 6px solid var(--volume-primary);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+/* Nội dung Ant Design */
+.ant-modal.app-modal.device-volume-modal .ant-modal-content {
+  position: relative;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+  overflow: visible;
+  border-radius: 0 0 8px 8px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.ant-modal.app-modal.device-volume-modal .ant-modal-body {
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  padding: 0;
+  margin: 0;
+}
+
+/* =========================================
+   ICON LOA
+========================================= */
+
+.device-volume-modal__icon {
+  position: absolute;
+  z-index: 2;
+  top: -46px;
+  left: 50%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 76px;
+  height: 76px;
+
+  transform: translateX(-50%);
+  border-radius: 50%;
+
+  background: var(--volume-primary);
+  color: #ffffff;
+}
+
+.device-volume-modal__icon svg {
+  width: 40px;
+  height: 40px;
+}
+
+/* =========================================
+   NỘI DUNG POPUP
+========================================= */
+
+.device-volume-modal__content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100%;
+  box-sizing: border-box;
+  padding: 36px 40px 24px;
+
+  text-align: center;
+}
+
+/* Tiêu đề */
+.device-volume-modal__title {
+  width: 100%;
+  max-width: 420px;
+
+  margin: 0 0 20px;
+  padding: 0;
+
+  color: var(--volume-text);
+  font-family: "Open Sans", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 30px;
+  text-align: center;
+}
+
+/* =========================================
+   THANH ÂM LƯỢNG
+========================================= */
+
+.device-volume-modal__control {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  width: 100%;
+  height: 56px;
+  box-sizing: border-box;
+  padding: 0 16px;
+
+  border: 1px solid #e5e5e5;
+  border-radius: 8px;
+  background: #ffffff;
+  box-shadow: 0 2px 6px #00000012;
+}
+
+/* Nút bật / tắt âm lượng */
+.device-volume-modal__mute {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+
+  width: 26px;
+  height: 26px;
+  padding: 0;
+
+  border: none;
+  background: transparent;
+  color: var(--volume-primary);
+  cursor: pointer;
+}
+
+/* Slider */
+.device-volume-modal__slider.ant-slider {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+}
+
+.device-volume-modal__slider .ant-slider-rail {
+  background: #fbe1d2;
+}
+
+.device-volume-modal__slider .ant-slider-track {
+  background: var(--volume-primary);
+}
+
+.device-volume-modal__slider .ant-slider-handle::after {
+  background: var(--volume-primary);
+  box-shadow: 0 0 0 2px var(--volume-primary);
+}
+
+/* Giá trị âm lượng */
+.device-volume-modal__value {
+  min-width: 24px;
+  flex-shrink: 0;
+
+  color: #333333;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: center;
+}
+
+/* =========================================
+   NÚT HỦY / XÁC NHẬN
+========================================= */
+
+.device-volume-modal__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+
+  width: 100%;
+  margin-top: 20px;
+}
+
+.device-volume-modal__actions .ant-btn {
+  height: 44px;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* =========================================
+   RESPONSIVE
+========================================= */
+
+@media (max-width: 576px) {
+  .device-volume-modal__content {
+    padding: 40px 20px 24px;
+  }
+
+  .device-volume-modal__title {
+    font-size: 18px;
+    line-height: 26px;
+  }
+
+  .device-volume-modal__actions {
+    gap: 12px;
+  }
+}
