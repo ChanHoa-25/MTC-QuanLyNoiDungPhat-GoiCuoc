@@ -29,7 +29,7 @@ interface AppSidebarProps {
 // Các đường dẫn menu chính
 const mainRoutes = [
   ROUTES.DASHBOARD,
-  ROUTES.SITES,
+  ROUTES.FACILITIES,
   ROUTES.SOURCES,
   ROUTES.DEVICES,
   ROUTES.BROADCASTS,
@@ -141,8 +141,8 @@ function AppSidebar({ collapsed, onCollapse }: AppSidebarProps) {
       label: "Dashboard",
     },
     {
-      key: ROUTES.SITES,
-      icon: renderIcon(Network, selectedParentKey === ROUTES.SITES),
+      key: ROUTES.FACILITIES,
+      icon: renderIcon(Network, selectedParentKey === ROUTES.FACILITIES),
       label: "Cơ sở",
     },
     {

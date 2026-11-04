@@ -18,7 +18,7 @@ import EditProfile from "../pages/profile/EditProfile";
 import RenewalHistoryPage from "../pages/profile/RenewalHistoryPage";
 
 // Sites
-import SitesPage from "../pages/sites";
+import FacilitiesPage from "../pages/facilities";
 
 // Error Pages
 import ForbiddenPage from "../pages/errors/ForbiddenPage";
@@ -88,8 +88,8 @@ export const routes: RouteObject[] = [
 
       // Quản lý cơ sở
       {
-        path: ROUTES.SITES,
-        element: <SitesPage />,
+        path: ROUTES.FACILITIES,
+        element: <FacilitiesPage />,
       },
 
       // Nguồn thông tin

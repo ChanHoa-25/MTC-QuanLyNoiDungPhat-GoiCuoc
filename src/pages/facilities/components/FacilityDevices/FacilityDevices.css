@@ -1,0 +1,128 @@
+.facility-devices {
+  width: 100%;
+  min-width: 0;
+}
+
+.facility-devices__panel {
+  width: 100%;
+  min-width: 0;
+  padding: 10px 20px;
+  border-radius: 12px;
+  background: #ffffff;
+}
+
+.facility-devices__title {
+  margin: 0 0 12px;
+  color: var(--color-primary);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+.facility-devices__filters {
+  margin-bottom: 12px;
+}
+
+.facility-devices__filters .app-filter__fields {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+}
+
+.facility-devices__filters .ant-form-item {
+  margin-bottom: 0;
+}
+
+.facility-devices__filters .ant-form-item-label {
+  padding-bottom: 6px;
+}
+
+.facility-devices__filters .ant-form-item-label > label {
+  height: 20px;
+  color: #4d4d4d;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.facility-devices__filters .app-select.ant-select {
+  width: 100%;
+  height: 40px;
+}
+
+.facility-devices__filters .app-select.ant-select-single .ant-select-selector {
+  height: 40px !important;
+}
+
+.facility-devices__filters .facility-devices__search {
+  margin-left: auto;
+}
+
+.facility-devices__search .ant-input-affix-wrapper {
+  width: 100%;
+  height: 40px;
+  border: 1px solid #c2c2c2;
+  border-radius: 6px;
+  box-shadow: none;
+}
+
+.facility-devices__search .ant-input {
+  font-size: 14px;
+}
+
+.facility-devices__search .ant-input-suffix {
+  color: #808080;
+}
+
+.facility-devices__status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border: 1px solid;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 400;
+  white-space: nowrap;
+}
+
+.facility-devices__status-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.facility-devices__status--active,
+.facility-devices__status--connected {
+  color: #0eab00;
+  border-color: #0eab00;
+  background: #e6ffe6;
+}
+
+.facility-devices__status--inactive,
+.facility-devices__status--disconnected {
+  color: #ff4444;
+  border-color: #ff4444;
+  background: #ffe9e9;
+}
+
+@media (max-width: 1200px) {
+  .facility-devices__filters .app-filter__fields {
+    gap: 16px !important;
+  }
+
+  .facility-devices__filters .facility-devices__search {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 576px) {
+  .facility-devices__panel {
+    padding: 16px;
+  }
+
+  .facility-devices__filters .app-filter__field {
+    width: 100% !important;
+  }
+}

@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 import { ROUTES } from "../../constants/route.constants";
-import { useSiteContext } from "../../contexts/SiteContext";
+import { useFacilityContext } from "../../contexts/FacilityContext";
 import "../MainLayout.css";
 
 interface BreadcrumbConfig {
@@ -28,7 +28,7 @@ const breadcrumbs: Record<string, BreadcrumbConfig> = {
     icon: <Command className="breadcrumb-icon" />,
   },
 
-  [ROUTES.SITES]: {
+  [ROUTES.FACILITIES]: {
     label: "Cơ sở",
     icon: <Network className="breadcrumb-icon" />,
   },
@@ -94,7 +94,7 @@ const breadcrumbs: Record<string, BreadcrumbConfig> = {
     label: "Chế độ tạo bản tin",
   },
 
-  [`${ROUTES.SITES}/user`]: {
+  [`${ROUTES.FACILITIES}/user`]: {
     label: "Tài khoản quản trị",
   },
 };
@@ -102,7 +102,7 @@ const breadcrumbs: Record<string, BreadcrumbConfig> = {
 function AppBreadcrumb() {
   const { pathname } = useLocation();
 
-  const { selectedSitePath, setSelectedSiteId } = useSiteContext();
+  const { selectedFacilityPath, setSelectedFacilityId } = useFacilityContext();
 
   const segments = pathname.split("/").filter(Boolean);
 
@@ -117,15 +117,17 @@ function AppBreadcrumb() {
 
     const config = breadcrumbs[path];
 
-    const isSiteDetail =
-      index === 1 && segments[0] === "sites" && segment !== "user";
+    const isFacilityDetail =
+      index === 1 &&
+      segments[0] === ROUTES.FACILITIES.replace(/^\//, "") &&
+      segment !== "user";
 
-    const label = isSiteDetail
+    const label = isFacilityDetail
       ? "Thông tin chi tiết"
       : (config?.label ?? segment);
 
     const parentPath =
-      path === ROUTES.SITES ||
+      path === ROUTES.FACILITIES ||
       path === ROUTES.SOURCES ||
       path === ROUTES.SETTINGS;
 
@@ -151,15 +153,17 @@ function AppBreadcrumb() {
     };
   });
 
-  if (pathname === ROUTES.SITES) {
-    selectedSitePath.forEach((site, index) => {
-      const isLast = index === selectedSitePath.length - 1;
+  if (pathname === ROUTES.FACILITIES) {
+    selectedFacilityPath.forEach((facility, index) => {
+      const isLast = index === selectedFacilityPath.length - 1;
 
       items.push({
         title: (
           <span className="breadcrumb-item">
             {isLast ? (
-              <span className="breadcrumb-current">{site.name}</span>
+              <span className="breadcrumb-current">
+                {facility.facilityName}
+              </span>
             ) : (
               <button
                 type="button"
@@ -171,8 +175,8 @@ function AppBreadcrumb() {
                   font: "inherit",
                   cursor: "pointer",
                 }}
-                onClick={() => setSelectedSiteId(site.id)}>
-                {site.name}
+                onClick={() => setSelectedFacilityId(facility.id)}>
+                {facility.facilityName}
               </button>
             )}
           </span>
