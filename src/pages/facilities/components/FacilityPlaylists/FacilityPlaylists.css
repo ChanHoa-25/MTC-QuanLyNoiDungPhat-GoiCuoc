@@ -1,0 +1,46 @@
+.facility-playlists {
+  width: 100%;
+  min-width: 0;
+}
+
+.facility-playlists__panel {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 10px 20px;
+  min-width: 0;
+}
+
+.facility-playlists__title {
+  margin: 0 0 16px;
+  color: var(--color-primary);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+.facility-playlists__filters {
+  margin-bottom: 12px;
+}
+
+.facility-playlists__filters .ant-form-item {
+  margin-bottom: 0;
+}
+
+.facility-playlists__search {
+  margin-left: auto;
+}
+
+.facility-playlists__search .ant-input-affix-wrapper {
+  height: 40px;
+  border-radius: 6px;
+}
+
+.facility-playlists__search .ant-input-suffix {
+  color: var(--color-primary);
+}
+
+@media (max-width: 1200px) {
+  .facility-playlists__search {
+    margin-left: 0;
+  }
+}

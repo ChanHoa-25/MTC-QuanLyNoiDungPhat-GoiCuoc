@@ -1,0 +1,48 @@
+import type { FacilityMediaItem } from "../types/facilityMedia.types";
+
+const mediaTitles = [
+  "Thông tin buổi sáng",
+  "Tin tức trong ngày",
+  "Thể dục buổi sáng",
+  "Hướng dẫn tập yoga",
+  "Thông báo cộng đồng",
+  "Chương trình văn nghệ",
+  "Bản tin thời sự",
+  "Giáo dục sức khỏe",
+];
+
+const categories = [
+  "Tin tức",
+  "Thể dục dưỡng sinh",
+  "Văn nghệ giải trí",
+  "Giáo dục",
+];
+
+const mediaTypes: FacilityMediaItem["type"][] = ["video", "image", "audio"];
+
+const DEFAULT_THUMBNAIL = "/src/assets/images/media.png";
+
+export function createFacilityMediaMock(
+  facilityId: string,
+): FacilityMediaItem[] {
+  return Array.from({ length: 48 }, (_, index) => {
+    const mediaType = mediaTypes[index % mediaTypes.length];
+
+    return {
+      id: `${facilityId}-media-${index + 1}`,
+      facilityId,
+      title: mediaTitles[index % mediaTitles.length],
+      category: categories[index % categories.length],
+      type: mediaType,
+      status: index % 4 === 1 ? "pending" : "approved",
+      sourceStatus: index % 6 === 0 ? "inactive" : "active",
+      createdAt: `2021-08-${String((index % 28) + 1).padStart(
+        2,
+        "0",
+      )}T10:30:00`,
+      createdBy: "Tuyết Nguyễn",
+      sizeMB: 165,
+      thumbnail: DEFAULT_THUMBNAIL,
+    };
+  });
+}

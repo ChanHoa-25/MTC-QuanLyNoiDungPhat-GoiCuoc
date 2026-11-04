@@ -9,7 +9,7 @@ export const ROUTES = {
   EDIT_PROFILE: "/profile/edit",
   RENEWAL_HISTORY: "/profile/renewal-history",
 
-  SITES: "/sites",
+  FACILITIES: "/facilities",
   DEVICES: "/devices",
 
   SOURCES: "/sources",
