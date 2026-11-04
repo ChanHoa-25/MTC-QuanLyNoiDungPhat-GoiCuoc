@@ -1,0 +1,87 @@
+.device-broadcast-history {
+  width: 100%;
+  min-width: 0;
+  padding: 20px 21px;
+  box-sizing: border-box;
+  background: #ffffff;
+  border-radius: 12px;
+  font-family: "Open Sans", sans-serif;
+}
+
+/* Tiêu đề */
+.device-broadcast-history__title {
+  margin: 0 0 12px;
+  color: #e05200;
+  font-family: "Open Sans", sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+/* Bộ lọc */
+.device-broadcast-history__filters {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 14px;
+}
+
+.device-broadcast-history__date,
+.device-broadcast-history__search {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.device-broadcast-history__date label,
+.device-broadcast-history__search label {
+  color: #505050;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.device-broadcast-history__search {
+  width: 345px;
+  max-width: 100%;
+}
+
+/* Bảng */
+.device-broadcast-history__table {
+  width: 100%;
+}
+
+.device-broadcast-history__table .ant-table {
+  font-family: "Open Sans", sans-serif;
+  font-size: 13px;
+}
+
+.device-broadcast-history__table .ant-table-thead > tr > th {
+  background: #fce3d5;
+  color: #f26d21;
+  font-weight: 600;
+}
+
+.device-broadcast-history__table .ant-table-tbody > tr > td {
+  color: #757575;
+}
+
+.device-broadcast-history__table
+  .ant-table-tbody
+  > tr.ant-table-row-selected
+  > td {
+  background: #fff8f4;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .device-broadcast-history__filters {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .device-broadcast-history__search {
+    width: 100%;
+  }
+}
