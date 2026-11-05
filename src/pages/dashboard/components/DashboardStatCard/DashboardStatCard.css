@@ -1,0 +1,136 @@
+.dashboard-page .stat-card {
+  width: 100%;
+  min-width: 0;
+  height: 200px;
+  overflow: hidden;
+
+  border: none;
+  border-radius: 10px;
+  color: #ffffff;
+}
+
+.dashboard-page .stat-card .ant-card-body {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+}
+
+.dashboard-page .stat-card--pink {
+  background: var(--card-pink);
+  box-shadow: 0 2px 28px #ff777766;
+}
+
+.dashboard-page .stat-card--green {
+  background: var(--card-green);
+  box-shadow: 0 2px 28px #5ed35566;
+}
+
+.dashboard-page .stat-card--cyan {
+  background: var(--card-cyan);
+  box-shadow: 0 2px 28px #39cdde66;
+}
+
+.dashboard-page .stat-card--blue {
+  background: var(--card-blue);
+  box-shadow: 0 2px 28px #80b8f466;
+}
+
+.stat-card__inner {
+  position: relative;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) 42px;
+
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+.stat-card__bg-icon {
+  position: absolute;
+  top: 8px;
+  left: 10px;
+
+  width: 90px;
+  height: 90px;
+  max-width: 55%;
+  max-height: 75%;
+
+  color: rgba(255, 255, 255, 0.2);
+  pointer-events: none;
+}
+
+.stat-card__badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  display: grid;
+  place-items: center;
+
+  width: 34px;
+  height: 34px;
+
+  border-radius: 16.87px;
+  background: #ffffff4d;
+  color: #ffffff;
+}
+
+.stat-card__body {
+  position: relative;
+  z-index: 1;
+
+  display: grid;
+  place-items: center;
+
+  min-width: 0;
+  padding: 12px;
+}
+
+.stat-card__value {
+  font-size: 64px;
+  font-weight: 700;
+  line-height: 100%;
+  letter-spacing: 0;
+  text-align: center;
+  color: #ffffff;
+}
+
+.stat-card__total {
+  margin-left: 4px;
+  font-size: 20px;
+  font-weight: 600;
+}
+
+.stat-card__title {
+  position: relative;
+  z-index: 1;
+
+  display: grid;
+  place-items: center;
+
+  min-width: 0;
+  padding: 0 10px;
+
+  background: #ffffff33;
+
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.54px;
+  text-align: center;
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .dashboard-page .stat-card {
+    height: 180px;
+  }
+
+  .stat-card__value {
+    font-size: 48px;
+  }
+
+  .stat-card__title {
+    font-size: 15px;
+  }
+}
