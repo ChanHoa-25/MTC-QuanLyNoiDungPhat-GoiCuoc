@@ -1,0 +1,13 @@
+.app-time-picker {
+  height: 40px;
+  border: 1px solid #c2c2c2;
+  border-radius: 6px;
+}
+
+.app-time-picker .ant-picker-input > input {
+  font-size: 14px;
+}
+
+.app-time-picker .ant-picker-suffix {
+  color: var(--color-primary);
+}
