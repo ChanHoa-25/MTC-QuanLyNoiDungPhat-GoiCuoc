@@ -1,0 +1,56 @@
+.media-resolutions {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.media-resolutions__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.media-resolutions__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.media-resolutions__badge--processing {
+  color: #f26d21;
+  background: #fff2e8;
+  border: 1px solid #ffbb96;
+}
+
+.media-resolutions__badge--disabled {
+  color: #bfbfbf;
+  background: #f5f5f5;
+  border: 1px solid #f0f0f0;
+}
+
+.media-resolutions__badge--ready-blue {
+  color: #1677ff;
+  background: #e6f4ff;
+  border: 1px solid #91caff;
+}
+
+.media-resolutions__badge--ready-green {
+  color: #34cd26;
+  background: #e3ffe1;
+  border: 1px solid #95de64;
+}
+
+.media-resolutions__note {
+  margin: 0;
+  color: #fa8c16;
+  font-size: 11px;
+  font-style: italic;
+  line-height: 1.4;
+}
