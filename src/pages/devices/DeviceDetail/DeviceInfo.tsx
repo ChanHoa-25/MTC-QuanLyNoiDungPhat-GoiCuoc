@@ -1,9 +1,9 @@
 import { SquarePen } from "lucide-react";
 
-import AppStatusTag from "../../../../components/common/AppStatusTag";
-import AppIconButton from "../../../../components/common/AppIconButton";
+import AppStatusTag from "../../../components/common/AppStatusTag";
+import AppIconButton from "../../../components/common/AppIconButton";
 
-import type { Device } from "../../types/device.types";
+import type { Device } from "../types/device.types";
 
 import "./DeviceInfo.css";
 

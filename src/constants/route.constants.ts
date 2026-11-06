@@ -28,6 +28,9 @@ export const ROUTES = {
   SETTINGS_DISTRIBUTORS: "/settings/distributors",
   SETTINGS_LOGS: "/settings/logs",
   SETTINGS_NEWS_MODE: "/settings/news-mode",
+  SETTINGS_SYSTEM: "/settings/system",
+
+  SETTINGS_PERSONAL: "/settings/personal",
 
   FORBIDDEN: "/403",
   NOT_FOUND: "/404",

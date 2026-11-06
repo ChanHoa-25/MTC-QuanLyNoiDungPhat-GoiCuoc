@@ -18,7 +18,7 @@ import FacilitiesPage from "../pages/facilities";
 import FacilityPlaylistDetail from "../pages/facilities/FacilityPlaylists/FacilityPlaylistDetail";
 import DevicesPage from "../pages/devices";
 
-import DeviceDetailPage from "../pages/devices/DeviceDetailPage";
+import DeviceDetailPage from "../pages/devices/DeviceDetail/DeviceDetailPage";
 import DeviceForm from "../pages/devices/components/DeviceForm/DeviceForm";
 
 import ForbiddenPage from "../pages/errors/ForbiddenPage";

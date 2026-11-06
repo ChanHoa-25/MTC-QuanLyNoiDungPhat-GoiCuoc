@@ -1,18 +1,18 @@
 import { useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 
-import { ROUTES } from "../../constants/route.constants";
+import { ROUTES } from "../../../constants/route.constants";
 
-import { useDevices } from "../../contexts/DeviceContext";
+import { useDevices } from "../../../contexts/DeviceContext";
 
-import AppButton from "../../components/common/AppButton";
-import AppTabs from "../../components/common/AppTabs";
-import type { AppTabItem } from "../../components/common/AppTabs";
+import AppButton from "../../../components/common/AppButton";
+import AppTabs from "../../../components/common/AppTabs";
+import type { AppTabItem } from "../../../components/common/AppTabs";
 
-import DeviceInfo from "./components/DeviceInfo/DeviceInfo";
-import DeviceSchedule from "./components/DeviceSchedule";
-import DeviceBroadcastHistory from "./components/DeviceBroadcastHistory";
-import DeviceActivityHistory from "./components/DeviceActivityHistory";
+import DeviceInfo from "./DeviceInfo";
+import DeviceSchedule from "./DeviceSchedule";
+import DeviceBroadcastHistory from "../DeviceBroadcastHistory";
+import DeviceActivityHistory from "../DeviceActivityHistory";
 
 import "./DeviceDetailPage.css";
 

@@ -4,30 +4,29 @@
   gap: 20px;
   width: 100%;
   min-width: 0;
+  min-height: 100%;
   box-sizing: border-box;
 }
-
-/* Nội dung chính */
 .devices-page-main {
+  display: flex;
   flex: 1;
+  flex-direction: column;
   min-width: 0;
+  min-height: 100%;
   padding: 20px;
   background: #ffffff;
   border-radius: 12px;
   box-sizing: border-box;
 }
 
-/* Tiêu đề */
 .devices-page-title {
   margin: 0 0 20px;
   color: var(--color-primary);
-
   font-size: 20px;
   font-weight: 700;
   line-height: 28px;
 }
 
-/* Bộ lọc */
 .devices-page-filters {
   width: 100%;
   margin-bottom: 20px;
@@ -45,13 +44,26 @@
   min-width: 0;
 }
 
-/* Bảng thiết bị */
 .devices-page-table {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   width: 100%;
   min-width: 0;
 }
 
-/* Header bảng */
+.devices-page-table .ant-table-wrapper {
+  width: 100%;
+}
+
+.devices-page-table .ant-table-container {
+  min-width: 0;
+}
+
+.devices-page-table .ant-table-content {
+  overflow-x: auto;
+}
+
 .devices-page-table .ant-table-thead > tr > th {
   height: 40px;
   padding: 8px 6px;
@@ -61,7 +73,6 @@
   vertical-align: middle;
 }
 
-/* Hàng dữ liệu */
 .devices-page-table .ant-table-tbody > tr > td {
   height: 40px;
   padding: 6px;
@@ -69,30 +80,39 @@
   vertical-align: middle;
 }
 
-/* Trạng thái */
+.devices-page-table .ant-table-cell {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .devices-page-table .app-status-tag {
   font-size: 11px;
   white-space: nowrap;
 }
 
-/* Nút hành động */
-.devices-page-table .app-table-actions {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  white-space: nowrap;
+.devices-page-actions {
+  flex-shrink: 0;
+  align-self: flex-start;
+  height: fit-content;
+}
+.devices-page-table .app-pagination {
+  margin-top: auto;
+  padding: 10px 0;
 }
 
-/* Thanh công cụ bên phải */
 .devices-page-actions {
   flex-shrink: 0;
 }
 
-/* Responsive */
 @media (max-width: 1400px) {
   .devices-page-filters .app-filter__fields {
     grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1200px) {
+  .devices-page-filters .app-filter__fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -107,10 +127,6 @@
 
   .devices-page-actions {
     align-self: flex-end;
-  }
-
-  .devices-page-filters .app-filter__fields {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
