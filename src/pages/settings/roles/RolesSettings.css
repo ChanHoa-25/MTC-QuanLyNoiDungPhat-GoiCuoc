@@ -1,0 +1,184 @@
+.roles-settings {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  font-family: var(--font-family);
+}
+
+.roles-settings__content {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: 20px 22px;
+  box-sizing: border-box;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(243, 198, 179, 0.2);
+}
+
+.roles-settings__title {
+  margin: 0 0 16px;
+  color: #e05200;
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+.roles-settings__filter {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.roles-settings__filter label {
+  color: #4d4d4d;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.roles-settings__table {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.roles-settings__table .app-table {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.roles-settings__table .ant-table-wrapper {
+  width: 100%;
+}
+
+.roles-settings__table .ant-table-thead > tr > th {
+  height: 38px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  background: #fce2d5;
+  color: #f26d21;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 20px;
+  vertical-align: middle;
+}
+
+.roles-settings__table .ant-table-tbody > tr > td {
+  height: 38px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  color: #777777;
+  font-size: 13px;
+  line-height: 20px;
+  vertical-align: middle;
+}
+
+.roles-settings__table .ant-table-tbody > tr:nth-child(odd) > td {
+  background: #f8f8f8;
+}
+
+.roles-settings__table .ant-table-tbody > tr:nth-child(even) > td {
+  background: #fafafa;
+}
+
+.roles-settings__table .ant-table-tbody > tr:hover > td {
+  background: #fff5ef !important;
+}
+
+.roles-settings__table .ant-table-tbody > tr.ant-table-row-selected > td {
+  background: #fff5ef;
+}
+
+.roles-settings__table .ant-table-selection-column {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.roles-settings__table .app-table-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.roles-settings__table .app-table__selected-count {
+  color: #f26d21;
+  font-size: 13px;
+}
+
+.roles-settings__table .app-pagination {
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+.roles-settings__placeholder {
+  color: #777777;
+  font-size: 14px;
+}
+
+.roles-delete-modal .ant-modal-content {
+  padding: 48px 32px;
+  border-top: 8px solid #ff4d4f;
+  border-radius: 12px;
+}
+
+.roles-delete-modal .app-confirm-modal__title {
+  color: #4d4d4d;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.roles-delete-modal .app-confirm-modal__description {
+  color: #777777;
+  font-size: 17px;
+}
+
+.roles-delete-modal .app-confirm-modal__actions {
+  justify-content: center;
+  gap: 24px;
+}
+
+.roles-delete-modal .app-confirm-modal__cancel {
+  color: #ff4d4f;
+  border-color: #ff4d4f;
+}
+
+.roles-delete-modal .app-confirm-modal__confirm {
+  background: #ff4d4f;
+  border-color: #ff4d4f;
+  color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .roles-settings__content {
+    padding: 16px;
+  }
+
+  .roles-settings__title {
+    font-size: 20px;
+  }
+
+  .roles-settings__filter,
+  .roles-settings__filter .app-search {
+    width: 100% !important;
+  }
+
+  .roles-settings__table {
+    overflow-x: auto;
+  }
+
+  .roles-settings__table .ant-table-wrapper {
+    min-width: 850px;
+  }
+}

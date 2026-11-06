@@ -31,8 +31,18 @@ import ReportsPage from "../pages/reports/ReportsPage";
 import FacilityTemplateFormPage from "../pages/facilities/FacilityTemplates/FacilityTemplateFormPage";
 
 import SourceMediaPage, { SourceMediaDetailPage } from "../pages/sources/media";
+import SourceTemplatesPage from "../pages/sources/templates";
 
 import SourcePlaceholderPage from "../pages/sources/components/SourcePlaceholderPage";
+import SystemSettings from "../pages/settings/system/SystemSettings";
+import PersonalSettings from "../pages/settings/personal/PersonalSettings";
+import UserLogsSettings from "../pages/settings/user-log/UserLogsSettings";
+import DeviceDistributorsSettings from "../pages/settings/device-distributors/DeviceDistributorsSettings";
+import CategoriesSettings from "../pages/settings/categories/CategoriesSettings";
+import CategoryDetailSettings from "../pages/settings/categories/CategoryDetailSettings";
+import RolesSettings from "../pages/settings/roles/RolesSettings";
+import RoleUpdateSettings from "../pages/settings/roles/role/RoleUpdateSettings";
+import RoleDetailSettings from "../pages/settings/roles/role/RoleDetailSettings";
 
 export const routes: RouteObject[] = [
   {
@@ -136,7 +146,7 @@ export const routes: RouteObject[] = [
       },
       {
         path: ROUTES.SOURCE_TEMPLATES,
-        element: <SourcePlaceholderPage title="Bản mẫu" />,
+        element: <SourceTemplatesPage />,
       },
 
       {
@@ -165,26 +175,47 @@ export const routes: RouteObject[] = [
         path: ROUTES.REPORTS,
         element: <ReportsPage />,
       },
-
+      //Settings
       {
         path: ROUTES.SETTINGS,
-        element: <ComingSoonPage title="Cài đặt hệ thống" />,
+        element: <Navigate to={ROUTES.SETTINGS_SYSTEM} replace />,
+      },
+      {
+        path: ROUTES.SETTINGS_SYSTEM,
+        element: <SystemSettings />,
+      },
+      {
+        path: ROUTES.SETTINGS_PERSONAL,
+        element: <PersonalSettings />,
       },
       {
         path: ROUTES.SETTINGS_CATEGORIES,
-        element: <ComingSoonPage title="Danh mục lĩnh vực" />,
+        element: <CategoriesSettings />,
       },
       {
+        path: "/settings/categories/:id",
+        element: <CategoryDetailSettings />,
+      },
+
+      {
         path: ROUTES.SETTINGS_ROLES,
-        element: <ComingSoonPage title="Quản lý vai trò" />,
+        element: <RolesSettings />,
+      },
+      {
+        path: `${ROUTES.SETTINGS_ROLES}/:id/edit`,
+        element: <RoleUpdateSettings />,
+      },
+      {
+        path: `${ROUTES.SETTINGS_ROLES}/:id`,
+        element: <RoleDetailSettings />,
       },
       {
         path: ROUTES.SETTINGS_DISTRIBUTORS,
-        element: <ComingSoonPage title="Danh mục nhà phân phối thiết bị" />,
+        element: <DeviceDistributorsSettings />,
       },
       {
         path: ROUTES.SETTINGS_LOGS,
-        element: <ComingSoonPage title="Nhật ký người dùng" />,
+        element: <UserLogsSettings />,
       },
       {
         path: ROUTES.SETTINGS_NEWS_MODE,

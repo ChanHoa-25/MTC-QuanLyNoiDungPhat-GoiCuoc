@@ -79,6 +79,14 @@ const submenuItems: Record<string, NonNullable<MenuProps["items"]>> = {
       key: ROUTES.SETTINGS_NEWS_MODE,
       label: "Chế độ tạo bản tin",
     },
+    {
+      key: ROUTES.SETTINGS_SYSTEM,
+      label: "Thiết lập hệ thống",
+    },
+    {
+      key: ROUTES.SETTINGS_PERSONAL,
+      label: "Cấu hình cá nhân",
+    },
   ],
 };
 

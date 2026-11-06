@@ -1,0 +1,174 @@
+.role-users-settings {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: 20px 22px;
+  box-sizing: border-box;
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(243, 198, 179, 0.2);
+  font-family: var(--font-family);
+}
+
+.role-users-settings__title {
+  margin: 0 0 16px;
+  color: #e05200;
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+.role-users-settings__filters {
+  display: flex;
+  align-items: flex-end;
+  gap: 20px;
+  margin-bottom: 14px;
+}
+
+.role-users-settings__filter-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.role-users-settings__filter-group label {
+  color: #4d4d4d;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.role-users-settings__search {
+  margin-left: auto;
+}
+
+.role-users-settings__table {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.role-users-settings__table .app-table {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.role-users-settings__table .ant-table-wrapper {
+  width: 100%;
+}
+
+.role-users-settings__table .ant-table-thead > tr > th {
+  height: 38px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  background: #fce2d5;
+  color: #f26d21;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 20px;
+  vertical-align: middle;
+}
+
+.role-users-settings__table .ant-table-tbody > tr > td {
+  height: 38px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  color: #777777;
+  font-size: 13px;
+  line-height: 20px;
+  vertical-align: middle;
+}
+
+.role-users-settings__table .ant-table-tbody > tr:nth-child(odd) > td {
+  background: #f8f8f8;
+}
+
+.role-users-settings__table .ant-table-tbody > tr:nth-child(even) > td {
+  background: #fafafa;
+}
+
+.role-users-settings__table .ant-table-tbody > tr:hover > td {
+  background: #fff5ef !important;
+}
+
+.role-users-settings__table .ant-table-tbody > tr.ant-table-row-selected > td {
+  background: #fff5ef;
+}
+
+.role-users-settings__table .ant-table-selection-column {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.role-users-settings__table .app-table-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.role-users-settings__table .app-table__selected-count {
+  color: #f26d21;
+  font-size: 13px;
+}
+
+.role-users-settings__table .app-pagination {
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+.role-users-delete-modal .ant-modal-content {
+  padding: 48px 32px;
+  border-top: 8px solid #ff4d4f;
+  border-radius: 12px;
+}
+
+.role-users-delete-modal .app-confirm-modal__title {
+  color: #4d4d4d;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.role-users-delete-modal .app-confirm-modal__description {
+  color: #777777;
+  font-size: 17px;
+}
+
+.role-users-delete-modal .app-confirm-modal__actions {
+  justify-content: center;
+  gap: 24px;
+}
+
+.role-users-delete-modal .app-confirm-modal__cancel {
+  color: #ff4d4f;
+  border-color: #ff4d4f;
+}
+
+.role-users-delete-modal .app-confirm-modal__confirm {
+  background: #ff4d4f;
+  border-color: #ff4d4f;
+  color: #ffffff;
+}
+
+@media (max-width: 900px) {
+  .role-users-settings__filters {
+    flex-wrap: wrap;
+  }
+
+  .role-users-settings__search {
+    margin-left: 0;
+  }
+
+  .role-users-settings__table {
+    overflow-x: auto;
+  }
+
+  .role-users-settings__table .ant-table-wrapper {
+    min-width: 1050px;
+  }
+}

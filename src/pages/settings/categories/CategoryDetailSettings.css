@@ -1,0 +1,143 @@
+.category-detail {
+  display: grid;
+  grid-template-columns: 275px minmax(0, 1fr);
+  gap: 20px;
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  font-family: var(--font-family);
+}
+
+.category-detail__info,
+.category-detail__users {
+  min-width: 0;
+  min-height: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  background: #ffffff;
+  border-radius: 12px;
+}
+
+.category-detail__title {
+  margin: 0 0 16px;
+  color: #e05200;
+  font-size: 21px;
+  font-weight: 700;
+  line-height: 30px;
+}
+
+.category-detail__field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.category-detail__label {
+  color: #4d4d4d;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.category-detail__value {
+  color: #777777;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+  overflow-wrap: anywhere;
+}
+
+.category-detail__users {
+  display: flex;
+  flex-direction: column;
+}
+
+.category-detail__table {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.category-detail__table .app-table {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.category-detail__table .ant-table-wrapper {
+  width: 100%;
+}
+
+.category-detail__table .ant-table-thead > tr > th {
+  height: 38px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  background: #fce2d5;
+  color: #f26d21;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 20px;
+  vertical-align: middle;
+}
+
+.category-detail__table .ant-table-tbody > tr > td {
+  height: 38px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  color: #777777;
+  font-size: 13px;
+  line-height: 20px;
+  vertical-align: middle;
+}
+
+.category-detail__table .ant-table-tbody > tr:nth-child(odd) > td {
+  background: #f8f8f8;
+}
+
+.category-detail__table .ant-table-tbody > tr:nth-child(even) > td {
+  background: #fafafa;
+}
+
+.category-detail__table .ant-table-tbody > tr:hover > td {
+  background: #fff5ef !important;
+}
+
+.category-detail__table .app-table-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.category-detail__table .app-pagination {
+  margin-top: auto;
+  padding-top: 24px;
+}
+
+.category-detail__not-found {
+  padding: 24px;
+  background: #ffffff;
+  border-radius: 12px;
+  color: #777777;
+}
+
+@media (max-width: 900px) {
+  .category-detail {
+    grid-template-columns: 1fr;
+  }
+
+  .category-detail__info,
+  .category-detail__users {
+    min-height: auto;
+  }
+
+  .category-detail__table {
+    overflow-x: auto;
+  }
+
+  .category-detail__table .ant-table-wrapper {
+    min-width: 620px;
+  }
+}

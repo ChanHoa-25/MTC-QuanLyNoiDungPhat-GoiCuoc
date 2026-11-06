@@ -1,0 +1,135 @@
+.role-user-modal {
+  top: 20px;
+  padding-bottom: 0;
+}
+
+/* Modal */
+.role-user-modal .ant-modal-content {
+  display: flex;
+  flex-direction: column;
+  height: auto;
+  min-height: 0;
+  max-height: calc(100dvh - 40px);
+  padding: 20px 28px;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* Nội dung modal */
+.role-user-modal .ant-modal-body {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  padding-right: 4px;
+}
+
+/* Nút đóng */
+.role-user-modal .ant-modal-close {
+  top: 16px;
+  right: 16px;
+  color: #333333;
+}
+
+/* Tiêu đề */
+.role-user-modal__title {
+  margin: 0 0 12px;
+  padding-right: 24px;
+  color: #e05200;
+  font-family: var(--font-family);
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+/* Form */
+.role-user-modal__form .ant-form-item {
+  margin-bottom: 8px;
+}
+
+.role-user-modal__form .ant-form-item-label {
+  padding-bottom: 2px;
+}
+
+.role-user-modal__form .ant-form-item-label > label {
+  height: auto;
+  color: #4d4d4d;
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+/* Dấu sao bắt buộc */
+.role-user-modal__form
+  .ant-form-item-label
+  > label.ant-form-item-required::before {
+  display: none !important;
+}
+
+.role-user-modal__form
+  .ant-form-item-label
+  > label.ant-form-item-required::after {
+  display: inline-block;
+  margin-left: 2px;
+  color: #ff4d4f;
+  content: "*";
+}
+
+/* Input và Select */
+.role-user-modal__form .app-input,
+.role-user-modal__form .app-select {
+  height: 40px;
+}
+
+.role-user-modal__form .app-input {
+  border-radius: 6px;
+}
+
+.role-user-modal__form .app-input:disabled {
+  background: #f5f5f5;
+  color: #888888;
+}
+
+/* Ghi chú */
+.role-user-modal__note {
+  margin: 4px 0 0;
+  color: #888888;
+  font-size: 12px;
+}
+
+.role-user-modal__note span {
+  color: #ff4d4f;
+  font-weight: 700;
+}
+
+/* Footer */
+.role-user-modal .ant-modal-footer {
+  flex-shrink: 0;
+  margin-top: 0;
+  padding-top: 12px;
+  background: #ffffff;
+}
+
+.role-user-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  width: 100%;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+  .role-user-modal {
+    top: 12px;
+  }
+
+  .role-user-modal .ant-modal-content {
+    max-height: calc(100dvh - 24px);
+    padding: 24px 20px;
+  }
+
+  .role-user-modal__footer {
+    gap: 16px;
+  }
+}
