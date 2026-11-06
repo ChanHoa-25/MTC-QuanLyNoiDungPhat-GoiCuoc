@@ -30,6 +30,10 @@ import { ROUTES } from "../constants/route.constants";
 import ReportsPage from "../pages/reports/ReportsPage";
 import FacilityTemplateFormPage from "../pages/facilities/FacilityTemplates/FacilityTemplateFormPage";
 
+import SourceMediaPage, { SourceMediaDetailPage } from "../pages/sources/media";
+
+import SourcePlaceholderPage from "../pages/sources/components/SourcePlaceholderPage";
+
 export const routes: RouteObject[] = [
   {
     element: <AuthLayout />,
@@ -112,23 +116,27 @@ export const routes: RouteObject[] = [
 
       {
         path: ROUTES.SOURCES,
-        element: <ComingSoonPage title="Nguồn thông tin" />,
+        element: <Navigate to={ROUTES.SOURCE_MEDIA} replace />,
       },
       {
         path: ROUTES.SOURCE_MEDIA,
-        element: <ComingSoonPage title="Nguồn media" />,
+        element: <SourceMediaPage />,
+      },
+      {
+        path: `${ROUTES.SOURCE_MEDIA}/:id`,
+        element: <SourceMediaDetailPage />,
       },
       {
         path: ROUTES.SOURCE_SHARED,
-        element: <ComingSoonPage title="Nguồn được chia sẻ" />,
+        element: <SourcePlaceholderPage title="Media được chia sẻ" />,
       },
       {
         path: ROUTES.SOURCE_PLAYLISTS,
-        element: <ComingSoonPage title="Danh sách phát" />,
+        element: <SourcePlaceholderPage title="Danh sách phát" />,
       },
       {
         path: ROUTES.SOURCE_TEMPLATES,
-        element: <ComingSoonPage title="Bản mẫu" />,
+        element: <SourcePlaceholderPage title="Bản mẫu" />,
       },
 
       {
