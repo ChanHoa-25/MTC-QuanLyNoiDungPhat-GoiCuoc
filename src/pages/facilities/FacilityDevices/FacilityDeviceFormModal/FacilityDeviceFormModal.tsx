@@ -23,7 +23,44 @@ interface FacilityDeviceFormModalProps {
   loading?: boolean;
   providers?: { label: string; value: string }[];
   onCancel: () => void;
-  onSubmit: (values: FacilityDeviceFormValues) => void;
+  onSubmit: (values: FacilityDeviceFormValues) => void | Promise<void>;
+}
+
+// Kiểm tra địa chỉ IPv4 hoặc IPv6
+function isValidIpAddress(value: string): boolean {
+  const ip = value.trim();
+
+  // IPv4
+  const parts = ip.split(".");
+
+  if (
+    parts.length === 4 &&
+    parts.every(
+      (part) =>
+        /^\d{1,3}$/.test(part) && Number(part) >= 0 && Number(part) <= 255,
+    )
+  ) {
+    return true;
+  }
+
+  // IPv6
+  if (!/^[0-9a-fA-F:]+$/.test(ip)) return false;
+
+  const doubleColonCount = ip.split("::").length - 1;
+
+  if (doubleColonCount > 1) return false;
+
+  const groups = ip.split(":").filter(Boolean);
+
+  if (!groups.every((group) => /^[0-9a-fA-F]{1,4}$/.test(group))) {
+    return false;
+  }
+
+  if (doubleColonCount === 1) {
+    return groups.length < 8;
+  }
+
+  return groups.length === 8;
 }
 
 function FacilityDeviceFormModal({
@@ -40,6 +77,7 @@ function FacilityDeviceFormModal({
 
   const isEdit = mode === "edit";
 
+  // Reset và khởi tạo dữ liệu khi mở modal
   useEffect(() => {
     if (!open) return;
 
@@ -75,6 +113,7 @@ function FacilityDeviceFormModal({
     onCancel();
   };
 
+  // Chuẩn hóa dữ liệu trước khi gửi lên component cha
   const handleSubmit = (values: FacilityDeviceFormValues) => {
     if (loading) return;
 
@@ -88,11 +127,12 @@ function FacilityDeviceFormModal({
       tag: values.tag?.trim() ?? "",
     };
 
+    // Không gửi mật khẩu nếu người dùng để trống
     if (!submitValues.password) {
       delete submitValues.password;
     }
 
-    onSubmit(submitValues);
+    return onSubmit(submitValues);
   };
 
   return (
@@ -108,6 +148,7 @@ function FacilityDeviceFormModal({
         columns={1}
         onFinish={handleSubmit}>
         <div className="facility-device-form-modal__grid">
+          {/* Cột bên trái */}
           <div className="facility-device-form-modal__column">
             <Form.Item
               label="Tên thiết bị"
@@ -135,6 +176,15 @@ function FacilityDeviceFormModal({
                   whitespace: true,
                   message: "Vui lòng nhập địa chỉ IP",
                 },
+                {
+                  validator: async (_, value: string) => {
+                    if (!value?.trim()) return;
+
+                    if (!isValidIpAddress(value)) {
+                      throw new Error("Địa chỉ IP không đúng định dạng");
+                    }
+                  },
+                },
               ]}>
               <AppInput
                 width="100%"
@@ -161,6 +211,7 @@ function FacilityDeviceFormModal({
               />
             </Form.Item>
 
+            {/* Mật khẩu hiển thị ở cả thêm và sửa */}
             <Form.Item
               label="Mật khẩu"
               name="password"
@@ -184,6 +235,7 @@ function FacilityDeviceFormModal({
               />
             </Form.Item>
 
+            {/* Thông tin bổ sung khi cập nhật */}
             {isEdit && (
               <>
                 <Form.Item label="Cơ sở">
@@ -195,7 +247,7 @@ function FacilityDeviceFormModal({
                   />
                 </Form.Item>
 
-                <Form.Item label="Địa chỉ" required>
+                <Form.Item label="Địa chỉ">
                   <AppInput
                     width="100%"
                     height={44}
@@ -208,10 +260,11 @@ function FacilityDeviceFormModal({
             )}
           </div>
 
+          {/* Cột bên phải */}
           <div className="facility-device-form-modal__column">
             {isEdit && (
               <>
-                <Form.Item label="Kinh độ" required>
+                <Form.Item label="Kinh độ">
                   <AppInput
                     width="100%"
                     height={44}
@@ -221,7 +274,7 @@ function FacilityDeviceFormModal({
                   />
                 </Form.Item>
 
-                <Form.Item label="Vĩ độ" required>
+                <Form.Item label="Vĩ độ">
                   <AppInput
                     width="100%"
                     height={44}
@@ -271,11 +324,13 @@ function FacilityDeviceFormModal({
           </div>
         </div>
 
+        {/* Chú thích trường bắt buộc */}
         <div className="facility-device-form-modal__required-note">
           <span>*</span>
           <span>là những trường thông tin bắt buộc</span>
         </div>
 
+        {/* Nút thao tác */}
         <div className="app-form-actions facility-device-form-modal__actions">
           <AppButton
             variant="outline"

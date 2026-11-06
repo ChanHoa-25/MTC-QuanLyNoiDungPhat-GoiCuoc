@@ -3,11 +3,13 @@
   display: flex;
   flex-direction: column;
 
-  width: 278px;
+  width: 100%;
   height: 100%;
   min-width: 0;
   min-height: 0;
+  max-height: 100%;
 
+  align-self: stretch;
   gap: 12px;
   padding: 0;
   margin: 0;
@@ -22,6 +24,9 @@
   scrollbar-width: thin;
   scrollbar-color: #f4c8b3 transparent;
 }
+
+/* Root block */
+
 .location-root-block {
   box-sizing: border-box;
   flex-shrink: 0;
@@ -33,10 +38,12 @@
   display: flex;
   flex-direction: row;
   align-items: center;
+
   width: 100%;
   height: 43px;
   padding: 0 12px 0 16px;
   gap: 8px;
+
   background: linear-gradient(270deg, #ff925f -0.9%, #ff7729 100.9%);
   color: #ffffff;
 }
@@ -49,22 +56,33 @@
   border-radius: 6px;
 }
 
+.location-root-header.is-selected {
+  box-shadow: inset 0 0 0 2px #ffffff;
+}
+
+/* Root expand */
+
 .location-root-expand {
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+
   width: 16px;
   height: 24px;
   padding: 0;
   margin: 0;
+
   background: transparent;
   border: none;
   color: #ffffff;
+
   font-size: 12px;
   cursor: pointer;
 }
+
+/* Root name */
 
 .location-root-name {
   display: flex;
@@ -72,11 +90,14 @@
   flex: 1;
   min-width: 0;
   gap: 6px;
+
   padding: 0;
   margin: 0;
+
   background: transparent;
   border: none;
   color: #ffffff;
+
   font-size: 14px;
   font-weight: 700;
   line-height: 19px;
@@ -95,14 +116,19 @@
   text-overflow: ellipsis;
 }
 
+/* Root body */
+
 .location-root-body {
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
+
   width: 100%;
   padding: 12px 8px 16px;
   gap: 12px;
 }
+
+/* Node */
 
 .location-node {
   box-sizing: border-box;
@@ -116,15 +142,20 @@
   overflow: hidden;
 }
 
+/* Node row */
+
 .location-row {
   box-sizing: border-box;
   display: flex;
   align-items: center;
+
   width: 100%;
   height: 41px;
   gap: 8px;
   padding-right: 12px;
+
   color: #666666;
+
   transition:
     background-color 0.2s ease,
     color 0.2s ease;
@@ -149,39 +180,51 @@
   color: var(--color-primary);
 }
 
+/* Expand button */
+
 .location-expand {
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+
   width: 16px;
   height: 24px;
   padding: 0;
   margin: 0;
+
   background: transparent;
   border: none;
   color: var(--color-primary);
+
   font-size: 12px;
   cursor: pointer;
 }
+
+/* Facility name */
 
 .location-name {
   display: block;
   flex: 1;
   min-width: 0;
+
   padding: 0;
   margin: 0;
+
   background: transparent;
   border: none;
   color: inherit;
+
   font-size: 14px;
   font-weight: 400;
   line-height: 19px;
   text-align: left;
+
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+
   cursor: pointer;
 }
 
@@ -193,19 +236,24 @@
   font-weight: 400;
 }
 
+/* More button */
+
 .location-more {
   box-sizing: border-box;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+
   width: 24px;
   height: 24px;
   padding: 0;
   margin: 0;
+
   background: transparent;
   border: none;
   color: var(--color-primary);
+
   font-size: 20px;
   cursor: pointer;
 }
@@ -222,6 +270,8 @@
   color: #fff1e8;
 }
 
+/* Children */
+
 .location-children {
   box-sizing: border-box;
   display: flex;
@@ -233,11 +283,15 @@
   margin: 4px 8px;
 }
 
+/* Focus */
+
 .location-tree button:focus-visible {
   outline: 2px solid var(--color-primary);
   outline-offset: -2px;
   border-radius: 4px;
 }
+
+/* Scrollbar */
 
 .location-tree::-webkit-scrollbar {
   width: 5px;
@@ -255,6 +309,8 @@
 .location-tree::-webkit-scrollbar-thumb:hover {
   background: var(--color-primary);
 }
+
+/* Dropdown */
 
 .location-action-dropdown .ant-dropdown-menu {
   padding: 6px;
@@ -279,6 +335,8 @@
   cursor: default;
 }
 
+/* Responsive */
+
 @media (max-width: 1100px) {
   .location-tree {
     width: 100%;
@@ -289,12 +347,7 @@
 @media (max-width: 700px) {
   .location-tree {
     height: 350px;
+    max-height: 350px;
+    min-height: 0;
   }
-}
-.location-tree {
-  height: 100%;
-  min-height: 0;
-  max-height: 100%;
-  align-self: stretch;
-  overflow-y: auto;
 }

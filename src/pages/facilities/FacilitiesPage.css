@@ -19,72 +19,6 @@
   gap: 16px;
 }
 
-.facilities-tabs {
-  box-sizing: border-box;
-  display: flex;
-  align-items: center;
-  align-self: flex-start;
-  flex-shrink: 0;
-
-  width: min(100%, 1027px);
-  min-height: 48px;
-  padding: 2px;
-
-  overflow-x: auto;
-  border-radius: 23px;
-
-  background: linear-gradient(
-    260.73deg,
-    #ee6b2d 1.33%,
-    #ff7729 1.34%,
-    #ffa377 71.67%,
-    rgba(255, 91, 14, 0.62) 95.11%
-  );
-
-  scrollbar-width: none;
-}
-
-.facilities-tabs::-webkit-scrollbar {
-  display: none;
-}
-
-.facilities-tab {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex: 1 0 auto;
-
-  height: 44px;
-  padding: 0 16px;
-
-  border: none;
-  border-radius: 22px;
-  background: transparent;
-  color: #ffffff;
-
-  font-family: inherit;
-  font-size: 16px;
-  font-weight: 600;
-  white-space: nowrap;
-  cursor: pointer;
-
-  transition:
-    background 0.2s,
-    color 0.2s;
-}
-
-.facilities-tab.is-active {
-  background: #ffffff;
-  color: var(--color-primary);
-  font-weight: 700;
-}
-
-.facilities-tab:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: -3px;
-}
-
-/* Khung nội dung của Tab */
 .facilities-content {
   box-sizing: border-box;
   display: flex;
@@ -100,11 +34,9 @@
   box-shadow: 0 4px 20px rgba(243, 198, 179, 0.2);
 }
 
-/* Trạng thái chưa chọn cơ sở */
 .facilities-empty,
 .facilities-placeholder {
   box-sizing: border-box;
-
   width: 100%;
   min-height: 100%;
   padding: 24px;
@@ -131,14 +63,6 @@
     grid-template-columns: 240px minmax(0, 1fr);
     gap: 16px;
   }
-
-  .facilities-tabs {
-    width: 100%;
-  }
-
-  .facilities-tab {
-    font-size: 14px;
-  }
 }
 
 @media (max-width: 700px) {
@@ -151,11 +75,6 @@
   .facilities-main {
     height: auto;
     min-height: 0;
-  }
-
-  .location-tree {
-    width: 100%;
-    height: 350px;
   }
 
   .facilities-content {

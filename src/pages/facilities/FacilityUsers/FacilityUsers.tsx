@@ -3,17 +3,17 @@ import type { Key } from "react";
 import type { TableColumnsType } from "antd";
 import { Form, Input, message } from "antd";
 import { SquarePen, Search } from "lucide-react";
-import AppTable from "../../../../components/common/AppTable";
-import AppTableActions from "../../../../components/common/AppTableActions";
-import AppSelect from "../../../../components/common/AppSelect";
+import AppTable from "../../../components/common/AppTable";
+import AppTableActions from "../../../components/common/AppTableActions";
+import AppSelect from "../../../components/common/AppSelect";
 import AppFilter, {
   AppFilterField,
-} from "../../../../components/common/AppFilter";
-import FacilityUserFormModal from "../FacilityUserFormModal";
-import type { FacilityUserFormValues } from "../FacilityUserFormModal";
-import { facilityUsersMock } from "../../data/facilitiesUsers.mock";
-import type { Facility } from "../../types/facility.types";
-import type { FacilityUser } from "../../types/facilityUser.types";
+} from "../../../components/common/AppFilter";
+import FacilityUserFormModal from "./FacilityUserFormModal";
+import type { FacilityUserFormValues } from "./FacilityUserFormModal";
+import { facilityUsersMock } from "../data/facilitiesUsers.mock";
+import type { Facility } from "../types/facility.types";
+import type { FacilityUser } from "../types/facilityUser.types";
 import "./FacilityUsers.css";
 interface FacilityUsersProps {
   facility: Facility;

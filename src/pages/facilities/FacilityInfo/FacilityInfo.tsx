@@ -1,25 +1,16 @@
-import type { Facility } from "../../types/facility.types";
-import { facilitiesMock } from "../../data/facilities.mock";
-import { findFacilityById } from "../../utils/facility.utils";
+import type { Facility } from "../types/facility.types";
 
-import AppStatusTag from "../../../../components/common/AppStatusTag";
+import AppStatusTag from "../../../components/common/AppStatusTag";
 
 import "./FacilityInfo.css";
 
 interface FacilityInfoProps {
   facility: Facility;
+  parentName?: string;
 }
 
-function FacilityInfo({ facility }: FacilityInfoProps) {
+function FacilityInfo({ facility, parentName = "—" }: FacilityInfoProps) {
   const isActive = facility.isActive;
-
-  // Tìm cơ sở cấp trên
-  const parentFacility = facility.parentId
-    ? findFacilityById(facilitiesMock, facility.parentId)
-    : null;
-
-  // Lấy tên cơ sở cấp trên
-  const parentName = parentFacility?.facilityName ?? "—";
 
   return (
     <section className="facility-info">
@@ -30,16 +21,19 @@ function FacilityInfo({ facility }: FacilityInfoProps) {
       <div className="facility-info-fields">
         <div className="facility-info-field">
           <span className="facility-info-label">Mã cơ sở:</span>
+
           <span className="facility-info-value">{facility.facilityCode}</span>
         </div>
 
         <div className="facility-info-field">
           <span className="facility-info-label">Tên cơ sở:</span>
+
           <span className="facility-info-value">{facility.facilityName}</span>
         </div>
 
         <div className="facility-info-field">
           <span className="facility-info-label">Trực thuộc:</span>
+
           <span className="facility-info-value">{parentName}</span>
         </div>
 

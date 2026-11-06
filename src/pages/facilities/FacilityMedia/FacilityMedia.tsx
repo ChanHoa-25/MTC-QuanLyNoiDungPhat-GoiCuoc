@@ -2,96 +2,138 @@ import { useEffect, useMemo, useState } from "react";
 import { message } from "antd";
 import dayjs from "dayjs";
 import type { Dayjs } from "dayjs";
-import AppSelect from "../../../../components/common/AppSelect";
-import AppSearch from "../../../../components/common/AppSearch";
-import AppDatePicker from "../../../../components/common/AppDatePicker";
-import AppPagination from "../../../../components/common/AppPagination";
-import AppConfirmModal from "../../../../components/common/AppConfirmModal";
-import MediaCard from "./MediaCard";
-import { createFacilityMediaMock } from "../../data/facilitiesMedia.mock";
-import type { FacilityMediaItem } from "../../types/facilityMedia.types";
-import "./FacilityMedia.css";
 
+import AppSelect from "../../../components/common/AppSelect";
+import AppSearch from "../../../components/common/AppSearch";
+import AppDatePicker from "../../../components/common/AppDatePicker";
+import AppPagination from "../../../components/common/AppPagination";
+import AppConfirmModal from "../../../components/common/AppConfirmModal";
 import AppFilter, {
   AppFilterField,
-} from "../../../../components/common/AppFilter";
+} from "../../../components/common/AppFilter";
+
+import MediaCard from "./MediaCard/MediaCard";
+import FacilityMediaFormModal from "./FacilityMediaFormModal/FacilityMediaFormModal";
+
+import { createFacilityMediaMock } from "../data/facilitiesMedia.mock";
+
+import type {
+  FacilityMediaItem,
+  FacilityMediaFormValues,
+  MediaType,
+} from "../types/facilityMedia.types";
+
+import "./FacilityMedia.css";
 
 interface FacilityMediaProps {
   facilityId: string;
-
   selectedIds: string[];
-
   onSelectionChange: (ids: string[]) => void;
-
   openCreate: boolean;
-
   onCloseCreate: () => void;
-
   deleteRequestId: number;
-
   approveRequestId: number;
-
   onShare?: (media: FacilityMediaItem) => void;
 }
 
 const PAGE_SIZE = 8;
 
+// Lưu mock theo từng cơ sở trong phiên chạy ứng dụng
+const mediaStore = new Map<string, FacilityMediaItem[]>();
+
+function getFacilityMedia(facilityId: string) {
+  if (!mediaStore.has(facilityId)) {
+    mediaStore.set(facilityId, createFacilityMediaMock(facilityId));
+  }
+
+  return mediaStore.get(facilityId)!;
+}
+
+function getMediaType(file: File): MediaType {
+  if (file.type.startsWith("video/")) return "video";
+  if (file.type.startsWith("audio/")) return "audio";
+  return "image";
+}
+
+function getTypeFromUrl(url: string): MediaType {
+  const path = url.split("?")[0].toLowerCase();
+
+  if (/\.(mp3|wav|ogg|aac|m4a)$/.test(path)) {
+    return "audio";
+  }
+
+  if (/\.(jpg|jpeg|png|gif|webp|svg)$/.test(path)) {
+    return "image";
+  }
+
+  return "video";
+}
+
 function FacilityMedia({
   facilityId,
-
   selectedIds,
-
   onSelectionChange,
-
   openCreate,
-
   onCloseCreate,
-
   deleteRequestId,
-
   approveRequestId,
-
   onShare,
 }: FacilityMediaProps) {
   const [mediaList, setMediaList] = useState<FacilityMediaItem[]>(() =>
-    createFacilityMediaMock(facilityId),
+    getFacilityMedia(facilityId),
   );
 
   const [category, setCategory] = useState("all");
-
   const [mediaType, setMediaType] = useState("all");
-
   const [sourceStatus, setSourceStatus] = useState("all");
-
   const [createdDate, setCreatedDate] = useState<Dayjs | null>(null);
-
   const [keyword, setKeyword] = useState("");
-
   const [currentPage, setCurrentPage] = useState(1);
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  useEffect(() => {
-    setMediaList(createFacilityMediaMock(facilityId));
+  const [editMedia, setEditMedia] = useState<FacilityMediaItem | null>(null);
 
+  const [saving, setSaving] = useState(false);
+
+  const updateMedia = (
+    updater: (previous: FacilityMediaItem[]) => FacilityMediaItem[],
+  ) => {
+    const next = updater(getFacilityMedia(facilityId));
+    mediaStore.set(facilityId, next);
+    setMediaList(next);
+  };
+
+  useEffect(() => {
+    setMediaList(getFacilityMedia(facilityId));
     setCategory("all");
     setMediaType("all");
     setSourceStatus("all");
     setCreatedDate(null);
     setKeyword("");
-
-    onSelectionChange([]);
     setCurrentPage(1);
     setDeleteModalOpen(false);
+    setEditMedia(null);
+    onSelectionChange([]);
+    // Reset khi thay đổi cơ sở
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [facilityId]);
 
   const categoryOptions = useMemo(() => {
-    const categories = [...new Set(mediaList.map((media) => media.category))];
+    const categories = [
+      "Tin tức",
+      "Thể dục dưỡng sinh",
+      "Văn nghệ giải trí",
+      "Giáo dục",
+    ];
+
+    const all = [
+      ...new Set([...categories, ...mediaList.map((media) => media.category)]),
+    ];
 
     return [
       { value: "all", label: "Tất cả" },
-
-      ...categories.map((item) => ({
+      ...all.map((item) => ({
         value: item,
         label: item,
       })),
@@ -128,111 +170,201 @@ function FacilityMedia({
   }, [mediaList, category, mediaType, sourceStatus, createdDate, keyword]);
 
   const total = filteredMedia.length;
-
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
-
   const safePage = Math.min(currentPage, totalPages);
 
   const paginatedMedia = useMemo(() => {
     const start = (safePage - 1) * PAGE_SIZE;
-
     return filteredMedia.slice(start, start + PAGE_SIZE);
   }, [filteredMedia, safePage]);
 
   const handleSelect = (id: string, checked: boolean) => {
-    const nextSelectedIds = checked
+    const next = checked
       ? [...new Set([...selectedIds, id])]
       : selectedIds.filter((item) => item !== id);
 
-    onSelectionChange(nextSelectedIds);
+    onSelectionChange(next);
   };
 
   const handleConfirmDelete = () => {
     if (selectedIds.length === 0) {
       setDeleteModalOpen(false);
-
       return;
     }
 
-    setMediaList((previous) =>
+    updateMedia((previous) =>
       previous.filter((media) => !selectedIds.includes(media.id)),
     );
 
     onSelectionChange([]);
-
     setDeleteModalOpen(false);
-
     message.success("Xóa Media thành công");
   };
 
   const handleApproveMedia = () => {
     if (selectedIds.length === 0) {
       message.warning("Vui lòng chọn Media cần duyệt");
-
       return;
     }
 
-    setMediaList((previous) =>
+    const pendingIds = selectedIds.filter((id) =>
+      mediaList.some((media) => media.id === id && media.status === "pending"),
+    );
+
+    if (pendingIds.length === 0) {
+      message.info("Các Media đã chọn đều đã được duyệt");
+      return;
+    }
+
+    updateMedia((previous) =>
       previous.map((media) =>
-        selectedIds.includes(media.id)
+        pendingIds.includes(media.id)
           ? { ...media, status: "approved" }
           : media,
       ),
     );
 
     onSelectionChange([]);
-
     message.success("Duyệt Media thành công");
   };
 
-  useEffect(() => {
-    if (!openCreate) return;
+  const handleSaveMedia = async (values: FacilityMediaFormValues) => {
+    setSaving(true);
 
-    message.info("Chức năng thêm Media đang được phát triển");
+    try {
+      if (editMedia) {
+        const existing = editMedia;
 
-    onCloseCreate();
-  }, [openCreate]);
+        const newUrl = values.file
+          ? URL.createObjectURL(values.file)
+          : undefined;
+
+        const updated: FacilityMediaItem = {
+          ...existing,
+          title: values.title,
+          category: values.category,
+          type: values.file ? getMediaType(values.file) : existing.type,
+          sizeMB: values.file
+            ? Number((values.file.size / (1024 * 1024)).toFixed(2))
+            : existing.sizeMB,
+          url: newUrl ?? existing.url,
+          fileName: values.file ? values.file.name : existing.fileName,
+          mimeType: values.file ? values.file.type : existing.mimeType,
+          contentValue: values.contentValue ?? existing.contentValue,
+          thumbnail: values.file?.type.startsWith("image/")
+            ? newUrl!
+            : existing.thumbnail,
+        };
+
+        updateMedia((previous) =>
+          previous.map((media) => (media.id === existing.id ? updated : media)),
+        );
+
+        setEditMedia(null);
+        message.success("Cập nhật Media thành công");
+      } else {
+        const newUrl = values.file
+          ? URL.createObjectURL(values.file)
+          : (values.contentValue ?? "");
+
+        const type = values.file
+          ? getMediaType(values.file)
+          : values.contentType === "frequency"
+            ? "audio"
+            : getTypeFromUrl(newUrl);
+
+        const newMedia: FacilityMediaItem = {
+          id: `${facilityId}-media-${crypto.randomUUID()}`,
+          facilityId,
+          title: values.title,
+          category: values.category,
+          type,
+          status: "pending",
+          sourceStatus: "active",
+          createdAt: new Date().toISOString(),
+          createdBy: "Người dùng hiện tại",
+          sizeMB: values.file
+            ? Number((values.file.size / (1024 * 1024)).toFixed(2))
+            : 0,
+          thumbnail: values.file?.type.startsWith("image/")
+            ? newUrl
+            : (mediaList[0]?.thumbnail ?? ""),
+          url: values.contentType === "frequency" ? undefined : newUrl,
+          contentType: values.contentType,
+          contentValue: values.contentValue,
+          fileName: values.file?.name,
+          mimeType: values.file?.type,
+        };
+
+        updateMedia((previous) => [newMedia, ...previous]);
+
+        onCloseCreate();
+        setCurrentPage(1);
+        message.success("Thêm Media thành công");
+      }
+    } catch {
+      message.error("Không thể lưu Media");
+    } finally {
+      setSaving(false);
+    }
+  };
 
   useEffect(() => {
     if (deleteRequestId <= 0) return;
 
     if (selectedIds.length === 0) {
       message.warning("Vui lòng chọn Media cần xóa");
-
       return;
     }
 
     setDeleteModalOpen(true);
+    // Mỗi lần nhấn xóa sẽ tăng request ID
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [deleteRequestId]);
 
   useEffect(() => {
     if (approveRequestId <= 0) return;
 
     handleApproveMedia();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [approveRequestId]);
 
   const handleViewMedia = (media: FacilityMediaItem) => {
-    message.info(`Xem chi tiết: ${media.title}`);
+    if (!media.url) {
+      message.info("Media này chưa có nội dung để xem trước");
+      return;
+    }
+
+    window.open(media.url, "_blank", "noopener,noreferrer");
   };
 
   const handleEditMedia = (media: FacilityMediaItem) => {
-    message.info(`Chỉnh sửa: ${media.title}`);
+    setEditMedia(media);
   };
 
   const handleShareMedia = (media: FacilityMediaItem) => {
-    console.log("Media được chia sẻ:", media);
-
     onShare?.(media);
   };
 
   const handleDownloadMedia = (media: FacilityMediaItem) => {
     if (!media.url) {
       message.warning("Media chưa có đường dẫn tải xuống");
-
       return;
     }
 
-    window.open(media.url, "_blank", "noopener,noreferrer");
+    if (media.contentType === "frequency") {
+      message.warning("Media tần số không có file để tải xuống");
+      return;
+    }
+
+    const link = document.createElement("a");
+    link.href = media.url;
+    link.download = media.fileName ?? media.title;
+    link.rel = "noopener noreferrer";
+    link.target = "_blank";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
   };
 
   return (
@@ -244,14 +376,12 @@ function FacilityMedia({
           <AppFilter gap={18} showActions={false}>
             <AppFilterField width={210}>
               <label>Lĩnh vực</label>
-
               <AppSelect
                 width="100%"
                 value={category}
                 options={categoryOptions}
                 onChange={(value) => {
                   setCategory(value);
-
                   setCurrentPage(1);
                 }}
               />
@@ -259,22 +389,17 @@ function FacilityMedia({
 
             <AppFilterField width={210}>
               <label>Loại media</label>
-
               <AppSelect
                 width="100%"
                 value={mediaType}
                 options={[
                   { value: "all", label: "Tất cả" },
-
                   { value: "video", label: "Video" },
-
                   { value: "image", label: "Hình ảnh" },
-
                   { value: "audio", label: "Âm thanh" },
                 ]}
                 onChange={(value) => {
                   setMediaType(value);
-
                   setCurrentPage(1);
                 }}
               />
@@ -282,20 +407,19 @@ function FacilityMedia({
 
             <AppFilterField width={210}>
               <label>Trạng thái nguồn thông tin</label>
-
               <AppSelect
                 width="100%"
                 value={sourceStatus}
                 options={[
                   { value: "all", label: "Tất cả" },
-
                   { value: "active", label: "Hoạt động" },
-
-                  { value: "inactive", label: "Ngưng hoạt động" },
+                  {
+                    value: "inactive",
+                    label: "Ngưng hoạt động",
+                  },
                 ]}
                 onChange={(value) => {
                   setSourceStatus(value);
-
                   setCurrentPage(1);
                 }}
               />
@@ -303,13 +427,11 @@ function FacilityMedia({
 
             <AppFilterField width={210}>
               <label>Ngày tạo</label>
-
               <AppDatePicker
                 width="100%"
                 value={createdDate}
                 onChange={(date) => {
                   setCreatedDate(dayjs.isDayjs(date) ? date : null);
-
                   setCurrentPage(1);
                 }}
               />
@@ -317,14 +439,12 @@ function FacilityMedia({
 
             <AppFilterField width={226}>
               <label>Từ khóa</label>
-
               <AppSearch
                 width="100%"
                 placeholder="Tên media/người tạo"
                 value={keyword}
                 onChange={(value) => {
                   setKeyword(value);
-
                   setCurrentPage(1);
                 }}
               />
@@ -362,6 +482,29 @@ function FacilityMedia({
           />
         </div>
       </section>
+
+      <FacilityMediaFormModal
+        open={openCreate}
+        mode="create"
+        categories={categoryOptions
+          .filter((option) => option.value !== "all")
+          .map((option) => option.value)}
+        loading={saving}
+        onCancel={onCloseCreate}
+        onSubmit={handleSaveMedia}
+      />
+
+      <FacilityMediaFormModal
+        open={editMedia !== null}
+        mode="edit"
+        initialValues={editMedia}
+        categories={categoryOptions
+          .filter((option) => option.value !== "all")
+          .map((option) => option.value)}
+        loading={saving}
+        onCancel={() => setEditMedia(null)}
+        onSubmit={handleSaveMedia}
+      />
 
       <AppConfirmModal
         open={deleteModalOpen}

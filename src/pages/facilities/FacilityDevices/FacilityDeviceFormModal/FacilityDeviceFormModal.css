@@ -7,6 +7,9 @@
   grid-template-columns: repeat(2, minmax(0, 1fr));
   column-gap: 80px;
 }
+.facility-device-form-modal .ant-modal-title {
+  color: var(--color-primary);
+}
 
 .facility-device-form-modal__column {
   display: flex;

@@ -1,0 +1,300 @@
+.template-form {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr);
+  gap: 20px;
+  width: 100%;
+  min-width: 0;
+  min-height: 770px;
+  font-family: var(--font-family);
+}
+
+/* SIDEBAR VÀ WORKSPACE */
+
+.template-form__sidebar,
+.template-form__workspace {
+  min-width: 0;
+  background: #ffffff;
+  border-radius: 12px;
+}
+
+/* SIDEBAR */
+
+.template-form__sidebar {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  max-height: 770px;
+  overflow: hidden;
+}
+
+.template-form__sidebar h2 {
+  margin: 0 0 18px;
+  color: #e85e15;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.template-form__fields .ant-form-item {
+  margin-bottom: 14px;
+}
+
+.template-form__fields .ant-form-item-label > label {
+  color: #444;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.template-form__fields .ant-input,
+.template-form__fields .ant-input-number,
+.template-form__properties .ant-input-number {
+  width: 100%;
+  height: 40px;
+  border-color: #c2c2c2;
+  border-radius: 6px;
+}
+
+.template-form__fields .ant-input-number-input,
+.template-form__properties .ant-input-number-input {
+  height: 38px;
+}
+
+.template-form__field-group {
+  margin-bottom: 14px;
+}
+
+.template-form__field-group > label,
+.template-form__property-group > label {
+  display: block;
+  margin-bottom: 8px;
+  color: #444;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.template-form__two-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.template-form__two-inputs .ant-form-item {
+  margin-bottom: 0;
+}
+
+.template-form__required-note {
+  margin: 0 0 14px;
+  color: #aaa;
+  font-size: 11px;
+}
+
+.template-form__required-note span {
+  color: #ff4d4f;
+}
+
+.template-form__sources {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+
+.template-form__sources h3 {
+  margin: 0;
+  color: #444;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* WORKSPACE */
+
+.template-form__workspace {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px;
+}
+
+/* PREVIEW VÀ DANH SÁCH LAYER */
+
+.template-form__design {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 130px;
+  align-items: start;
+  gap: 20px;
+  width: 100%;
+  min-width: 0;
+}
+
+.template-form__editor {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.template-form__editor .template-preview {
+  width: 100%;
+  min-width: 0;
+}
+
+/* HÀNG THUỘC TÍNH */
+
+.template-form__properties {
+  display: grid;
+  grid-template-columns:
+    minmax(0, 2fr)
+    minmax(0, 2fr)
+    minmax(0, 1fr)
+    minmax(90px, 1fr);
+  align-items: end;
+  gap: 12px;
+  width: 100%;
+  min-width: 0;
+}
+
+.template-form__property-group {
+  min-width: 0;
+}
+
+.template-form__properties .template-form__two-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.template-form__properties .ant-input-number {
+  width: 100%;
+  min-width: 0;
+  height: 40px;
+}
+
+/* NÚT TRÌNH CHIẾU */
+
+.template-form__present-action {
+  display: flex;
+  align-items: flex-end;
+  min-width: 0;
+}
+
+.template-form__present-action .app-button.app-button--primary {
+  width: 100%;
+  min-width: 0;
+  height: 40px;
+  background: #f26d21;
+  border-color: #f26d21;
+  color: #ffffff;
+}
+
+.template-form__present-action .app-button.app-button--primary:hover,
+.template-form__present-action .app-button.app-button--primary:focus {
+  background: #e85e15;
+  border-color: #e85e15;
+  color: #ffffff;
+}
+
+/* NÚT HỦY - LƯU - CHỈNH SỬA */
+
+.template-form__actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 32px;
+  margin-top: auto;
+  padding-top: 28px;
+}
+
+.template-form__actions .app-button.app-button--primary {
+  background-color: #f26d21;
+  border-color: #f26d21;
+  color: #ffffff;
+}
+
+.template-form__actions .app-button.app-button--primary:hover,
+.template-form__actions .app-button.app-button--primary:focus,
+.template-form__actions .app-button.app-button--primary:active {
+  background-color: #e85e15;
+  border-color: #e85e15;
+  color: #ffffff;
+}
+
+/* MODAL TRÌNH CHIẾU */
+
+.template-form__presentation-modal .ant-modal-content {
+  padding: 24px;
+}
+
+.template-form__presentation {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 50vh;
+  max-height: 80vh;
+  overflow: auto;
+  background: #111111;
+  border-radius: 8px;
+}
+
+.template-form__presentation .template-preview {
+  width: 100%;
+  max-width: 100%;
+  max-height: 75vh;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 1400px) {
+  .template-form {
+    grid-template-columns: 300px minmax(0, 1fr);
+    gap: 14px;
+  }
+
+  .template-form__design {
+    grid-template-columns: minmax(0, 1fr) 100px;
+    gap: 12px;
+  }
+
+  .template-form__properties {
+    grid-template-columns:
+      minmax(0, 2fr)
+      minmax(0, 2fr)
+      minmax(0, 1fr)
+      minmax(80px, 1fr);
+    gap: 8px;
+  }
+
+  .template-form__properties .template-form__two-inputs {
+    gap: 6px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .template-form {
+    grid-template-columns: 1fr;
+  }
+
+  .template-form__sidebar {
+    max-height: none;
+  }
+
+  .template-form__sources {
+    max-height: 440px;
+  }
+}
+
+@media (max-width: 600px) {
+  .template-form__design {
+    grid-template-columns: minmax(0, 1fr) 75px;
+  }
+
+  .template-form__properties {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .template-form__actions {
+    gap: 12px;
+  }
+}

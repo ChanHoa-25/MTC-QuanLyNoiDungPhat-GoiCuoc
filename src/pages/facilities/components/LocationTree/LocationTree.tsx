@@ -49,8 +49,12 @@ function LocationTree({
   onSelect,
   onAction,
 }: LocationTreeProps) {
-  const [expandedIds, setExpandedIds] = useState<string[]>(["hcm", "thu-duc"]);
+  // Mặc định mở rộng các cơ sở cấp gốc
+  const [expandedIds, setExpandedIds] = useState<string[]>(() =>
+    facilities.map((facility) => facility.id),
+  );
 
+  // Tự động mở rộng các cơ sở cha khi chọn cơ sở con
   useEffect(() => {
     if (!selectedId) return;
 
@@ -71,6 +75,7 @@ function LocationTree({
     );
   };
 
+  // Menu thao tác với cơ sở
   const getMenuItems = (facility: Facility): MenuProps["items"] => [
     {
       key: "create",
@@ -89,6 +94,7 @@ function LocationTree({
     },
   ];
 
+  // Nút thao tác ba chấm
   const renderMoreButton = (facility: Facility, isRoot = false) => (
     <Dropdown
       menu={{ items: getMenuItems(facility) }}
@@ -105,6 +111,7 @@ function LocationTree({
     </Dropdown>
   );
 
+  // Render đệ quy các cơ sở con
   const renderNode = (facility: Facility) => {
     const hasChildren = Boolean(facility.children?.length);
     const expanded = isExpanded(facility.id);
@@ -139,6 +146,7 @@ function LocationTree({
             type="button"
             className="location-name"
             title={facility.facilityName}
+            aria-current={selected ? "true" : undefined}
             onClick={() => onSelect(facility)}>
             {facility.facilityName}
           </button>
@@ -159,10 +167,14 @@ function LocationTree({
     <aside className="location-tree">
       {facilities.map((root) => {
         const expanded = isExpanded(root.id);
+        const selected = selectedId === root.id;
 
         return (
           <div key={root.id} className="location-root-block">
-            <div className="location-root-header">
+            <div
+              className={`location-root-header ${
+                selected ? "is-selected" : ""
+              }`}>
               <button
                 type="button"
                 className="location-root-expand"
@@ -179,8 +191,9 @@ function LocationTree({
               <button
                 type="button"
                 className="location-root-name"
-                onClick={() => onSelect(root)}
-                title={root.facilityName}>
+                title={root.facilityName}
+                aria-current={selected ? "true" : undefined}
+                onClick={() => onSelect(root)}>
                 <EnvironmentOutlined />
                 <span>{root.facilityName}</span>
               </button>

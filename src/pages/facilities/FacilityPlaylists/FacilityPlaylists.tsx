@@ -7,16 +7,17 @@ import dayjs from "dayjs";
 
 import AppFilter, {
   AppFilterField,
-} from "../../../../components/common/AppFilter";
-import AppSelect from "../../../../components/common/AppSelect";
-import AppTable from "../../../../components/common/AppTable";
-import AppTableActions from "../../../../components/common/AppTableActions";
-import AppDateRangePicker from "../../../../components/common/AppDateRangePicker";
-import type { DateRangeValue } from "../../../../components/common/AppDateRangePicker";
+} from "../../../components/common/AppFilter";
+import AppSelect from "../../../components/common/AppSelect";
+import AppTable from "../../../components/common/AppTable";
+import AppTableActions from "../../../components/common/AppTableActions";
+import AppDateRangePicker from "../../../components/common/AppDateRangePicker";
+import type { DateRangeValue } from "../../../components/common/AppDateRangePicker";
 
-import { createFacilityPlaylistsMock } from "../../data/facilitiesPlaylists.mock";
-import type { FacilityPlaylist } from "../../types/facilityPlaylist.types";
-import type { Facility } from "../../types/facility.types";
+import { createFacilityPlaylistsMock } from "../data/facilitiesPlaylists.mock";
+import type { FacilityPlaylist } from "../types/facilityPlaylist.types";
+import type { Facility } from "../types/facility.types";
+import { useNavigate } from "react-router-dom";
 
 import "./FacilityPlaylists.css";
 
@@ -54,6 +55,7 @@ function FacilityPlaylists({
   deleteRequestId = 0,
   onDeleteComplete = () => {},
 }: FacilityPlaylistsProps) {
+  const navigate = useNavigate();
   const [playlists, setPlaylists] = useState<FacilityPlaylist[]>(() =>
     createFacilityPlaylistsMock(facility.id),
   );
@@ -214,7 +216,7 @@ function FacilityPlaylists({
               icon: <Info />,
               tooltip: "Xem chi tiết danh sách phát",
               onClick: () => {
-                message.info(`Chi tiết: ${record.name}`);
+                navigate(`/facilities/${facility.id}/playlists/${record.id}`);
               },
             },
           ]}

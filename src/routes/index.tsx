@@ -15,6 +15,7 @@ import EditProfile from "../pages/profile/EditProfile";
 import RenewalHistoryPage from "../pages/profile/RenewalHistoryPage";
 
 import FacilitiesPage from "../pages/facilities";
+import FacilityPlaylistDetail from "../pages/facilities/FacilityPlaylists/FacilityPlaylistDetail";
 import DevicesPage from "../pages/devices";
 
 import DeviceDetailPage from "../pages/devices/DeviceDetailPage";
@@ -27,6 +28,7 @@ import ComingSoonPage from "../pages/ComingSoonPage";
 
 import { ROUTES } from "../constants/route.constants";
 import ReportsPage from "../pages/reports/ReportsPage";
+import FacilityTemplateFormPage from "../pages/facilities/FacilityTemplates/FacilityTemplateFormPage";
 
 export const routes: RouteObject[] = [
   {
@@ -82,6 +84,30 @@ export const routes: RouteObject[] = [
       {
         path: ROUTES.FACILITIES,
         element: <FacilitiesPage />,
+      },
+
+      // Chi tiết danh sách phát
+      {
+        path: "facilities/:facilityId/playlists/:playlistId",
+        element: <FacilityPlaylistDetail />,
+      },
+
+      // Thêm mới bản mẫu
+      {
+        path: "facilities/:facilityId/templates/create",
+        element: <FacilityTemplateFormPage mode="create" />,
+      },
+
+      // Chỉnh sửa bản mẫu
+      {
+        path: "facilities/:facilityId/templates/:templateId/edit",
+        element: <FacilityTemplateFormPage mode="edit" />,
+      },
+
+      // Chi tiết bản mẫu
+      {
+        path: "facilities/:facilityId/templates/:templateId",
+        element: <FacilityTemplateFormPage mode="view" />,
       },
 
       {
