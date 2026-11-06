@@ -1,0 +1,212 @@
+/* ========================================
+   BROADCAST REPORT - CONTAINER
+======================================== */
+
+.broadcast-report {
+  display: flex;
+  flex-direction: column;
+
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+
+  padding: 24px;
+  box-sizing: border-box;
+
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+/* ========================================
+   HEADING
+======================================== */
+
+.broadcast-report__heading {
+  flex-shrink: 0;
+  margin: 0;
+
+  font-family: "Open Sans", sans-serif;
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 31px;
+  color: #e05200;
+}
+
+/* ========================================
+   FILTER
+======================================== */
+
+.broadcast-report__filter {
+  flex-shrink: 0;
+
+  margin-top: 20px;
+  margin-bottom: 24px;
+
+  max-width: 100%;
+}
+
+.broadcast-report__label {
+  display: block;
+  margin-bottom: 8px;
+
+  font-family: "Open Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+  color: #4d4d4d;
+}
+
+/* ========================================
+   BODY
+======================================== */
+
+.broadcast-report__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 20px;
+
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+
+  overflow: hidden;
+}
+
+/* ========================================
+   TABLE
+======================================== */
+
+.broadcast-report__table {
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.broadcast-report__table .ant-table-wrapper {
+  width: 100%;
+  min-width: 0;
+}
+
+.broadcast-report__table .ant-table {
+  width: 100%;
+
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+  color: #666666;
+}
+
+.broadcast-report__table .ant-table-thead > tr > th {
+  height: 44px;
+  padding: 10px 8px;
+
+  background: #fce2d3;
+  color: #f26d21;
+
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 19px;
+
+  text-align: center;
+}
+
+.broadcast-report__table .ant-table-tbody > tr > td {
+  height: 44px;
+  padding: 8px;
+
+  background: rgba(246, 246, 246, 0.5);
+  border-bottom: 8px solid #ffffff;
+
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+  line-height: 19px;
+  color: #666666;
+}
+
+.broadcast-report__table .ant-table-tbody > tr:hover > td {
+  background: #fff1e8 !important;
+}
+
+.broadcast-report__table .ant-pagination {
+  margin-top: 20px;
+}
+
+/* ========================================
+   CHARTS
+======================================== */
+
+.broadcast-report__charts {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.broadcast-report__charts .report-charts {
+  height: 100%;
+  min-height: 0;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+
+@media (max-width: 1400px) {
+  .broadcast-report {
+    padding: 20px;
+  }
+
+  .broadcast-report__body {
+    gap: 16px;
+  }
+
+  .broadcast-report__table .ant-table {
+    font-size: 12px;
+  }
+
+  .broadcast-report__table .ant-table-thead > tr > th,
+  .broadcast-report__table .ant-table-tbody > tr > td {
+    padding-left: 6px;
+    padding-right: 6px;
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 1100px) {
+  .broadcast-report__body {
+    grid-template-columns: minmax(0, 1fr);
+    overflow-y: auto;
+  }
+
+  .broadcast-report__table {
+    overflow-x: auto;
+    overflow-y: visible;
+  }
+
+  .broadcast-report__charts {
+    min-height: 320px;
+  }
+}
+
+@media (max-width: 768px) {
+  .broadcast-report {
+    padding: 16px;
+  }
+
+  .broadcast-report__heading {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .broadcast-report__filter {
+    margin-top: 16px;
+    margin-bottom: 16px;
+  }
+}

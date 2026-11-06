@@ -1,0 +1,128 @@
+.report-charts {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  padding-right: 6px;
+  box-sizing: border-box;
+}
+
+.report-charts::-webkit-scrollbar {
+  width: 4px;
+}
+
+.report-charts::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.report-charts::-webkit-scrollbar-thumb {
+  background: #c4c4c4;
+  border-radius: 16px;
+}
+
+.report-charts__card {
+  position: relative;
+  flex: 0 0 270px;
+
+  width: 100%;
+  min-width: 0;
+  height: 270px;
+
+  background: rgba(246, 246, 246, 0.5);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+/* Biểu đồ cột */
+.report-charts__bar-layout {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+
+  width: 100%;
+  height: 100%;
+  padding: 16px 12px;
+  box-sizing: border-box;
+}
+
+.report-charts__bar {
+  flex: 1;
+  min-width: 0;
+  height: 238px;
+}
+
+.report-charts__legend {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 0 0 120px;
+}
+
+.report-charts__legend-item,
+.report-charts__circle-legend {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+
+  font-family: "Open Sans", sans-serif;
+  font-size: 12px;
+  line-height: 16px;
+  color: #666666;
+}
+
+.report-charts__legend-color {
+  display: inline-block;
+  flex: 0 0 12px;
+
+  width: 12px;
+  height: 12px;
+
+  border-radius: 2px;
+}
+
+/* Biểu đồ tròn */
+.report-charts__circle-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.report-charts__circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: min(216px, 55%);
+  aspect-ratio: 1;
+
+  border: 1.5px solid;
+  border-radius: 50%;
+
+  font-family: "Open Sans", sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.report-charts__circle-legend {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+
+@media (max-width: 600px) {
+  .report-charts__legend {
+    flex-basis: 90px;
+  }
+
+  .report-charts__legend-item {
+    font-size: 10px;
+  }
+}
