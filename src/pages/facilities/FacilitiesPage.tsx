@@ -14,22 +14,27 @@ import type { AppActionPanelItem } from "../../components/common/AppActionPanel"
 import { useFacilityContext } from "../../contexts/FacilityContext";
 import { useActionPanel } from "../../contexts/ActionPanelContext";
 import LocationTree from "./components/LocationTree/LocationTree";
-import FacilityInfo from "./components/FacilityInfo/FacilityInfo";
+import FacilityInfo from "./FacilityInfo/FacilityInfo";
 import FacilityFormModal from "./components/FacilityFormModal";
-import FacilityUsers from "./components/FacilityUsers";
-import FacilityDevices from "./components/FacilityDevices";
-import DeviceVolumeControl from "./components/DeviceVolumeControl/DeviceVolumeControl";
-import FacilityTemplates from "./components/FacilityTemplates";
-import FacilityPlaylists from "./components/FacilityPlaylists/FacilityPlaylists";
-import FacilityMedia from "./components/FacilityMedia";
-import type { FacilityFormValues } from "./types/facility.types";
+
+import FacilityUsers from "./FacilityUsers";
+import FacilityDevices from "./FacilityDevices";
+import DeviceVolumeControl from "./FacilityDevices/DeviceVolumeControl/DeviceVolumeControl";
+
+import FacilityTemplates from "./FacilityTemplates";
+import FacilityPlaylists from "./FacilityPlaylists";
+import FacilityMedia from "./FacilityMedia";
+
+import FacilitiesShareModal from "./FacilityMedia/FacilitiesShareModal";
+
 import type {
   Facility,
   FacilityAction,
   FacilityTab,
   FacilityTabKey,
+  FacilityFormValues,
 } from "./types/facility.types";
-import FacilitiesShareModal from "./components/FacilitiesShareModal";
+
 import { findFacilityById } from "./utils/facility.utils";
 import "./FacilitiesPage.css";
 const facilityTabs: FacilityTab[] = [
@@ -422,8 +427,18 @@ function FacilitiesPage() {
       );
     }
     switch (activeTab) {
-      case "info":
-        return <FacilityInfo facility={selectedFacility} />;
+      case "info": {
+        const parentFacility = selectedFacility.parentId
+          ? findFacilityById(facilities, selectedFacility.parentId)
+          : null;
+
+        return (
+          <FacilityInfo
+            facility={selectedFacility}
+            parentName={parentFacility?.facilityName ?? "—"}
+          />
+        );
+      }
       case "users":
         return (
           <FacilityUsers

@@ -1,10 +1,9 @@
-// Loại media
 export type MediaType = "video" | "image" | "audio";
 
-// Trạng thái duyệt media
 export type MediaStatus = "approved" | "pending";
 
-// Thông tin media thuộc cơ sở
+export type MediaContentType = "file" | "live" | "url" | "frequency";
+
 export interface FacilityMediaItem {
   id: string;
   facilityId: string;
@@ -18,4 +17,17 @@ export interface FacilityMediaItem {
   sizeMB: number;
   thumbnail: string;
   url?: string;
+
+  contentType?: MediaContentType;
+  contentValue?: string;
+  fileName?: string;
+  mimeType?: string;
+}
+
+export interface FacilityMediaFormValues {
+  title: string;
+  category: string;
+  contentType: MediaContentType;
+  contentValue?: string;
+  file?: File | null;
 }

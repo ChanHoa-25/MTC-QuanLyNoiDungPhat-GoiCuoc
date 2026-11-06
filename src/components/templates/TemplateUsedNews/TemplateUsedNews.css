@@ -1,0 +1,83 @@
+.template-used-news {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  min-width: 0;
+  min-height: 600px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  font-family: var(--font-family);
+}
+
+/* TIÊU ĐỀ */
+.template-used-news__title {
+  margin: 0;
+  color: #f26d21;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+/* BỘ LỌC */
+.template-used-news__filters {
+  width: 100%;
+  min-width: 0;
+}
+.template-used-news__filters .ant-form-item {
+  margin-bottom: 0;
+}
+.template-used-news__filters .ant-form-item-label {
+  padding-bottom: 6px;
+}
+.template-used-news__filters .ant-form-item-label > label {
+  color: #444444;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* BẢNG */
+.template-used-news__table {
+  width: 100%;
+  min-width: 0;
+}
+.template-used-news__table .ant-table {
+  font-size: 13px;
+}
+.template-used-news__table .ant-table-thead > tr > th {
+  color: #f26d21;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.template-used-news__table .ant-table-tbody > tr > td {
+  font-size: 12px;
+  color: #555555;
+  vertical-align: middle;
+}
+.template-used-news .ant-table-wrapper {
+  min-width: 0;
+}
+.template-used-news .ant-table-container {
+  overflow: hidden;
+}
+
+/* RESPONSIVE */
+@media (max-width: 1200px) {
+  .template-used-news {
+    padding: 16px;
+    gap: 12px;
+  }
+  .template-used-news__title {
+    font-size: 18px;
+  }
+}
+@media (max-width: 768px) {
+  .template-used-news {
+    padding: 12px;
+  }
+  .template-used-news__filters {
+    flex-wrap: wrap;
+  }
+}

@@ -20,7 +20,9 @@ const categories = [
 
 const mediaTypes: FacilityMediaItem["type"][] = ["video", "image", "audio"];
 
-const DEFAULT_THUMBNAIL = "/src/assets/images/media.png";
+import defaultThumbnail from "../../../assets/images/media.png";
+
+const DEFAULT_THUMBNAIL = defaultThumbnail;
 
 export function createFacilityMediaMock(
   facilityId: string,

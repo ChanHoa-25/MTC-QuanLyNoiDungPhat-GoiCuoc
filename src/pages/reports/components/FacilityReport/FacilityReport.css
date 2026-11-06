@@ -1,0 +1,164 @@
+.facility-report {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: 24px;
+  box-sizing: border-box;
+
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.facility-report__content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 24px;
+
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+}
+
+.facility-report__left,
+.facility-report__right {
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Vùng biểu đồ bên phải */
+.facility-report__right {
+  padding-top: 137px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.facility-report__heading {
+  margin: 0;
+
+  font-family: "Open Sans", sans-serif;
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 31px;
+  color: #e05200;
+}
+
+.facility-report__filter {
+  margin-top: 16px;
+  max-width: 100%;
+}
+
+.facility-report__label {
+  display: block;
+  margin-bottom: 8px;
+
+  font-family: "Open Sans", sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+  color: #4d4d4d;
+}
+
+.facility-report__search {
+  margin-top: 8px;
+  width: min(400px, 100%);
+  max-width: 100%;
+}
+
+.facility-report__table-section {
+  margin-top: 16px;
+
+  width: min(449px, 100%);
+  max-width: 100%;
+  min-width: 0;
+}
+
+.facility-report__table-section .facility-report__heading {
+  margin-bottom: 18px;
+}
+
+.facility-report__table-section .ant-table-wrapper {
+  width: 100%;
+  min-width: 0;
+}
+
+.facility-report__table-section .ant-table {
+  width: 100%;
+  table-layout: fixed;
+
+  font-family: "Open Sans", sans-serif;
+  font-size: 14px;
+  color: #666666;
+}
+
+/* Table Header */
+.facility-report__table-section .ant-table-thead > tr > th {
+  height: 44px;
+  padding: 12px 8px;
+
+  background: #fce2d3;
+  color: #f26d21;
+
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* Table Body */
+.facility-report__table-section .ant-table-tbody > tr > td {
+  height: 44px;
+  padding: 8px;
+
+  background: rgba(246, 246, 246, 0.5);
+  border-bottom: 8px solid #ffffff;
+}
+
+/* Hover */
+.facility-report__table-section .ant-table-tbody > tr:hover > td {
+  background: #fff1e8 !important;
+}
+
+/* Laptop */
+@media (max-width: 1400px) {
+  .facility-report {
+    padding: 20px;
+  }
+
+  .facility-report__content {
+    gap: 16px;
+  }
+}
+
+/* Màn hình hẹp: chuyển thành 1 cột */
+@media (max-width: 1000px) {
+  .facility-report__content {
+    grid-template-columns: minmax(0, 1fr);
+    overflow-y: auto;
+  }
+
+  .facility-report__right {
+    padding-top: 0;
+    min-height: 300px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .facility-report {
+    padding: 16px;
+  }
+
+  .facility-report__heading {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .facility-report__filter {
+    width: 100%;
+  }
+
+  .facility-report__search {
+    width: 100%;
+  }
+}
