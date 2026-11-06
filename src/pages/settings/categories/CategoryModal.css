@@ -1,0 +1,125 @@
+.category-modal .ant-modal-content {
+  padding: 40px;
+  border-radius: 20px;
+}
+
+.category-modal .ant-modal-close {
+  top: 20px;
+  right: 20px;
+  color: #333333;
+}
+
+.category-modal__title {
+  margin: 0 0 24px;
+  padding-right: 30px;
+  color: #e05200;
+  font-family: var(--font-family);
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 40px;
+}
+
+.category-modal__form .ant-form-item {
+  margin-bottom: 22px;
+}
+
+.category-modal__form .ant-form-item-label {
+  padding-bottom: 10px;
+}
+
+.category-modal__form .ant-form-item-label > label {
+  height: auto;
+  color: #4d4d4d;
+  font-family: var(--font-family);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 26px;
+}
+
+.category-modal__form
+  .ant-form-item-label
+  > label.ant-form-item-required::before {
+  display: none !important;
+}
+
+.category-modal__form
+  .ant-form-item-label
+  > label.ant-form-item-required::after {
+  display: inline-block;
+  margin-left: 2px;
+  color: #ff4d4f;
+  content: "*";
+}
+
+.category-modal__form .app-input {
+  height: 56px;
+  padding: 0 14px;
+  border: 1px solid #c2c2c2;
+  border-radius: 7px;
+  font-size: 16px;
+}
+
+.category-modal__form .app-input::placeholder {
+  color: #c2c2c2;
+}
+
+.category-modal__duplicate {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #faad14;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.category-modal__duplicate svg {
+  flex-shrink: 0;
+}
+
+.category-modal__form .ant-form-item-explain {
+  margin-top: 6px;
+}
+
+.category-modal__note {
+  margin: 0;
+  color: #888888;
+  font-size: 15px;
+  line-height: 24px;
+}
+
+.category-modal__note span {
+  color: #ff4d4f;
+  font-weight: 700;
+}
+
+.category-modal .ant-modal-footer {
+  margin-top: 36px;
+}
+
+.category-modal__footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+  padding-bottom: 4px;
+}
+
+@media (max-width: 576px) {
+  .category-modal .ant-modal-content {
+    padding: 28px 20px;
+  }
+
+  .category-modal__title {
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  .category-modal__footer {
+    gap: 16px;
+  }
+
+  .category-modal__footer .app-button {
+    flex: 1;
+    min-width: 0;
+  }
+}

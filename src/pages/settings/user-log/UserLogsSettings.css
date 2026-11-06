@@ -1,0 +1,104 @@
+.user-logs {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+
+  width: 100%;
+  min-height: 100%;
+  padding: 20px 22px;
+
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(243, 198, 179, 0.2);
+
+  font-family: var(--font-family);
+}
+
+.user-logs__title {
+  margin: 0 0 14px;
+
+  color: #e05200;
+  font-size: 23px;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+.user-logs__filter {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+
+  margin-bottom: 14px;
+}
+
+.user-logs__filter-label {
+  color: #4d4d4d;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.user-logs__table {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+/* Bảng nhật ký */
+.user-logs__table .ant-table-wrapper {
+  width: 100%;
+}
+
+.user-logs__table .ant-table {
+  background: transparent;
+}
+
+.user-logs__table .ant-table-thead > tr > th {
+  padding: 12px 8px;
+
+  color: #f26d21;
+  background: #fce2d5;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.user-logs__table .ant-table-tbody > tr > td {
+  padding: 12px 8px;
+
+  color: #777777;
+  font-size: 13px;
+}
+
+.user-logs__table .ant-table-tbody > tr:nth-child(odd) > td {
+  background: #f8f8f8;
+}
+
+.user-logs__table .ant-table-tbody > tr:nth-child(even) > td {
+  background: #fafafa;
+}
+
+.user-logs__table .ant-table-tbody > tr > td:first-child {
+  text-align: center;
+}
+
+/* Phân trang ở cuối trang */
+.user-logs__table .ant-table-wrapper {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.user-logs__table .ant-spin-nested-loading,
+.user-logs__table .ant-spin-container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.user-logs__table .ant-pagination {
+  margin-top: auto;
+  padding-top: 24px;
+}
