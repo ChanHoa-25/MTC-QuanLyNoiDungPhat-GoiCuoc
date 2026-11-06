@@ -2,13 +2,11 @@
   width: 100%;
   min-width: 0;
   padding: 20px 21px;
-  box-sizing: border-box;
+
   background: #ffffff;
   border-radius: 12px;
-  font-family: "Open Sans", sans-serif;
 }
 
-/* Tiêu đề */
 .device-activity-history__title {
   margin: 0 0 12px;
   color: #e05200;
@@ -61,13 +59,12 @@
 }
 
 .device-activity-history__table .ant-table {
-  font-family: "Open Sans", sans-serif;
   font-size: 13px;
 }
 
 .device-activity-history__table .ant-table-thead > tr > th {
   background: #fce3d5;
-  color: #f26d21;
+  color: var(--color-primary);
   font-weight: 600;
 }
 

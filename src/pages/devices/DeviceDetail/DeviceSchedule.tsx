@@ -1,12 +1,12 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { ChevronLeft, ChevronRight, Clock3, Star, Radio } from "lucide-react";
 
 import {
   deviceScheduleMock,
   scheduleCategories,
-} from "../../data/deviceSchedule.mock";
+} from "../data/deviceSchedule.mock";
 
-import type { DeviceScheduleItem } from "../../types/deviceSchedule.types";
+import type { DeviceScheduleItem } from "../types/deviceSchedule.types";
 
 import "./DeviceSchedule.css";
 
@@ -17,6 +17,7 @@ interface DeviceScheduleProps {
 const START_HOUR = 6;
 const END_HOUR = 14;
 const HOUR_WIDTH = 100;
+const TIMELINE_WIDTH = (END_HOUR - START_HOUR) * HOUR_WIDTH;
 
 const WEEKDAYS = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
 
@@ -30,14 +31,16 @@ function formatDate(date: Date): string {
 
 function parseTime(time: string): number {
   const [hours, minutes] = time.split(":").map(Number);
-
   return hours + minutes / 60;
 }
 
-// Tính vị trí sự kiện trên timeline
 function getScheduleStyle(item: DeviceScheduleItem) {
   const start = parseTime(item.startTime);
   const end = parseTime(item.endTime);
+
+  if (!Number.isFinite(start) || !Number.isFinite(end)) {
+    return null;
+  }
 
   const visibleStart = Math.max(start, START_HOUR);
   const visibleEnd = Math.min(end, END_HOUR);
@@ -53,8 +56,17 @@ function getScheduleStyle(item: DeviceScheduleItem) {
 }
 
 function DeviceSchedule({ deviceId }: DeviceScheduleProps) {
-  // Ngày mặc định phục vụ dữ liệu demo
   const [selectedDate, setSelectedDate] = useState(() => new Date(2026, 10, 3));
+
+  const [now, setNow] = useState(() => new Date());
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setNow(new Date());
+    }, 60_000);
+
+    return () => window.clearInterval(timer);
+  }, []);
 
   const selectedDateString = formatDate(selectedDate);
 
@@ -62,7 +74,6 @@ function DeviceSchedule({ deviceId }: DeviceScheduleProps) {
     selectedDate.getMonth() + 1
   } ${selectedDate.getFullYear()}`;
 
-  // Danh sách ngày trong tháng
   const calendarDays = useMemo(() => {
     const year = selectedDate.getFullYear();
     const month = selectedDate.getMonth();
@@ -75,22 +86,12 @@ function DeviceSchedule({ deviceId }: DeviceScheduleProps) {
     );
   }, [selectedDate]);
 
-  // Lọc lịch phát theo thiết bị và ngày
   const schedules = useMemo(() => {
     return deviceScheduleMock.filter(
       (item) => item.deviceId === deviceId && item.date === selectedDateString,
     );
   }, [deviceId, selectedDateString]);
 
-  // Chuyển tháng
-  const changeMonth = (offset: number) => {
-    setSelectedDate(
-      (current) =>
-        new Date(current.getFullYear(), current.getMonth() + offset, 1),
-    );
-  };
-
-  // Danh sách giờ hiển thị
   const hours = useMemo(
     () =>
       Array.from(
@@ -100,9 +101,29 @@ function DeviceSchedule({ deviceId }: DeviceScheduleProps) {
     [],
   );
 
+  const nowInHours = now.getHours() + now.getMinutes() / 60;
+
+  const showCurrentTime =
+    selectedDateString === formatDate(now) &&
+    nowInHours >= START_HOUR &&
+    nowInHours <= END_HOUR;
+
+  const currentTimeLeft = (nowInHours - START_HOUR) * HOUR_WIDTH;
+
+  const changeMonth = (offset: number) => {
+    setSelectedDate((current) => {
+      const nextDate = new Date(
+        current.getFullYear(),
+        current.getMonth() + offset,
+        1,
+      );
+
+      return nextDate;
+    });
+  };
+
   return (
     <section className="device-schedule">
-      {/* Header */}
       <div className="device-schedule__header">
         <h2>Lịch phát thiết bị</h2>
 
@@ -125,7 +146,6 @@ function DeviceSchedule({ deviceId }: DeviceScheduleProps) {
         </div>
       </div>
 
-      {/* Lịch chọn ngày */}
       <div className="device-schedule__calendar">
         {calendarDays.map((day) => {
           const dateKey = formatDate(day);
@@ -155,10 +175,8 @@ function DeviceSchedule({ deviceId }: DeviceScheduleProps) {
         })}
       </div>
 
-      {/* Bảng lịch phát */}
       <div className="device-schedule__table-scroll">
         <div className="device-schedule__table">
-          {/* Cột lĩnh vực */}
           <div className="device-schedule__categories">
             <div className="device-schedule__category-heading">Lĩnh vực</div>
 
@@ -169,14 +187,19 @@ function DeviceSchedule({ deviceId }: DeviceScheduleProps) {
             ))}
           </div>
 
-          {/* Timeline */}
-          <div className="device-schedule__timeline">
-            {/* Trục thời gian */}
+          <div
+            className="device-schedule__timeline"
+            style={{ width: TIMELINE_WIDTH }}>
             <div className="device-schedule__hours">
               {hours.map((hour) => (
                 <span
                   key={hour}
-                  className="device-schedule__hour"
+                  className={[
+                    "device-schedule__hour",
+                    hour === END_HOUR ? "device-schedule__hour--last" : "",
+                  ]
+                    .filter(Boolean)
+                    .join(" ")}
                   style={{
                     left: (hour - START_HOUR) * HOUR_WIDTH,
                   }}>
@@ -185,12 +208,13 @@ function DeviceSchedule({ deviceId }: DeviceScheduleProps) {
               ))}
             </div>
 
-            {/* Nội dung timeline */}
             <div className="device-schedule__timeline-body">
               {scheduleCategories.map((category) => {
-                const categorySchedules = schedules.filter(
-                  (item) => item.category === category.key,
-                );
+                const categorySchedules = schedules
+                  .filter((item) => item.category === category.key)
+                  .sort(
+                    (a, b) => parseTime(a.startTime) - parseTime(b.startTime),
+                  );
 
                 return (
                   <div
@@ -199,7 +223,6 @@ function DeviceSchedule({ deviceId }: DeviceScheduleProps) {
                     {categorySchedules.map((item) => {
                       const position = getScheduleStyle(item);
 
-                      // Bỏ qua lịch nằm ngoài khung giờ
                       if (!position) return null;
 
                       return (
@@ -209,6 +232,9 @@ function DeviceSchedule({ deviceId }: DeviceScheduleProps) {
                             "device-schedule__event",
                             item.priority
                               ? "device-schedule__event--priority"
+                              : "",
+                            item.status === "playing"
+                              ? "device-schedule__event--playing"
                               : "",
                           ]
                             .filter(Boolean)
@@ -224,13 +250,15 @@ function DeviceSchedule({ deviceId }: DeviceScheduleProps) {
 
                           <div className="device-schedule__event-time">
                             <Clock3 size={12} />
-                            {item.startTime} - {item.endTime}
+                            <span>
+                              {item.startTime} - {item.endTime}
+                            </span>
                           </div>
 
                           {item.priority && (
                             <div className="device-schedule__priority">
-                              <Star size={13} />
-                              Tin ưu tiên
+                              <Star size={12} />
+                              <span>Tin ưu tiên</span>
                             </div>
                           )}
 
@@ -246,10 +274,29 @@ function DeviceSchedule({ deviceId }: DeviceScheduleProps) {
                   </div>
                 );
               })}
+
+              {showCurrentTime && (
+                <div
+                  className="device-schedule__current-time"
+                  style={{ left: currentTimeLeft }}
+                  aria-label="Thời gian hiện tại"
+                  title={`Hiện tại: ${now.toLocaleTimeString("vi-VN", {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                  })}`}>
+                  <span className="device-schedule__current-time-dot" />
+                </div>
+              )}
             </div>
           </div>
         </div>
       </div>
+
+      {schedules.length === 0 && (
+        <div className="device-schedule__empty">
+          Không có lịch phát trong ngày đã chọn.
+        </div>
+      )}
     </section>
   );
 }

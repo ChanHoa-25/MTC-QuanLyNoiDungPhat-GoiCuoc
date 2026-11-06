@@ -6,7 +6,6 @@
   box-sizing: border-box;
   background: #ffffff;
   border-radius: 12px;
-  font-family: "Open Sans", sans-serif;
 }
 
 .device-info__header {
@@ -26,6 +25,7 @@
 }
 
 .device-info__header .app-icon-button {
+  flex-shrink: 0;
   border: 1px solid var(--color-primary);
   border-radius: 8px;
 }
@@ -38,7 +38,7 @@
 
 .device-info__row {
   display: grid;
-  grid-template-columns: minmax(150px, 42%) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 42%) minmax(0, 1fr);
   align-items: start;
   gap: 12px;
   color: #666666;
@@ -62,7 +62,7 @@
   }
 
   .device-info__row {
-    grid-template-columns: minmax(120px, 42%) minmax(0, 1fr);
+    grid-template-columns: minmax(0, 42%) minmax(0, 1fr);
     gap: 8px;
     font-size: 13px;
   }
