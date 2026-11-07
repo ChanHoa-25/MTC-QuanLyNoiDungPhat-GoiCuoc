@@ -50,6 +50,9 @@ function FacilitiesPage() {
     selectedFacilityId,
     setSelectedFacilityId,
     selectedFacility,
+    addFacility,
+    updateFacility,
+    deleteFacility,
   } = useFacilityContext();
   const { setActions } = useActionPanel();
   const [activeTab, setActiveTab] = useState<FacilityTabKey>("info");
@@ -127,31 +130,35 @@ function FacilitiesPage() {
     setActiveModal(null);
     setTargetFacility(null);
   };
-  const handleSubmitFacility = (values: FacilityFormValues) => {
+  const handleSubmitFacility = async (values: FacilityFormValues) => {
     if (!targetFacility) return;
     if (activeModal === "create") {
-      console.log("Thêm cơ sở trực thuộc", {
-        parentFacilityId: targetFacility.id,
-        values,
-      });
-      messageApi.info("Đã nhận thông tin thêm cơ sở. Chưa lưu vào danh sách.");
+      const res = await addFacility(targetFacility.id, values);
+      if (res.success) {
+        messageApi.success(res.message || "Thêm cơ sở thành công!");
+        handleCloseModal();
+      } else {
+        messageApi.error(res.message);
+      }
     } else if (activeModal === "edit") {
-      console.log("Cập nhật thông tin cơ sở", {
-        facilityId: targetFacility.id,
-        values,
-      });
-      messageApi.info("Đã nhận thông tin cập nhật. Chưa lưu vào danh sách.");
+      const res = await updateFacility(targetFacility.id, values);
+      if (res.success) {
+        messageApi.success(res.message || "Cập nhật thông tin cơ sở thành công!");
+        handleCloseModal();
+      } else {
+        messageApi.error(res.message);
+      }
     }
-    handleCloseModal();
   };
-  const handleDeleteFacility = () => {
+  const handleDeleteFacility = async () => {
     if (!targetFacility) return;
-    console.log("Xóa cơ sở", {
-      facilityId: targetFacility.id,
-      facilityName: targetFacility.facilityName,
-    });
-    messageApi.info("Đã xác nhận xóa cơ sở. Chưa xóa dữ liệu khỏi danh sách.");
-    handleCloseModal();
+    const res = await deleteFacility(targetFacility.id);
+    if (res.success) {
+      messageApi.success(res.message || "Xóa cơ sở thành công!");
+      handleCloseModal();
+    } else {
+      messageApi.error(res.message);
+    }
   };
   const handleConfirmDeleteUser = () => {
     if (selectedUserKeys.length > 0) {

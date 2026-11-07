@@ -49,7 +49,13 @@ function LocationTree({
   onSelect,
   onAction,
 }: LocationTreeProps) {
-  const [expandedIds, setExpandedIds] = useState<string[]>(["hcm", "thu-duc"]);
+  const [expandedIds, setExpandedIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (facilities.length > 0) {
+      setExpandedIds((previous) => [...new Set([...previous, ...facilities.map((f) => f.id)])]);
+    }
+  }, [facilities]);
 
   useEffect(() => {
     if (!selectedId) return;

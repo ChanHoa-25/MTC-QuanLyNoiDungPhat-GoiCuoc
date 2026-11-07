@@ -1,6 +1,6 @@
 import type { Facility } from "../../types/facility.types";
-import { facilitiesMock } from "../../data/facilities.mock";
 import { findFacilityById } from "../../utils/facility.utils";
+import { useFacilityContext } from "../../../../contexts/FacilityContext";
 
 import AppStatusTag from "../../../../components/common/AppStatusTag";
 
@@ -11,11 +11,12 @@ interface FacilityInfoProps {
 }
 
 function FacilityInfo({ facility }: FacilityInfoProps) {
+  const { facilities } = useFacilityContext();
   const isActive = facility.isActive;
 
   // Tìm cơ sở cấp trên
   const parentFacility = facility.parentId
-    ? findFacilityById(facilitiesMock, facility.parentId)
+    ? findFacilityById(facilities, facility.parentId)
     : null;
 
   // Lấy tên cơ sở cấp trên
