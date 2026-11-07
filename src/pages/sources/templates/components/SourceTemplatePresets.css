@@ -1,0 +1,72 @@
+.source-template-presets {
+  width: 100%;
+}
+
+.source-template-presets__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+  gap: 12px;
+}
+
+.preset-btn {
+  height: 52px;
+  background: #ffffff;
+  border: 1.5px solid #dcdfe6;
+  border-radius: 8px;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.preset-btn:hover {
+  border-color: #ff7506;
+}
+
+.preset-btn.is-active {
+  border-color: #ff7506;
+  background-color: #fff9f3;
+  box-shadow: 0 0 0 1px #ff7506;
+}
+
+.preset-btn--custom {
+  background-color: #ff7506;
+  border-color: #ff7506;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.preset-btn--custom:hover {
+  background-color: #e06300;
+}
+
+.preset-btn--custom.is-active {
+  background-color: #e06300;
+  border-color: #e06300;
+  box-shadow: 0 0 0 2px rgba(255, 117, 6, 0.4);
+}
+
+.preset-preview {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  overflow: hidden;
+  background-color: #f7f8fa;
+}
+
+.preset-preview__zone {
+  position: absolute;
+  border: 1px solid #a5a8b0;
+  background-color: #ffffff;
+  box-sizing: border-box;
+  border-radius: 2px;
+}
+
+.preset-btn.is-active .preset-preview__zone {
+  border-color: #ff7506;
+}
+

@@ -1,0 +1,48 @@
+.add-zone-modal__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ff7506;
+  text-align: center;
+  margin-top: 8px;
+}
+
+.add-zone-modal__content {
+  padding: 16px 8px 8px;
+}
+
+.add-zone-modal__label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  color: #373839;
+  margin-bottom: 8px;
+}
+
+.add-zone-modal__required {
+  color: #ff4d4f;
+  margin-left: 4px;
+}
+
+.add-zone-modal__inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.add-zone-modal__hint {
+  font-size: 12px;
+  color: #a5a8b0;
+  margin-top: 8px;
+  margin-bottom: 24px;
+}
+
+.add-zone-modal__actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.add-zone-modal__actions button {
+  min-width: 120px;
+}
+
