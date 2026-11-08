@@ -31,7 +31,10 @@ import ReportsPage from "../pages/reports/ReportsPage";
 import FacilityTemplateFormPage from "../pages/facilities/FacilityTemplates/FacilityTemplateFormPage";
 
 import SourceMediaPage, { SourceMediaDetailPage } from "../pages/sources/media";
-import SourceTemplatesPage from "../pages/sources/templates";
+import SourceTemplatesPage, {
+  SourceTemplateFormPage,
+  SourceTemplateDetailPage,
+} from "../pages/sources/templates";
 
 import SourcePlaceholderPage from "../pages/sources/components/SourcePlaceholderPage";
 import SystemSettings from "../pages/settings/system/SystemSettings";
@@ -147,6 +150,18 @@ export const routes: RouteObject[] = [
       {
         path: ROUTES.SOURCE_TEMPLATES,
         element: <SourceTemplatesPage />,
+      },
+      {
+        path: "sources/templates/create",
+        element: <SourceTemplateFormPage mode="create" />,
+      },
+      {
+        path: "sources/templates/:id/edit",
+        element: <SourceTemplateFormPage mode="edit" />,
+      },
+      {
+        path: "sources/templates/:id",
+        element: <SourceTemplateDetailPage />,
       },
 
       {
