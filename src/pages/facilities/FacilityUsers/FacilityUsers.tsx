@@ -11,7 +11,6 @@ import AppFilter, {
 } from "../../../components/common/AppFilter";
 import FacilityUserFormModal from "./FacilityUserFormModal";
 import type { FacilityUserFormValues } from "./FacilityUserFormModal";
-import { facilityUsersMock } from "../data/facilitiesUsers.mock";
 import type { Facility } from "../types/facility.types";
 import type { FacilityRole, FacilityUser } from "../types/facilityUser.types";
 import { facilityUserService } from "../services/facilityUserService";
@@ -81,17 +80,10 @@ function FacilityUsers({
       if (res.success && res.data) {
         setUsers(res.data.items);
       } else {
-        // Fallback sang dữ liệu mẫu nếu API thất bại (hoặc chưa đăng nhập)
-        const mockFiltered = facilityUsersMock.filter(
-          (u) => u.facilityId === facility.id || u.facilityId === "hcm",
-        );
-        setUsers(mockFiltered);
+        setUsers((prev) => (prev.length > 0 ? prev : []));
       }
     } catch {
-      const mockFiltered = facilityUsersMock.filter(
-        (u) => u.facilityId === facility.id || u.facilityId === "hcm",
-      );
-      setUsers(mockFiltered);
+      setUsers((prev) => (prev.length > 0 ? prev : []));
     } finally {
       setLoading(false);
     }

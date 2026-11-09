@@ -51,6 +51,21 @@ export interface ApiUserResult<T = unknown> {
   data?: T;
 }
 
+async function parseResponse(response: Response): Promise<{ success: boolean; data?: any; message?: string; errors?: any }> {
+  const text = await response.text();
+  if (!text) {
+    if (response.status === 401) {
+      return { success: false, message: "Yêu cầu đăng nhập hoặc phiên làm việc đã hết hạn" };
+    }
+    return { success: response.ok, message: response.statusText };
+  }
+  try {
+    return JSON.parse(text);
+  } catch {
+    return { success: response.ok, message: text || response.statusText };
+  }
+}
+
 export const facilityUserService = {
   // 1. Lấy danh sách vai trò
   async getRoles(organizationId?: string): Promise<ApiUserResult<FacilityRole[]>> {
@@ -62,7 +77,7 @@ export const facilityUserService = {
       const response = await fetch(url, {
         headers: getAuthHeaders(),
       });
-      const result = await response.json();
+      const result = await parseResponse(response);
       if (result.success && Array.isArray(result.data)) {
         return {
           success: true,
@@ -95,7 +110,7 @@ export const facilityUserService = {
       const response = await fetch(`${API_BASE_URL}/Users?${query.toString()}`, {
         headers: getAuthHeaders(),
       });
-      const result = await response.json();
+      const result = await parseResponse(response);
 
       if (result.success && result.data) {
         const rawItems = Array.isArray(result.data.items) ? result.data.items : [];
@@ -148,9 +163,9 @@ export const facilityUserService = {
         headers: getAuthHeaders(),
         body: JSON.stringify(payload),
       });
-      const result = await response.json();
+      const result = await parseResponse(response);
 
-      if (result.success) {
+      if (result.success && (response.ok || response.status === 201)) {
         return {
           success: true,
           message: result.message || "Thêm tài khoản thành công",
@@ -164,7 +179,7 @@ export const facilityUserService = {
           ? Array.isArray(result.errors)
             ? result.errors.join(", ")
             : JSON.stringify(result.errors)
-          : "Thêm tài khoản thất bại");
+          : `Lỗi từ máy chủ (Mã: ${response.status})`);
 
       return { success: false, message: errorMsg };
     } catch {
@@ -180,9 +195,9 @@ export const facilityUserService = {
         headers: getAuthHeaders(),
         body: JSON.stringify(payload),
       });
-      const result = await response.json();
+      const result = await parseResponse(response);
 
-      if (result.success) {
+      if (result.success && response.ok) {
         return {
           success: true,
           message: result.message || "Cập nhật tài khoản thành công",
@@ -195,7 +210,7 @@ export const facilityUserService = {
           ? Array.isArray(result.errors)
             ? result.errors.join(", ")
             : JSON.stringify(result.errors)
-          : "Cập nhật tài khoản thất bại");
+          : `Lỗi từ máy chủ (Mã: ${response.status})`);
 
       return { success: false, message: errorMsg };
     } catch {
@@ -210,9 +225,9 @@ export const facilityUserService = {
         method: "DELETE",
         headers: getAuthHeaders(),
       });
-      const result = await response.json();
+      const result = await parseResponse(response);
 
-      if (result.success) {
+      if (result.success && response.ok) {
         return {
           success: true,
           message: result.message || "Xóa tài khoản thành công",
@@ -225,7 +240,7 @@ export const facilityUserService = {
           ? Array.isArray(result.errors)
             ? result.errors.join(", ")
             : JSON.stringify(result.errors)
-          : "Xóa tài khoản thất bại");
+          : `Lỗi từ máy chủ (Mã: ${response.status})`);
 
       return { success: false, message: errorMsg };
     } catch {

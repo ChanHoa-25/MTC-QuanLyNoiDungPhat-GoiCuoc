@@ -227,7 +227,7 @@ function FacilityUserFormModal({
               ]}>
               <Input.Password
                 size="large"
-                placeholder="Nhập mật khẩu"
+                placeholder="VD: Password@123 (chữ hoa, thường, số, ký tự đặc biệt)"
                 autoComplete="new-password"
                 className="facility-user-form-modal__password"
               />
