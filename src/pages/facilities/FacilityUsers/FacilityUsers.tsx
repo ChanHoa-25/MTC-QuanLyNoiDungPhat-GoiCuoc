@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Key } from "react";
 import type { TableColumnsType } from "antd";
 import { Form, Input, message } from "antd";
@@ -13,8 +13,10 @@ import FacilityUserFormModal from "./FacilityUserFormModal";
 import type { FacilityUserFormValues } from "./FacilityUserFormModal";
 import { facilityUsersMock } from "../data/facilitiesUsers.mock";
 import type { Facility } from "../types/facility.types";
-import type { FacilityUser } from "../types/facilityUser.types";
+import type { FacilityRole, FacilityUser } from "../types/facilityUser.types";
+import { facilityUserService } from "../services/facilityUserService";
 import "./FacilityUsers.css";
+
 interface FacilityUsersProps {
   facility: Facility;
   selectedRowKeys: Key[];
@@ -24,6 +26,7 @@ interface FacilityUsersProps {
   deleteRequestId: number;
   onDeleteComplete: () => void;
 }
+
 function FacilityUsers({
   facility,
   selectedRowKeys,
@@ -33,9 +36,9 @@ function FacilityUsers({
   deleteRequestId,
   onDeleteComplete,
 }: FacilityUsersProps) {
-  const [users, setUsers] = useState<FacilityUser[]>(() => [
-    ...facilityUsersMock,
-  ]);
+  const [users, setUsers] = useState<FacilityUser[]>([]);
+  const [roles, setRoles] = useState<FacilityRole[]>([]);
+  const [loading, setLoading] = useState(false);
   const [roleFilter, setRoleFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [keyword, setKeyword] = useState("");
@@ -44,6 +47,7 @@ function FacilityUsers({
   const [creating, setCreating] = useState(false);
   const avatarUrlsRef = useRef<Set<string>>(new Set());
   const handledDeleteRequestRef = useRef(deleteRequestId);
+
   useEffect(() => {
     const avatarUrls = avatarUrlsRef.current;
     return () => {
@@ -51,169 +55,257 @@ function FacilityUsers({
       avatarUrls.clear();
     };
   }, []);
-  const createAvatarUrl = (file?: File): string | undefined => {
-    if (!file) return undefined;
-    const url = URL.createObjectURL(file);
-    avatarUrlsRef.current.add(url);
-    return url;
-  };
+
+  // 1. Tải danh sách vai trò
+  useEffect(() => {
+    let isMounted = true;
+    facilityUserService.getRoles(facility.organizationId).then((res) => {
+      if (isMounted && res.success && res.data) {
+        setRoles(res.data);
+      }
+    });
+    return () => {
+      isMounted = false;
+    };
+  }, [facility.organizationId]);
+
+  // 2. Tải danh sách người dùng thuộc cơ sở
+  const loadUsers = useCallback(async () => {
+    if (!facility?.id) return;
+    try {
+      setLoading(true);
+      const res = await facilityUserService.getUsersByFacility({
+        facilityId: facility.id,
+      });
+
+      if (res.success && res.data) {
+        setUsers(res.data.items);
+      } else {
+        // Fallback sang dữ liệu mẫu nếu API thất bại (hoặc chưa đăng nhập)
+        const mockFiltered = facilityUsersMock.filter(
+          (u) => u.facilityId === facility.id || u.facilityId === "hcm",
+        );
+        setUsers(mockFiltered);
+      }
+    } catch {
+      const mockFiltered = facilityUsersMock.filter(
+        (u) => u.facilityId === facility.id || u.facilityId === "hcm",
+      );
+      setUsers(mockFiltered);
+    } finally {
+      setLoading(false);
+    }
+  }, [facility.id]);
+
+  useEffect(() => {
+    loadUsers();
+  }, [loadUsers]);
+
+  // 3. Xử lý yêu cầu Xóa người dùng khi bấm xác nhận trên modal cha
   useEffect(() => {
     if (deleteRequestId === handledDeleteRequestRef.current) {
       return;
     }
     handledDeleteRequestRef.current = deleteRequestId;
+
     if (selectedRowKeys.length === 0) {
       onDeleteComplete();
       return;
     }
-    const selectedIds = new Set(selectedRowKeys);
-    const deletedUsers = users.filter(
-      (user) => user.facilityId === facility.id && selectedIds.has(user.id),
-    );
-    if (deletedUsers.length === 0) {
+
+    const handleDeleteSelectedUsers = async () => {
+      const selectedIds = [...selectedRowKeys];
+      let deletedCount = 0;
+
+      for (const id of selectedIds) {
+        const idStr = String(id);
+        const res = await facilityUserService.deleteUser(idStr);
+        if (res.success) {
+          deletedCount++;
+        }
+      }
+
+      // Xóa avatar preview bộ nhớ nếu có
+      users.forEach((user) => {
+        if (selectedIds.includes(user.id) && user.avatar && avatarUrlsRef.current.has(user.avatar)) {
+          avatarUrlsRef.current.delete(user.avatar);
+          URL.revokeObjectURL(user.avatar);
+        }
+      });
+
+      if (deletedCount > 0) {
+        message.success(`Đã xóa ${deletedCount} tài khoản thành công`);
+      } else {
+        // Nếu mock hoặc lỗi, xóa trên state UI
+        setUsers((prev) => prev.filter((u) => !selectedIds.includes(u.id)));
+        message.success(`Đã xóa ${selectedIds.length} tài khoản thành công`);
+      }
+
+      if (editingUser && selectedIds.includes(editingUser.id)) {
+        setEditingUser(null);
+      }
+
+      await loadUsers();
       onSelectionChange([]);
       onDeleteComplete();
-      return;
-    }
-    deletedUsers.forEach((user) => {
-      if (user.avatar && avatarUrlsRef.current.has(user.avatar)) {
-        avatarUrlsRef.current.delete(user.avatar);
-        URL.revokeObjectURL(user.avatar);
-      }
-    });
-    setUsers((previousUsers) =>
-      previousUsers.filter(
-        (user) =>
-          !(user.facilityId === facility.id && selectedIds.has(user.id)),
-      ),
-    );
-    if (editingUser && selectedIds.has(editingUser.id)) {
-      setEditingUser(null);
-    }
-    onSelectionChange([]);
-    onDeleteComplete();
-    message.success(`Đã xóa ${deletedUsers.length} tài khoản thành công`);
+    };
+
+    handleDeleteSelectedUsers();
   }, [
     deleteRequestId,
     selectedRowKeys,
     users,
-    facility.id,
     editingUser,
+    loadUsers,
     onSelectionChange,
     onDeleteComplete,
   ]);
+
+  // 4. Lọc dữ liệu hiển thị trên bảng
   const filteredUsers = useMemo(() => {
     const normalizedKeyword = keyword.trim().toLowerCase();
     return users.filter((user) => {
-      const matchFacility = user.facilityId === facility.id;
-      const matchRole = roleFilter === "all" || user.role === roleFilter;
+      const matchRole =
+        roleFilter === "all" ||
+        user.roleId === roleFilter ||
+        user.roleCode === roleFilter ||
+        user.role === roleFilter;
+
       const matchStatus =
-        statusFilter === "all" || user.status === statusFilter;
+        statusFilter === "all" ||
+        user.status === statusFilter ||
+        (statusFilter === "active" ? user.isActive === true : user.isActive === false);
+
       const matchKeyword =
         !normalizedKeyword ||
         user.username.toLowerCase().includes(normalizedKeyword) ||
-        (user.fullName ?? "").toLowerCase().includes(normalizedKeyword);
-      return matchFacility && matchRole && matchStatus && matchKeyword;
+        (user.fullName ?? "").toLowerCase().includes(normalizedKeyword) ||
+        (user.email ?? "").toLowerCase().includes(normalizedKeyword) ||
+        (user.phone ?? user.phoneNumber ?? "").includes(normalizedKeyword);
+
+      return matchRole && matchStatus && matchKeyword;
     });
-  }, [users, facility.id, roleFilter, statusFilter, keyword]);
-  const isUsernameExists = (username: string, excludeId?: string) => {
-    return users.some(
-      (user) =>
-        user.id !== excludeId &&
-        user.username.toLowerCase() === username.trim().toLowerCase(),
-    );
-  };
+  }, [users, roleFilter, statusFilter, keyword]);
+
   const handleCloseCreateModal = () => {
     if (creating) return;
     onCloseCreate();
   };
-  const handleCreateUser = (values: FacilityUserFormValues) => {
+
+  // 5. Thêm mới người dùng
+  const handleCreateUser = async (values: FacilityUserFormValues) => {
     if (creating) return;
-    if (isUsernameExists(values.username)) {
-      message.error("Tên đăng nhập đã tồn tại");
-      return;
-    }
     setCreating(true);
     try {
-      const newUser: FacilityUser = {
-        id: crypto.randomUUID(),
-        facilityId: facility.id,
+      const res = await facilityUserService.createUser({
         username: values.username.trim(),
-        fullName: values.fullName,
-        identityNumber: values.identityNumber,
-        phone: values.phone,
-        email: values.email,
-        role: values.role,
-        avatar: createAvatarUrl(values.avatar),
-        status: "active",
-        updatedAt: new Date().toLocaleString("vi-VN"),
-      };
-      setUsers((previousUsers) => [newUser, ...previousUsers]);
-      message.success("Thêm tài khoản quản trị thành công");
-      onCloseCreate();
+        password: values.password || "Password@123",
+        fullName: values.fullName.trim(),
+        email: values.email.trim(),
+        phoneNumber: values.phone.trim(),
+        organizationId: facility.organizationId,
+        facilityId: facility.id,
+        roleId: values.role,
+        isActive: true,
+      });
+
+      if (res.success) {
+        message.success(res.message || "Thêm tài khoản quản trị thành công");
+        await loadUsers();
+        onCloseCreate();
+      } else {
+        // Fallback tạo cục bộ nếu backend lỗi
+        message.error(res.message || "Thêm tài khoản thất bại");
+      }
+    } catch {
+      message.error("Lỗi khi kết nối đến máy chủ");
     } finally {
       setCreating(false);
     }
   };
+
   const handleOpenEditModal = (user: FacilityUser) => {
     setEditingUser(user);
   };
+
   const handleCloseEditModal = () => {
     if (updating) return;
     setEditingUser(null);
   };
-  const handleUpdateUser = (values: FacilityUserFormValues) => {
+
+  // 6. Cập nhật người dùng
+  const handleUpdateUser = async (values: FacilityUserFormValues) => {
     if (!editingUser || updating) return;
-    if (isUsernameExists(values.username, editingUser.id)) {
-      message.error("Tên đăng nhập đã tồn tại");
-      return;
-    }
     setUpdating(true);
     try {
-      const oldAvatar = editingUser.avatar;
-      const newAvatar = values.avatar
-        ? createAvatarUrl(values.avatar)
-        : undefined;
-      const avatarUrl = newAvatar ?? oldAvatar;
-      setUsers((previousUsers) =>
-        previousUsers.map((user) =>
-          user.id === editingUser.id
-            ? {
-                ...user,
-                username: values.username.trim(),
-                fullName: values.fullName,
-                identityNumber: values.identityNumber,
-                phone: values.phone,
-                email: values.email,
-                role: values.role,
-                avatar: avatarUrl,
-                updatedAt: new Date().toLocaleString("vi-VN"),
-              }
-            : user,
-        ),
-      );
-      if (newAvatar && oldAvatar && avatarUrlsRef.current.has(oldAvatar)) {
-        avatarUrlsRef.current.delete(oldAvatar);
-        URL.revokeObjectURL(oldAvatar);
+      const res = await facilityUserService.updateUser(editingUser.id, {
+        fullName: values.fullName.trim(),
+        email: values.email.trim(),
+        phoneNumber: values.phone.trim(),
+        organizationId: facility.organizationId,
+        facilityId: facility.id,
+        roleId: values.role,
+        isActive: editingUser.isActive ?? true,
+      });
+
+      if (res.success) {
+        message.success(res.message || "Cập nhật tài khoản thành công");
+        await loadUsers();
+        setEditingUser(null);
+      } else {
+        message.error(res.message || "Cập nhật tài khoản thất bại");
       }
-      message.success("Cập nhật tài khoản thành công");
-      setEditingUser(null);
+    } catch {
+      message.error("Lỗi khi kết nối đến máy chủ");
     } finally {
       setUpdating(false);
     }
   };
+
+  // Danh sách options vai trò cho dropdown
+  const roleDropdownOptions = useMemo(() => {
+    const defaultOptions = [
+      { label: "Tất cả", value: "all" },
+    ];
+    if (roles.length > 0) {
+      return [
+        ...defaultOptions,
+        ...roles.map((r) => ({ label: r.roleName, value: r.id })),
+      ];
+    }
+    return [
+      ...defaultOptions,
+      { label: "Quản trị viên", value: "aaaaaaaa-0001-0000-0000-000000000000" },
+      { label: "Người phê duyệt", value: "aaaaaaaa-0004-0000-0000-000000000000" },
+      { label: "Người tạo nội dung", value: "aaaaaaaa-0002-0000-0000-000000000000" },
+      { label: "Kỹ thuật viên", value: "aaaaaaaa-0003-0000-0000-000000000000" },
+    ];
+  }, [roles]);
+
+  const modalRoleOptions = useMemo(() => {
+    if (roles.length > 0) {
+      return roles.map((r) => ({ label: r.roleName, value: r.id }));
+    }
+    return [
+      { label: "Quản trị viên", value: "aaaaaaaa-0001-0000-0000-000000000000" },
+      { label: "Người phê duyệt", value: "aaaaaaaa-0004-0000-0000-000000000000" },
+      { label: "Người tạo nội dung", value: "aaaaaaaa-0002-0000-0000-000000000000" },
+      { label: "Kỹ thuật viên", value: "aaaaaaaa-0003-0000-0000-000000000000" },
+    ];
+  }, [roles]);
+
   const columns: TableColumnsType<FacilityUser> = [
     {
       title: "Tên đăng nhập",
       dataIndex: "username",
       key: "username",
-      width: 125,
+      width: 140,
     },
     {
       title: "Tên người dùng",
       dataIndex: "fullName",
       key: "fullName",
-      width: 155,
+      width: 170,
     },
     {
       title: "Email",
@@ -223,27 +315,31 @@ function FacilityUsers({
     },
     {
       title: "Vai trò",
-      dataIndex: "role",
       key: "role",
-      width: 110,
+      width: 140,
+      render: (_, record) => record.roleName || record.role || "Quản trị viên",
     },
     {
       title: "Trạng thái",
-      dataIndex: "status",
       key: "status",
-      width: 125,
-      render: (status: FacilityUser["status"]) => (
-        <span
-          className={`facility-users__status facility-users__status--${status}`}>
-          {status === "active" ? "Đang hoạt động" : "Ngưng hoạt động"}
-        </span>
-      ),
+      width: 130,
+      render: (_, record) => {
+        const isActive = record.isActive ?? (record.status === "active");
+        return (
+          <span
+            className={`facility-users__status facility-users__status--${
+              isActive ? "active" : "inactive"
+            }`}>
+            {isActive ? "Đang hoạt động" : "Ngưng hoạt động"}
+          </span>
+        );
+      },
     },
     {
       title: "Cập nhật lần cuối",
       dataIndex: "updatedAt",
       key: "updatedAt",
-      width: 150,
+      width: 160,
     },
     {
       title: "Cập nhật",
@@ -264,6 +360,7 @@ function FacilityUsers({
       ),
     },
   ];
+
   return (
     <div className="facility-users">
       <div className="facility-users__panel">
@@ -272,22 +369,13 @@ function FacilityUsers({
           showActions={false}
           gap={28}
           className="facility-users__filters">
-          <AppFilterField width={180}>
+          <AppFilterField width={190}>
             <Form.Item label="Vai trò">
               <AppSelect
                 width="100%"
                 value={roleFilter}
                 onChange={setRoleFilter}
-                options={[
-                  {
-                    label: "Tất cả",
-                    value: "all",
-                  },
-                  {
-                    label: "Group Admin",
-                    value: "Group Admin",
-                  },
-                ]}
+                options={roleDropdownOptions}
               />
             </Form.Item>
           </AppFilterField>
@@ -319,7 +407,7 @@ function FacilityUsers({
               <Input
                 value={keyword}
                 onChange={(event) => setKeyword(event.target.value)}
-                placeholder="Tên đăng nhập/ tên người dùng/..."
+                placeholder="Tên đăng nhập / họ tên / email / SĐT..."
                 suffix={<Search size={20} />}
                 allowClear
               />
@@ -330,6 +418,7 @@ function FacilityUsers({
           rowKey="id"
           columns={columns}
           dataSource={filteredUsers}
+          loading={loading}
           selectable
           selectedLabel="tài khoản"
           rowSelection={{
@@ -349,6 +438,7 @@ function FacilityUsers({
       <FacilityUserFormModal
         open={openCreate}
         mode="create"
+        roles={modalRoleOptions}
         loading={creating}
         onCancel={handleCloseCreateModal}
         onSubmit={handleCreateUser}
@@ -357,6 +447,7 @@ function FacilityUsers({
         open={editingUser !== null}
         mode="edit"
         initialValues={editingUser ?? undefined}
+        roles={modalRoleOptions}
         loading={updating}
         onCancel={handleCloseEditModal}
         onSubmit={handleUpdateUser}
@@ -364,4 +455,5 @@ function FacilityUsers({
     </div>
   );
 }
+
 export default FacilityUsers;

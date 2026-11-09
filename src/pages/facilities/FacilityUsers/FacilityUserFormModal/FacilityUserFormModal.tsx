@@ -28,15 +28,28 @@ interface FacilityUserFormModalProps {
   open: boolean;
   mode?: "create" | "edit";
   initialValues?: Partial<FacilityUser>;
+  roles?: { label: string; value: string }[];
   loading?: boolean;
   onCancel: () => void;
   onSubmit: (values: FacilityUserFormValues) => void;
 }
 
-const roleOptions = [
+const defaultRoleOptions = [
   {
     label: "Quản trị viên",
-    value: "Group Admin",
+    value: "aaaaaaaa-0001-0000-0000-000000000000",
+  },
+  {
+    label: "Người phê duyệt",
+    value: "aaaaaaaa-0004-0000-0000-000000000000",
+  },
+  {
+    label: "Người tạo nội dung",
+    value: "aaaaaaaa-0002-0000-0000-000000000000",
+  },
+  {
+    label: "Kỹ thuật viên",
+    value: "aaaaaaaa-0003-0000-0000-000000000000",
   },
 ];
 
@@ -44,11 +57,14 @@ function FacilityUserFormModal({
   open,
   mode = "edit",
   initialValues,
+  roles,
   loading = false,
   onCancel,
   onSubmit,
 }: FacilityUserFormModalProps) {
   const [form] = Form.useForm<FacilityUserFormValues>();
+
+  const activeRoleOptions = roles && roles.length > 0 ? roles : defaultRoleOptions;
 
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -67,9 +83,9 @@ function FacilityUserFormModal({
         username: initialValues.username ?? "",
         fullName: initialValues.fullName ?? "",
         identityNumber: initialValues.identityNumber ?? "",
-        phone: initialValues.phone ?? "",
+        phone: initialValues.phone ?? initialValues.phoneNumber ?? "",
         email: initialValues.email ?? "",
-        role: initialValues.role ?? "Group Admin",
+        role: initialValues.roleId ?? initialValues.role ?? activeRoleOptions[0]?.value,
       });
     } else {
       form.setFieldsValue({
@@ -79,7 +95,7 @@ function FacilityUserFormModal({
         identityNumber: "",
         phone: "",
         email: "",
-        role: undefined,
+        role: activeRoleOptions[0]?.value,
       });
     }
 
@@ -93,12 +109,15 @@ function FacilityUserFormModal({
     open,
     isEdit,
     form,
+    activeRoleOptions,
     initialValues?.username,
     initialValues?.fullName,
     initialValues?.identityNumber,
     initialValues?.phone,
+    initialValues?.phoneNumber,
     initialValues?.email,
     initialValues?.role,
+    initialValues?.roleId,
   ]);
 
   useEffect(() => {
@@ -187,6 +206,8 @@ function FacilityUserFormModal({
               width="100%"
               height={44}
               placeholder="Nhập tên đăng nhập"
+              readOnly={isEdit}
+              disabled={isEdit}
             />
           </Form.Item>
 
@@ -285,7 +306,7 @@ function FacilityUserFormModal({
             <AppSelect
               width="100%"
               placeholder="Chọn vai trò"
-              options={roleOptions}
+              options={activeRoleOptions}
             />
           </Form.Item>
         </div>
