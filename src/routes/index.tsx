@@ -4,7 +4,8 @@ import { Navigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import AuthLayout from "../layouts/AuthLayout/AuthLayout";
 
-import DashboardPage from "../pages/dashboard/DashboardPage";
+import DashboardRouter from "../pages/dashboard/DashboardRouter";
+import DashboardAdminPage from "../pages/dashboardAdmin";
 
 import LoginPage from "../pages/auth/LoginPage";
 import ForgotPasswordPage from "../pages/auth/ForgotPasswordPage";
@@ -15,6 +16,8 @@ import EditProfile from "../pages/profile/EditProfile";
 import RenewalHistoryPage from "../pages/profile/RenewalHistoryPage";
 
 import FacilitiesPage from "../pages/facilities";
+import OrganizationsPage from "../pages/organizations";
+import NotificationsPage from "../pages/notifications";
 import FacilityPlaylistDetail from "../pages/facilities/FacilityPlaylists/FacilityPlaylistDetail";
 import DevicesPage from "../pages/devices";
 
@@ -99,12 +102,25 @@ export const routes: RouteObject[] = [
 
       {
         path: ROUTES.DASHBOARD,
-        element: <DashboardPage />,
+        element: <DashboardRouter />,
+      },
+      {
+        path: "/admin/dashboard",
+        element: <DashboardAdminPage />,
       },
 
       {
         path: ROUTES.FACILITIES,
         element: <FacilitiesPage />,
+      },
+
+      {
+        path: ROUTES.ORGANIZATIONS,
+        element: <OrganizationsPage />,
+      },
+      {
+        path: `${ROUTES.ORGANIZATIONS}/:id`,
+        element: <OrganizationsPage />,
       },
 
       // Chi tiết danh sách phát
@@ -200,6 +216,18 @@ export const routes: RouteObject[] = [
       {
         path: ROUTES.BROADCASTS,
         element: <ComingSoonPage title="Quản lý bản tin" />,
+      },
+      {
+        path: ROUTES.NOTIFICATIONS,
+        element: <NotificationsPage />,
+      },
+      {
+        path: `${ROUTES.NOTIFICATIONS}/:id`,
+        element: <NotificationsPage />,
+      },
+      {
+        path: ROUTES.PACKAGES,
+        element: <ComingSoonPage title="Quản lý gói cước" />,
       },
 
       {

@@ -1,0 +1,69 @@
+.notif-modal-scroll {
+  max-height: 65vh;
+  overflow-y: auto;
+  padding-right: 8px;
+}
+.notif-form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #262626;
+  margin-bottom: 8px;
+}
+.notif-form-field {
+  margin-bottom: 20px;
+}
+.notif-tag-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  background-color: #fafafa;
+}
+.notif-tag {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #FFF3ED;
+  color: #F26522;
+  border: 1px solid #F26522;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  font-weight: 500;
+}
+.notif-tag-close {
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: bold;
+}
+.notif-tag-close:hover {
+  color: #d9363e;
+}
+.notif-time-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.notif-time-input {
+  padding: 8px 12px;
+  border: 1px solid #d9d9d9;
+  border-radius: 6px;
+  width: 100px;
+  font-family: inherit;
+}
+.notif-checkbox-group {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+}
+.notif-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}

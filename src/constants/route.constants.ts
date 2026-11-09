@@ -10,6 +10,7 @@ export const ROUTES = {
   RENEWAL_HISTORY: "/profile/renewal-history",
 
   FACILITIES: "/facilities",
+  ORGANIZATIONS: "/organizations",
   DEVICES: "/devices",
 
   SOURCES: "/sources",
@@ -31,6 +32,9 @@ export const ROUTES = {
   SETTINGS_SYSTEM: "/settings/system",
 
   SETTINGS_PERSONAL: "/settings/personal",
+
+  NOTIFICATIONS: "/notifications",
+  PACKAGES: "/packages",
 
   FORBIDDEN: "/403",
   NOT_FOUND: "/404",

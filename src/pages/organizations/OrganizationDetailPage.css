@@ -1,0 +1,171 @@
+.org-detail-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.org-detail-breadcrumb {
+  font-size: 14px;
+  color: #8c8c8c;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.org-detail-breadcrumb-link {
+  font-size: 18px;
+  color: #F26522;
+  cursor: pointer;
+}
+.org-detail-breadcrumb-text {
+  cursor: pointer;
+}
+.org-detail-breadcrumb-active {
+  color: #F26522;
+  font-weight: 700;
+}
+
+.org-detail-grid {
+  display: grid;
+  grid-template-columns: 340px minmax(0, 1fr); 
+  gap: 20px;
+  align-items: start;
+}
+
+.org-detail-card {
+  background: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+.org-detail-title {
+  color: #F26522;
+  margin-bottom: 20px;
+  font-size: 16px;
+  margin-top: 0;
+}
+.org-detail-title.mt-32 {
+  margin-top: 32px;
+}
+.org-detail-info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+.org-detail-info-row.mb-8 {
+  margin-bottom: 8px;
+}
+.org-detail-label {
+  color: #595959;
+}
+.org-progress-bg {
+  width: 100%;
+  height: 6px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.org-progress-fill {
+  height: 100%;
+  background-color: #1677ff;
+  width: 66%;
+  border-radius: 4px;
+}
+.org-detail-actions {
+  margin-top: 32px;
+  text-align: center;
+}
+
+/* Khối gói cước */
+.org-package-banner {
+  display: flex;
+  flex-wrap: wrap; 
+  gap: 16px;
+  margin-bottom: 32px;
+  align-items: center;
+}
+.org-package-box {
+  background: #F26522;
+  color: #fff;
+  padding: 16px 24px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex: 1; 
+  min-width: 250px;
+}
+.org-package-box-gb {
+  font-size: 32px;
+  font-weight: 700;
+}
+.org-package-box-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.org-package-box-date {
+  font-size: 14px;
+  font-weight: 500;
+}
+.org-package-box-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.org-package-tag {
+  font-size: 11px;
+  background: #fff;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+.org-package-tag.warning { color: #F26522; }
+.org-package-tag.danger { color: #ff4d4f; }
+.org-package-add-btn {
+  font-size: 28px;
+  color: #F26522;
+  background: #fff;
+  border: 2px dashed #F26522;
+  border-radius: 12px;
+  width: 64px;
+  height: 64px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+.org-package-add-btn:hover {
+  background: #fff3ed;
+}
+
+/* Bô lọc - cho phép rớt dòng */
+.org-detail-filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.org-detail-filter-label {
+  display: block;
+  font-size: 13px;
+  color: #595959;
+  margin-bottom: 6px;
+}
+
+/* Lớp bọc bảng để cuộn ngang độc lập */
+.org-table-responsive-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+@media screen and (max-width: 1100px) {
+  .org-detail-grid {
+    grid-template-columns: 1fr;
+  }
+  .org-detail-card {
+    width: 100%;
+  }
+}
