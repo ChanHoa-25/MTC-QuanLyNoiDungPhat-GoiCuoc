@@ -3,17 +3,21 @@ import { useNavigate } from "react-router-dom";
 import { Dropdown } from "antd";
 import type { MenuProps } from "antd";
 import { DownOutlined, UpOutlined } from "@ant-design/icons";
-import { LogOut, Settings } from "lucide-react";
+import { LogOut, Settings, Package } from "lucide-react";
 
 import { ROUTES } from "../../../constants/route.constants";
 import avatarImage from "../../../assets/images/avatar.png";
+import { useAuth } from "../../../contexts/AuthContext";
+import AppConfirmModal from "../AppConfirmModal";
 
 import "./AppAccount.css";
 
 function AppAccount() {
   const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const [accountOpen, setAccountOpen] = useState(false);
+  const [showLogoutModal, setShowLogoutModal] = useState(false);
 
   // Xử lý các thao tác trong menu tài khoản
   const handleAccountClick: MenuProps["onClick"] = ({ key }) => {
@@ -24,17 +28,27 @@ function AppAccount() {
         navigate(ROUTES.PROFILE);
         break;
 
+      case "packages":
+        navigate(ROUTES.PACKAGES);
+        break;
+
       case "management":
         navigate(ROUTES.DASHBOARD);
         break;
 
       case "logout":
-        console.log("Chưa tích hợp chức năng đăng xuất");
+        setShowLogoutModal(true);
         break;
 
       default:
         break;
     }
+  };
+
+  const handleConfirmLogout = () => {
+    setShowLogoutModal(false);
+    logout();
+    navigate(ROUTES.LOGIN);
   };
 
   // Danh sách menu tài khoản
@@ -50,17 +64,24 @@ function AppAccount() {
           />
 
           <div className="account-profile-info">
-            <strong className="account-profile-name">Chinh.Nguyen</strong>
-
-            <span className="account-profile-location">TP. Hồ Chí Minh</span>
-
-            <span className="account-profile-role">Admin</span>
+            <strong className="account-profile-name">{user.fullName || user.username}</strong>
+            <span className="account-profile-location">{user.orgName}</span>
+            <span className="account-profile-role">{user.roleLabel}</span>
           </div>
         </div>
       ),
     },
     {
       type: "divider",
+    },
+    {
+      key: "packages",
+      icon: (
+        <span className="account-menu-icon-box">
+          <Package size={20} strokeWidth={2} color="#F26D21" />
+        </span>
+      ),
+      label: <span className="account-menu-label">Quản lý gói cước & dịch vụ</span>,
     },
     {
       key: "management",
@@ -75,38 +96,51 @@ function AppAccount() {
       key: "logout",
       icon: (
         <span className="account-menu-icon-box">
-          <LogOut size={20} strokeWidth={2} />
+          <LogOut size={20} strokeWidth={2} color="#FF4D4F" />
         </span>
       ),
-      label: <span className="account-menu-label">Đăng xuất</span>,
+      label: <span className="account-menu-label" style={{ color: "#FF4D4F" }}>Đăng xuất</span>,
     },
   ];
 
   return (
-    <Dropdown
-      trigger={["click"]}
-      placement="bottomRight"
-      open={accountOpen}
-      onOpenChange={setAccountOpen}
-      menu={{
-        items: accountMenuItems,
-        onClick: handleAccountClick,
-      }}
-      popupRender={(menu) => (
-        <div className="account-dropdown-panel">{menu}</div>
-      )}>
-      <button
-        type="button"
-        className="header-account"
-        aria-label="Tài khoản"
-        aria-expanded={accountOpen}>
-        <img src={avatarImage} alt="" className="image-avatar" />
+    <>
+      <Dropdown
+        trigger={["click"]}
+        placement="bottomRight"
+        open={accountOpen}
+        onOpenChange={setAccountOpen}
+        menu={{
+          items: accountMenuItems,
+          onClick: handleAccountClick,
+        }}
+        popupRender={(menu) => (
+          <div className="account-dropdown-panel">{menu}</div>
+        )}>
+        <button
+          type="button"
+          className="header-account"
+          aria-label="Tài khoản"
+          aria-expanded={accountOpen}>
+          <img src={avatarImage} alt="" className="image-avatar" />
 
-        <span className="icon-down">
-          {accountOpen ? <UpOutlined /> : <DownOutlined />}
-        </span>
-      </button>
-    </Dropdown>
+          <span className="icon-down">
+            {accountOpen ? <UpOutlined /> : <DownOutlined />}
+          </span>
+        </button>
+      </Dropdown>
+
+      {/* Popup xác nhận đăng xuất */}
+      <AppConfirmModal
+        open={showLogoutModal}
+        type="delete"
+        title="Đăng xuất"
+        description="Bạn có chắc chắn muốn đăng xuất khỏi hệ thống MTC?"
+        confirmText="Đăng xuất"
+        onCancel={() => setShowLogoutModal(false)}
+        onConfirm={handleConfirmLogout}
+      />
+    </>
   );
 }
 

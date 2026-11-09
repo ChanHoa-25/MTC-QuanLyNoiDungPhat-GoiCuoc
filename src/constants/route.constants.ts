@@ -20,6 +20,10 @@ export const ROUTES = {
 
   BROADCASTS: "/broadcasts",
 
+  PACKAGES: "/packages",
+  PACKAGE_UPGRADES: "/packages/upgrades",
+  PACKAGE_TRANSACTIONS: "/packages/transactions",
+
   REPORTS: "/reports",
 
   SETTINGS: "/settings",

@@ -32,6 +32,8 @@ import {
 
 import type { BroadcastReportItem } from "../../types/broadcastReport.types";
 
+import { exportReportToCSV } from "../../utils/exportReport";
+
 import "./BroadcastReport.css";
 
 // Cấu hình biểu đồ cột chồng
@@ -83,7 +85,15 @@ function BroadcastReport() {
         icon: <FileInput size={24} color="#F26D21" />,
         tooltip: "Xuất báo cáo",
         onClick: () => {
-          message.info("Chức năng xuất báo cáo sẽ được tích hợp sau.");
+          exportReportToCSV(
+            filteredReports.map((item, idx) => ({
+              STT: idx + 1,
+              "Tên cơ sở": item.facilityName,
+              "Số lượng bản tin": item.deviceCount,
+              "Bản tin khác": item.otherDeviceCount,
+            })),
+            "Bao_cao_ban_tin_phat_song",
+          );
         },
       },
     ]);

@@ -1,6 +1,5 @@
 import { useMemo, useState } from "react";
 import type { Dayjs } from "dayjs";
-import dayjs from "dayjs";
 import { Switch, message } from "antd";
 import type { TableProps } from "antd";
 
@@ -11,7 +10,10 @@ import AppDatePicker from "../../components/common/AppDatePicker";
 import AppTable from "../../components/common/AppTable/AppTable";
 
 import Logo from "../../assets/images/Logo.png";
-import { mockSubscription } from "./profile.mock";
+import { useAuth } from "../../contexts/AuthContext";
+import { usePackages } from "../../contexts/PackageContext";
+import PackageRenewModal from "../packages/components/PackageRenewModal";
+import PackageUpgradeModalCustomer from "../packages/components/PackageUpgradeModalCustomer";
 
 import "./RenewalHistoryPage.css";
 
@@ -25,69 +27,51 @@ interface RenewalHistory {
   paymentMethod: string;
 }
 
-const mockRenewalHistory: RenewalHistory[] = [
+const initialHistory: RenewalHistory[] = [
   {
     id: "1",
     renewer: "Nguyễn Văn A",
     phone: "0951454354",
-    renewedAt: "25/07/2021 19:00:00",
-    packageName: "5GB/tháng",
-    price: "50.000 VNĐ",
+    renewedAt: "25/07/2026 19:00:00",
+    packageName: "Gói Tiêu chuẩn 20GB",
+    price: "1.440.000 VNĐ",
     paymentMethod: "Chuyển khoản ngân hàng",
   },
   {
     id: "2",
     renewer: "Nguyễn Văn A",
     phone: "0951454354",
-    renewedAt: "25/06/2021 19:00:00",
-    packageName: "5GB/tháng",
-    price: "50.000 VNĐ",
-    paymentMethod: "Chuyển khoản ngân hàng",
+    renewedAt: "25/06/2026 19:00:00",
+    packageName: "Combo Nâng cấp: +20GB & +10 Thiết bị",
+    price: "990.000 VNĐ",
+    paymentMethod: "Thẻ quốc tế",
   },
   {
     id: "3",
     renewer: "Nguyễn Văn A",
     phone: "0951454354",
-    renewedAt: "25/05/2021 19:00:00",
-    packageName: "5GB/tháng",
-    price: "50.000 VNĐ",
+    renewedAt: "25/05/2026 19:00:00",
+    packageName: "Gói Cơ bản 5GB (1 tháng)",
+    price: "150.000 VNĐ",
     paymentMethod: "Ví MOMO",
   },
   {
     id: "4",
     renewer: "Nguyễn Văn A",
     phone: "0951454354",
-    renewedAt: "25/04/2021 19:00:00",
-    packageName: "5GB/tháng",
-    price: "50.000 VNĐ",
+    renewedAt: "25/04/2026 19:00:00",
+    packageName: "Gói Mở rộng Dung lượng +10GB",
+    price: "250.000 VNĐ",
     paymentMethod: "Ví MOMO",
   },
   {
     id: "5",
     renewer: "Nguyễn Văn A",
     phone: "0951454354",
-    renewedAt: "25/03/2021 19:00:00",
-    packageName: "5GB/tháng",
-    price: "50.000 VNĐ",
+    renewedAt: "25/03/2026 19:00:00",
+    packageName: "Gói Cơ bản 5GB (1 tháng)",
+    price: "150.000 VNĐ",
     paymentMethod: "Thẻ quốc tế",
-  },
-  {
-    id: "6",
-    renewer: "Nguyễn Văn A",
-    phone: "0951454354",
-    renewedAt: "25/02/2021 19:00:00",
-    packageName: "10GB/tháng",
-    price: "100.000 VNĐ",
-    paymentMethod: "Thẻ quốc tế",
-  },
-  {
-    id: "7",
-    renewer: "Nguyễn Văn A",
-    phone: "0951454354",
-    renewedAt: "25/01/2021 19:00:00",
-    packageName: "10GB/tháng",
-    price: "100.000 VNĐ",
-    paymentMethod: "Ví MOMO",
   },
 ];
 
@@ -114,13 +98,13 @@ const columns: TableProps<RenewalHistory>["columns"] = [
     title: "Gói cước gia hạn",
     dataIndex: "packageName",
     key: "packageName",
-    width: "16%",
+    width: "20%",
   },
   {
     title: "Giá gói cước",
     dataIndex: "price",
     key: "price",
-    width: "16%",
+    width: "15%",
   },
   {
     title: "Phương thức thanh toán",
@@ -132,18 +116,41 @@ const columns: TableProps<RenewalHistory>["columns"] = [
 
 function RenewalHistoryPage() {
   const [messageApi, contextHolder] = message.useMessage();
+  const { user, updateAutoRenew } = useAuth();
+  const { transactions } = usePackages();
 
-  const [autoRenew, setAutoRenew] = useState(mockSubscription.autoRenew);
+  const [openRenewModal, setOpenRenewModal] = useState(false);
+  const [openUpgradeModal, setOpenUpgradeModal] = useState(false);
 
   const [searchInput, setSearchInput] = useState("");
   const [searchKeyword, setSearchKeyword] = useState("");
   const [renewalDate, setRenewalDate] = useState<Dayjs | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
 
+  // Combine initialHistory with new transactions from PackageContext
+  const combinedHistory = useMemo(() => {
+    const trxHistory: RenewalHistory[] = transactions.map((t) => ({
+      id: t.id,
+      renewer: user.fullName || "Người dùng quản trị",
+      phone: user.phone || "0909123456",
+      renewedAt: t.createdAt,
+      packageName: t.packageName,
+      price: `${t.amountVND.toLocaleString("vi-VN")} VNĐ`,
+      paymentMethod:
+        t.paymentMethod === "bank_transfer"
+          ? "Chuyển khoản ngân hàng"
+          : t.paymentMethod === "credit_card"
+          ? "Thẻ quốc tế"
+          : "Ví MOMO",
+    }));
+
+    return [...trxHistory, ...initialHistory];
+  }, [transactions, user]);
+
   const filteredData = useMemo(() => {
     const keyword = searchKeyword.trim().toLowerCase();
 
-    return mockRenewalHistory.filter((item) => {
+    return combinedHistory.filter((item) => {
       const matchesSearch =
         !keyword ||
         [
@@ -157,13 +164,12 @@ function RenewalHistoryPage() {
 
       const matchesDate =
         !renewalDate ||
-        dayjs(item.renewedAt.slice(0, 10), "DD/MM/YYYY").format(
-          "DD/MM/YYYY",
-        ) === renewalDate.format("DD/MM/YYYY");
+        item.renewedAt.includes(renewalDate.format("DD/MM/YYYY")) ||
+        item.renewedAt.includes(renewalDate.format("YYYY-MM-DD"));
 
       return matchesSearch && matchesDate;
     });
-  }, [searchKeyword, renewalDate]);
+  }, [combinedHistory, searchKeyword, renewalDate]);
 
   const handleSearch = (value: string) => {
     setSearchKeyword(value);
@@ -186,27 +192,30 @@ function RenewalHistoryPage() {
         <section className="renewal-package-card">
           <h2>Thông tin gói cước</h2>
 
-          <div className="renewal-package-description">
-            Gói cước trong tháng:
-          </div>
+          <div className="renewal-package-description">Gói cước hiện tại:</div>
 
           <div className="renewal-package-capacity">
-            <strong>{mockSubscription.capacity}</strong>
-            <span>{mockSubscription.cycle}</span>
+            <strong>{user.currentPackage.capacity}</strong>
+            <span>{user.currentPackage.cycle}</span>
           </div>
 
           <div className="renewal-package-details">
             <div className="renewal-package-row">
               <span>Thời gian gia hạn:</span>
-              <strong>{mockSubscription.expirationDate}</strong>
+              <strong>{user.currentPackage.expirationDate}</strong>
             </div>
 
             <div className="renewal-package-row">
               <span>Gia hạn tự động:</span>
               <Switch
                 size="small"
-                checked={autoRenew}
-                onChange={setAutoRenew}
+                checked={user.currentPackage.autoRenew}
+                onChange={(checked) => {
+                  updateAutoRenew(checked);
+                  messageApi.success(
+                    checked ? "Đã bật tự động gia hạn" : "Đã tắt tự động gia hạn",
+                  );
+                }}
               />
             </div>
 
@@ -216,9 +225,7 @@ function RenewalHistoryPage() {
                 width={80}
                 height={36}
                 className="renewal-package-button"
-                onClick={() =>
-                  messageApi.info("Chưa tích hợp chức năng gia hạn")
-                }>
+                onClick={() => setOpenRenewModal(true)}>
                 Gia hạn
               </AppButton>
             </div>
@@ -229,9 +236,7 @@ function RenewalHistoryPage() {
                 width={80}
                 height={36}
                 className="renewal-package-button"
-                onClick={() =>
-                  messageApi.info("Chưa tích hợp chức năng nâng cấp")
-                }>
+                onClick={() => setOpenUpgradeModal(true)}>
                 Nâng cấp
               </AppButton>
             </div>
@@ -259,7 +264,7 @@ function RenewalHistoryPage() {
               <label>Từ khóa</label>
               <AppSearch
                 width={301}
-                placeholder="Tên kênh/ URL/ Tần số"
+                placeholder="Tìm tên gói, phương thức..."
                 value={searchInput}
                 onChange={setSearchInput}
                 onSearch={handleSearch}
@@ -283,9 +288,18 @@ function RenewalHistoryPage() {
         </section>
       </main>
 
-      <footer className="renewal-history-footer">
-        Powered by AltaSoftware
-      </footer>
+      {/* Popups */}
+      <PackageRenewModal
+        open={openRenewModal}
+        onClose={() => setOpenRenewModal(false)}
+      />
+
+      <PackageUpgradeModalCustomer
+        open={openUpgradeModal}
+        onClose={() => setOpenUpgradeModal(false)}
+      />
+
+      <footer className="renewal-history-footer">Powered by AltaSoftware</footer>
     </div>
   );
 }

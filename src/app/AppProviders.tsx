@@ -4,6 +4,8 @@ import viVN from "antd/locale/vi_VN";
 
 import { FacilityProvider } from "../contexts/FacilityContext";
 import { DeviceProvider } from "../contexts/DeviceContext";
+import { AuthProvider } from "../contexts/AuthContext";
+import { PackageProvider } from "../contexts/PackageContext";
 
 interface AppProvidersProps {
   children: ReactNode;
@@ -49,9 +51,13 @@ function AppProviders({ children }: AppProvidersProps) {
           },
         },
       }}>
-      <FacilityProvider>
-        <DeviceProvider>{children}</DeviceProvider>
-      </FacilityProvider>
+      <AuthProvider>
+        <PackageProvider>
+          <FacilityProvider>
+            <DeviceProvider>{children}</DeviceProvider>
+          </FacilityProvider>
+        </PackageProvider>
+      </AuthProvider>
     </ConfigProvider>
   );
 }

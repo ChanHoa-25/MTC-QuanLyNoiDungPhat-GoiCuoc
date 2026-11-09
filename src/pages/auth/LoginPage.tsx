@@ -1,23 +1,29 @@
+import { useState } from "react";
 import { Checkbox, Form, message } from "antd";
-import { LockOutlined, MailOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { Link, useNavigate } from "react-router-dom";
 
 import AuthForm from "../../components/auth/AuthForm";
 import type { AuthField } from "../../components/auth/AuthForm";
+import { useAuth } from "../../contexts/AuthContext";
+import FirstLoginModal from "../../components/auth/FirstLoginModal";
+import TwoFactorSetupModal from "../../components/auth/TwoFactorSetupModal";
+import AccountSuspendedModal from "../../components/auth/AccountSuspendedModal";
+import { ROUTES } from "../../constants/route.constants";
 
 import "./LoginPage.css";
 
 const fields: AuthField[] = [
   {
     name: "username",
-    placeholder: "Tên đăng nhập",
+    placeholder: "Tên đăng nhập (admin / tv2 / suspended)",
     type: "text",
     requiredMessage: "Vui lòng nhập tên đăng nhập!",
-    icon: <MailOutlined />,
+    icon: <UserOutlined />,
   },
   {
     name: "password",
-    placeholder: "Mật khẩu",
+    placeholder: "Mật khẩu (tối thiểu 6 ký tự, vd: 123456)",
     type: "password",
     requiredMessage: "Vui lòng nhập mật khẩu!",
     icon: <LockOutlined />,
@@ -25,12 +31,51 @@ const fields: AuthField[] = [
 ];
 
 function LoginPage() {
-  const handleLogin = async (values: Record<string, string>) => {
-    // TODO: Tích hợp API đăng nhập.
-    // Không in mật khẩu ra console.
-    void values;
+  const navigate = useNavigate();
+  const { login, dismissFirstLogin } = useAuth();
 
-    message.info("API đăng nhập chưa được kết nối.");
+  const [showFirstLogin, setShowFirstLogin] = useState(false);
+  const [show2FA, setShow2FA] = useState(false);
+  const [showSuspended, setShowSuspended] = useState(false);
+
+  const handleLogin = async (values: Record<string, string>) => {
+    const { username, password } = values;
+
+    if (username.trim().toLowerCase() === "suspended") {
+      setShowSuspended(true);
+      return;
+    }
+
+    const res = login(username, password);
+    if (!res.success) {
+      message.error(res.message);
+      return;
+    }
+
+    message.success(res.message);
+
+    if (res.isFirstLogin) {
+      setShowFirstLogin(true);
+    } else {
+      navigate(ROUTES.DASHBOARD);
+    }
+  };
+
+  const handleDismissFirstLogin = () => {
+    setShowFirstLogin(false);
+    dismissFirstLogin();
+    navigate(ROUTES.DASHBOARD);
+  };
+
+  const handleGoToSettings = () => {
+    setShowFirstLogin(false);
+    dismissFirstLogin();
+    setShow2FA(true);
+  };
+
+  const handleFinish2FA = () => {
+    setShow2FA(false);
+    navigate(ROUTES.SETTINGS_PERSONAL);
   };
 
   return (
@@ -43,7 +88,7 @@ function LoginPage() {
         footer={
           <div className="login-options">
             <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox>Ghi nhớ mật khẩu</Checkbox>
+              <Checkbox defaultChecked>Ghi nhớ mật khẩu</Checkbox>
             </Form.Item>
 
             <Link to="/forgot-password" className="forgot-password">
@@ -52,6 +97,19 @@ function LoginPage() {
           </div>
         }
       />
+
+      {/* Pop-up khuyến nghị 2FA & đổi mật khẩu cho lần đầu đăng nhập theo SRS */}
+      <FirstLoginModal
+        open={showFirstLogin}
+        onDismiss={handleDismissFirstLogin}
+        onGoToSettings={handleGoToSettings}
+      />
+
+      {/* Modal thiết lập 2FA */}
+      <TwoFactorSetupModal open={show2FA} onClose={handleFinish2FA} />
+
+      {/* Modal tài khoản bị ngưng hoạt động */}
+      <AccountSuspendedModal open={showSuspended} onClose={() => setShowSuspended(false)} />
     </div>
   );
 }

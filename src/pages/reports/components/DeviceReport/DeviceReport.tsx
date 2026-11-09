@@ -33,6 +33,8 @@ import {
 
 import type { DeviceReportItem } from "../../types/deviceReport.types";
 
+import { exportReportToCSV } from "../../utils/exportReport";
+
 import "./DeviceReport.css";
 
 // Cấu hình biểu đồ cột theo Figma
@@ -85,7 +87,15 @@ function DeviceReport() {
         icon: <FileInput size={24} color="#F26D21" />,
         tooltip: "Xuất báo cáo",
         onClick: () => {
-          message.info("Chức năng xuất báo cáo sẽ được tích hợp sau.");
+          exportReportToCSV(
+            filteredReports.map((item, idx) => ({
+              STT: idx + 1,
+              "Tên cơ sở": item.facilityName,
+              "Thiết bị chính": item.deviceCount,
+              "Thiết bị khác": item.otherDeviceCount,
+            })),
+            "Bao_cao_ban_tin_theo_thiet_bi",
+          );
         },
       },
     ]);

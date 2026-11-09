@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Avatar, DatePicker, Form, Switch, message } from "antd";
-import { LogOut, SquarePen } from "lucide-react";
+import { LogOut, SquarePen, KeyRound, CreditCard } from "lucide-react";
+import dayjs from "dayjs";
 
 import AppHeader from "../../layouts/components/AppHeader";
 import AppButton from "../../components/common/AppButton/AppButton";
@@ -11,29 +12,32 @@ import AppInput from "../../components/common/AppInput";
 import AppSelect from "../../components/common/AppSelect";
 
 import Logo from "../../assets/images/Logo.png";
+import { useAuth } from "../../contexts/AuthContext";
+import PackageRenewModal from "../packages/components/PackageRenewModal";
+import PackageUpgradeModalCustomer from "../packages/components/PackageUpgradeModalCustomer";
+import CardPaymentModal from "../packages/components/CardPaymentModal";
+import ChangePasswordModal from "../../components/auth/ChangePasswordModal";
 
 import {
   mockAvatar,
-  mockProfile,
   mockRoleOptions,
-  mockSubscription,
   mockTimezoneOptions,
 } from "./profile.mock";
-
-import type { ProfileData } from "./profile.mock";
 
 import "./ProfilePage.css";
 
 function ProfilePage() {
   const navigate = useNavigate();
+  const { user, logout, updateAutoRenew } = useAuth();
 
   const [messageApi, contextHolder] = message.useMessage();
 
-  // Popup xác nhận đăng xuất
+  // Modals state
   const [openLogoutModal, setOpenLogoutModal] = useState(false);
-
-  // Trạng thái gia hạn tự động
-  const [autoRenew, setAutoRenew] = useState(mockSubscription.autoRenew);
+  const [openRenewModal, setOpenRenewModal] = useState(false);
+  const [openUpgradeModal, setOpenUpgradeModal] = useState(false);
+  const [openCardModal, setOpenCardModal] = useState(false);
+  const [openPasswordModal, setOpenPasswordModal] = useState(false);
 
   // Chuyển đến trang chỉnh sửa thông tin
   const handleEdit = () => {
@@ -53,8 +57,7 @@ function ProfilePage() {
   // Xác nhận đăng xuất
   const handleConfirmLogout = () => {
     setOpenLogoutModal(false);
-
-    // TODO: Xóa phiên đăng nhập khi tích hợp xác thực.
+    logout();
     navigate("/login", { replace: true });
   };
 
@@ -70,7 +73,6 @@ function ProfilePage() {
       {/* Logo và tiêu đề */}
       <div className="profile-heading">
         <img src={Logo} alt="MTC" className="profile-logo" />
-
         <h1>Thông tin cơ bản</h1>
       </div>
 
@@ -84,14 +86,24 @@ function ProfilePage() {
             </div>
 
             <h2>
-              {mockProfile.firstName} {mockProfile.lastName}
+              {user.firstName} {user.lastName}
             </h2>
+            <div style={{ fontSize: 13, color: "#8C8C8C", marginTop: 4 }}>
+              {user.orgName}
+            </div>
           </section>
 
           {/* Form thông tin cá nhân */}
-          <Form<ProfileData>
+          <Form
             layout="vertical"
-            initialValues={mockProfile}
+            initialValues={{
+              lastName: user.lastName,
+              firstName: user.firstName,
+              birthday: user.birthday ? dayjs(user.birthday) : undefined,
+              phone: user.phone,
+              email: user.email,
+              timezone: user.timezone,
+            }}
             className="profile-form">
             <div className="profile-form-grid">
               {/* Họ */}
@@ -133,8 +145,8 @@ function ProfilePage() {
                   height={48}
                   value={
                     mockRoleOptions.find(
-                      (item) => item.value === mockProfile.role,
-                    )?.label ?? ""
+                      (item) => item.value === user.role,
+                    )?.label ?? user.roleLabel
                   }
                   readOnly
                   disabled
@@ -159,9 +171,8 @@ function ProfilePage() {
                 <span>Gói cước hiện tại</span>
 
                 <div className="profile-package-capacity">
-                  <strong>{mockSubscription.capacity}</strong>
-
-                  <span>{mockSubscription.cycle}</span>
+                  <strong>{user.currentPackage.capacity}</strong>
+                  <span>{user.currentPackage.cycle}</span>
                 </div>
               </div>
 
@@ -169,32 +180,45 @@ function ProfilePage() {
                 {/* Thời gian hết hạn */}
                 <div className="profile-package-row">
                   <span>Thời gian hết hạn:</span>
+                  <strong style={{ color: user.currentPackage.isExpired ? "#FF4D4F" : "#2B2B2B" }}>
+                    {user.currentPackage.expirationDate}
+                  </strong>
+                </div>
 
-                  <strong>{mockSubscription.expirationDate}</strong>
+                {/* Dung lượng lưu trữ */}
+                <div className="profile-package-row">
+                  <span>Dung lượng đã dùng:</span>
+                  <strong>
+                    {(user.currentPackage.storageUsedMB / 1024).toFixed(1)} GB /{" "}
+                    {(user.currentPackage.storageTotalMB / 1024).toFixed(0)} GB
+                  </strong>
                 </div>
 
                 {/* Gia hạn tự động */}
                 <div className="profile-package-row">
                   <span>Gia hạn tự động:</span>
-
                   <Switch
                     size="small"
-                    checked={autoRenew}
-                    onChange={setAutoRenew}
+                    checked={user.currentPackage.autoRenew}
+                    onChange={(checked) => {
+                      updateAutoRenew(checked);
+                      messageApi.success(
+                        checked
+                          ? "Đã bật tự động gia hạn gói cước qua thẻ mặc định"
+                          : "Đã tắt tự động gia hạn gói cước",
+                      );
+                    }}
                   />
                 </div>
 
                 {/* Gia hạn ngay */}
                 <div className="profile-package-row">
                   <span>Gia hạn ngay:</span>
-
                   <AppButton
                     width={80}
                     height={36}
                     className="profile-package-button"
-                    onClick={() =>
-                      messageApi.info("Chưa tích hợp chức năng gia hạn")
-                    }>
+                    onClick={() => setOpenRenewModal(true)}>
                     Gia hạn
                   </AppButton>
                 </div>
@@ -202,28 +226,36 @@ function ProfilePage() {
                 {/* Nâng cấp gói cước */}
                 <div className="profile-package-row">
                   <span>Nâng cấp gói cước:</span>
-
                   <AppButton
                     width={80}
                     height={36}
                     className="profile-package-button"
-                    onClick={() =>
-                      messageApi.info("Chưa tích hợp chức năng nâng cấp")
-                    }>
+                    onClick={() => setOpenUpgradeModal(true)}>
                     Nâng cấp
                   </AppButton>
                 </div>
               </div>
             </div>
 
-            {/* Lịch sử gia hạn */}
-            <AppButton
-              width={132}
-              height={36}
-              className="profile-history-button"
-              onClick={() => navigate("/profile/renewal-history")}>
-              Lịch sử gia hạn
-            </AppButton>
+            {/* Các nút quản lý truy cập và thanh toán */}
+            <div style={{ display: "flex", gap: 10, flexWrap: "wrap", justifyContent: "flex-end" }}>
+              <AppButton
+                width={140}
+                height={36}
+                variant="outline"
+                onClick={() => setOpenCardModal(true)}
+                icon={<CreditCard size={14} />}>
+                Thẻ thanh toán
+              </AppButton>
+
+              <AppButton
+                width={132}
+                height={36}
+                className="profile-history-button"
+                onClick={() => navigate("/profile/renewal-history")}>
+                Lịch sử gia hạn
+              </AppButton>
+            </div>
           </section>
         </div>
       </main>
@@ -239,6 +271,12 @@ function ProfilePage() {
             onClick: handleEdit,
           },
           {
+            key: "password",
+            icon: <KeyRound />,
+            tooltip: "Đổi mật khẩu",
+            onClick: () => setOpenPasswordModal(true),
+          },
+          {
             key: "logout",
             icon: <LogOut />,
             tooltip: "Đăng xuất",
@@ -250,18 +288,37 @@ function ProfilePage() {
       {/* Popup xác nhận đăng xuất */}
       <AppConfirmModal
         open={openLogoutModal}
-        type="restart"
-        icon={<LogOut size={42} strokeWidth={2} />}
+        type="delete"
         title="Đăng xuất"
-        description="Bạn có chắc chắn muốn đăng xuất khỏi hệ thống không?"
+        description="Bạn có chắc chắn muốn đăng xuất khỏi hệ thống?"
         confirmText="Đăng xuất"
-        cancelText="Hủy"
-        onConfirm={handleConfirmLogout}
         onCancel={handleCancelLogout}
+        onConfirm={handleConfirmLogout}
       />
 
-      {/* Footer */}
-      <footer className="profile-footer">Powered by AltaSoftware</footer>
+      {/* Popup Gia hạn gói cước */}
+      <PackageRenewModal
+        open={openRenewModal}
+        onClose={() => setOpenRenewModal(false)}
+      />
+
+      {/* Popup Nâng cấp gói cước */}
+      <PackageUpgradeModalCustomer
+        open={openUpgradeModal}
+        onClose={() => setOpenUpgradeModal(false)}
+      />
+
+      {/* Popup Cấu hình thẻ thanh toán */}
+      <CardPaymentModal
+        open={openCardModal}
+        onClose={() => setOpenCardModal(false)}
+      />
+
+      {/* Popup Đổi mật khẩu */}
+      <ChangePasswordModal
+        open={openPasswordModal}
+        onClose={() => setOpenPasswordModal(false)}
+      />
     </div>
   );
 }
