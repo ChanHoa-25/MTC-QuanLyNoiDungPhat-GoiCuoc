@@ -33,6 +33,8 @@ import {
 
 import type { FacilityReportItem } from "../../types/report.types";
 
+import { exportReportToCSV } from "../../utils/exportReport";
+
 import "./FacilityReport.css";
 
 // Cấu hình các cột biểu đồ dành cho tab Cơ sở
@@ -86,7 +88,14 @@ function FacilityReport() {
         icon: <FileInput size={24} color="#F26D21" />,
         tooltip: "Xuất báo cáo",
         onClick: () => {
-          message.info("Chức năng xuất báo cáo sẽ được tích hợp sau.");
+          exportReportToCSV(
+            filteredReports.map((item, idx) => ({
+              STT: idx + 1,
+              "Tên cơ sở": item.facilityName,
+              "Tổng số cấp con": item.totalChildren,
+            })),
+            "Bao_cao_ban_tin_theo_co_so",
+          );
         },
       },
     ]);

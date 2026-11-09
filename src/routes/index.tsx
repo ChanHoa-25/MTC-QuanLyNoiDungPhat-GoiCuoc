@@ -29,6 +29,7 @@ import ComingSoonPage from "../pages/ComingSoonPage";
 import { ROUTES } from "../constants/route.constants";
 import ReportsPage from "../pages/reports/ReportsPage";
 import FacilityTemplateFormPage from "../pages/facilities/FacilityTemplates/FacilityTemplateFormPage";
+import PackagesPage from "../pages/packages/PackagesPage";
 
 import SourceMediaPage, { SourceMediaDetailPage } from "../pages/sources/media";
 import SourceTemplatesPage, {
@@ -43,6 +44,7 @@ import SourcePlaylistsPage, {
 import SourcePlaceholderPage from "../pages/sources/components/SourcePlaceholderPage";
 import SystemSettings from "../pages/settings/system/SystemSettings";
 import PersonalSettings from "../pages/settings/personal/PersonalSettings";
+import NewsModeSettings from "../pages/settings/news-mode/NewsModeSettings";
 import UserLogsSettings from "../pages/settings/user-log/UserLogsSettings";
 import DeviceDistributorsSettings from "../pages/settings/device-distributors/DeviceDistributorsSettings";
 import CategoriesSettings from "../pages/settings/categories/CategoriesSettings";
@@ -203,6 +205,19 @@ export const routes: RouteObject[] = [
       },
 
       {
+        path: ROUTES.PACKAGES,
+        element: <PackagesPage />,
+      },
+      {
+        path: ROUTES.PACKAGE_UPGRADES,
+        element: <PackagesPage />,
+      },
+      {
+        path: ROUTES.PACKAGE_TRANSACTIONS,
+        element: <PackagesPage />,
+      },
+
+      {
         path: ROUTES.REPORTS,
         element: <ReportsPage />,
       },
@@ -250,7 +265,7 @@ export const routes: RouteObject[] = [
       },
       {
         path: ROUTES.SETTINGS_NEWS_MODE,
-        element: <ComingSoonPage title="Chế độ tạo bản tin" />,
+        element: <NewsModeSettings />,
       },
     ],
   },

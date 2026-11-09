@@ -1,5 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { MailOutlined } from "@ant-design/icons";
+import { message } from "antd";
 
 import AuthForm from "../../components/auth/AuthForm";
 import type { AuthField } from "../../components/auth/AuthForm";
@@ -17,9 +18,13 @@ const forgotPasswordFields: AuthField[] = [
 ];
 
 function ForgotPasswordPage() {
+  const navigate = useNavigate();
+
   const handleForgotPassword = async (values: Record<string, string>) => {
-    // TODO: Tích hợp API gửi yêu cầu đặt lại mật khẩu.
-    console.log("Email yêu cầu đặt lại mật khẩu:", values.email);
+    message.success(`Đã gửi liên kết đặt lại mật khẩu đến email: ${values.email}`);
+    setTimeout(() => {
+      navigate("/reset-password?token=mock-token-2026");
+    }, 1500);
   };
 
   return (

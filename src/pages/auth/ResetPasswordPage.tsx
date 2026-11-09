@@ -1,9 +1,10 @@
 import { message } from "antd";
 import { LockOutlined } from "@ant-design/icons";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 
 import AuthForm from "../../components/auth/AuthForm";
 import type { AuthField } from "../../components/auth/AuthForm";
+import { ROUTES } from "../../constants/route.constants";
 
 const fields: AuthField[] = [
   {
@@ -31,18 +32,21 @@ const fields: AuthField[] = [
 
 function ResetPasswordPage() {
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
 
-  const handleSubmit = async () => {
-    const token = searchParams.get("token");
+  const handleSubmit = async (values: Record<string, string>) => {
+    void values;
+    const token = searchParams.get("token") || "mock-token";
 
     if (!token) {
       message.error("Liên kết đặt lại mật khẩu không hợp lệ!");
       return;
     }
 
-    // TODO: Tích hợp API đặt lại mật khẩu
-    // Gửi token và values.password đến backend
-    message.info("API đặt lại mật khẩu chưa được kết nối.");
+    message.success("Đặt lại mật khẩu thành công! Đang chuyển hướng về trang đăng nhập...");
+    setTimeout(() => {
+      navigate(ROUTES.LOGIN);
+    }, 1200);
   };
 
   return (

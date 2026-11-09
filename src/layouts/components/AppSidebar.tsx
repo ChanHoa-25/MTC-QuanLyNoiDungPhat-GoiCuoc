@@ -12,6 +12,7 @@ import {
   ChevronRight,
   Command,
   ChartLine,
+  Package,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -33,12 +34,28 @@ const mainRoutes = [
   ROUTES.SOURCES,
   ROUTES.DEVICES,
   ROUTES.BROADCASTS,
+  ROUTES.PACKAGES,
   ROUTES.REPORTS,
   ROUTES.SETTINGS,
 ];
 
 // Danh sách menu con
 const submenuItems: Record<string, NonNullable<MenuProps["items"]>> = {
+  [ROUTES.PACKAGES]: [
+    {
+      key: ROUTES.PACKAGES,
+      label: "Quản lý gói cước",
+    },
+    {
+      key: ROUTES.PACKAGE_UPGRADES,
+      label: "Gói nâng cấp (SYS-UPG)",
+    },
+    {
+      key: ROUTES.PACKAGE_TRANSACTIONS,
+      label: "Lịch sử giao dịch",
+    },
+  ],
+
   [ROUTES.SOURCES]: [
     {
       key: ROUTES.SOURCE_MEDIA,
@@ -172,6 +189,16 @@ function AppSidebar({ collapsed, onCollapse }: AppSidebarProps) {
       key: ROUTES.BROADCASTS,
       icon: renderIcon(FileText, selectedParentKey === ROUTES.BROADCASTS),
       label: "Bản tin",
+    },
+    {
+      key: ROUTES.PACKAGES,
+      icon: renderIcon(Package, selectedParentKey === ROUTES.PACKAGES),
+      label: (
+        <div className="sidebar-menu-label">
+          <span className="sidebar-menu-text">Gói cước</span>
+          {!collapsed && createSubmenu(ROUTES.PACKAGES)}
+        </div>
+      ),
     },
     {
       key: ROUTES.REPORTS,
