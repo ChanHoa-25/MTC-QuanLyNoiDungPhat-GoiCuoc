@@ -11,6 +11,8 @@ import {
 
 import type { Facility, FacilityAction } from "../../types/facility.types";
 
+import { findFacilityPath } from "../../utils/facility.utils";
+
 import "./LocationTree.css";
 
 interface LocationTreeProps {
@@ -20,50 +22,33 @@ interface LocationTreeProps {
   onAction: (action: FacilityAction, facility: Facility) => void;
 }
 
-function findAncestorIds(
-  facilities: Facility[],
-  targetId: string,
-  ancestors: string[] = [],
-): string[] | null {
-  for (const facility of facilities) {
-    if (facility.id === targetId) {
-      return ancestors;
-    }
-
-    const found = findAncestorIds(facility.children ?? [], targetId, [
-      ...ancestors,
-      facility.id,
-    ]);
-
-    if (found) {
-      return found;
-    }
-  }
-
-  return null;
-}
-
 function LocationTree({
   facilities,
   selectedId,
   onSelect,
   onAction,
 }: LocationTreeProps) {
-  // Mặc định mở rộng các cơ sở cấp gốc
-  const [expandedIds, setExpandedIds] = useState<string[]>(() =>
-    facilities.map((facility) => facility.id),
-  );
+  const [expandedIds, setExpandedIds] = useState<string[]>([]);
 
-  // Tự động mở rộng các cơ sở cha khi chọn cơ sở con
+  // Mở rộng các cơ sở gốc sau khi API tải dữ liệu.
+  useEffect(() => {
+    setExpandedIds((previous) => [
+      ...new Set([...previous, ...facilities.map((facility) => facility.id)]),
+    ]);
+  }, [facilities]);
+
+  // Mở rộng các cơ sở cha khi chọn cơ sở con.
   useEffect(() => {
     if (!selectedId) return;
 
-    const ancestorIds = findAncestorIds(facilities, selectedId);
+    const path = findFacilityPath(facilities, selectedId);
 
-    if (!ancestorIds) return;
+    if (path.length === 0) return;
+
+    const ancestorIds = path.slice(0, -1).map((facility) => facility.id);
 
     setExpandedIds((previous) => [...new Set([...previous, ...ancestorIds])]);
-  }, [selectedId, facilities]);
+  }, [facilities, selectedId]);
 
   const isExpanded = (id: string) => expandedIds.includes(id);
 
@@ -74,7 +59,6 @@ function LocationTree({
         : [...previous, id],
     );
   };
-
   // Menu thao tác với cơ sở
   const getMenuItems = (facility: Facility): MenuProps["items"] => [
     {

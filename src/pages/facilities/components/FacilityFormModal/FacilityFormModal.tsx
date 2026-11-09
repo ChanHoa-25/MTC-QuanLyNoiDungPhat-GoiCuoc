@@ -68,9 +68,11 @@ function FacilityFormModal({
   ]);
 
   const handleFinish = (values: FacilityModalFormValues) => {
+    if (loading) return;
+
     onSubmit({
-      facilityName: values.facilityName,
-      facilityCode: values.facilityCode,
+      facilityName: values.facilityName.trim(),
+      facilityCode: values.facilityCode.trim(),
       isActive: values.isActive,
     });
   };
@@ -97,6 +99,17 @@ function FacilityFormModal({
               whitespace: true,
               message: "Vui lòng nhập tên cơ sở",
             },
+            {
+              validator: (_, value: string | undefined) => {
+                if (!value || value.trim()) {
+                  return Promise.resolve();
+                }
+
+                return Promise.reject(
+                  new Error("Tên cơ sở không được chỉ chứa khoảng trắng"),
+                );
+              },
+            },
           ]}>
           <AppInput width="100%" height={44} placeholder="Nhập tên cơ sở" />
         </Form.Item>
@@ -112,7 +125,12 @@ function FacilityFormModal({
               message: "Vui lòng nhập mã cơ sở",
             },
           ]}>
-          <AppInput width="100%" height={44} placeholder="Nhập mã cơ sở" />
+          <AppInput
+            width="100%"
+            height={44}
+            placeholder="Nhập mã cơ sở"
+            readOnly={isEdit}
+          />
         </Form.Item>
 
         {/* Cơ sở trực thuộc */}
@@ -158,7 +176,8 @@ function FacilityFormModal({
             variant="outline"
             width={120}
             height={44}
-            onClick={onCancel}>
+            onClick={onCancel}
+            disabled={loading}>
             Hủy
           </AppButton>
 
@@ -166,7 +185,8 @@ function FacilityFormModal({
             width={120}
             height={44}
             htmlType="submit"
-            loading={loading}>
+            loading={loading}
+            disabled={loading}>
             {isEdit ? "Cập nhật" : "Thêm mới"}
           </AppButton>
         </div>

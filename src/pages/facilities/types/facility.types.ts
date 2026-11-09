@@ -1,30 +1,19 @@
-// Thông tin cơ sở trong cây địa bàn
-export interface Facility {
-  id: string;
-  organizationId: string;
-  facilityCode: string;
-  facilityName: string;
-  parentId: string | null;
-  isActive: boolean;
-  createdAt: string;
+import type { Facility as ApiFacility } from "../../../types/facility.types";
 
-  // Danh sách cơ sở con
+export interface Facility extends ApiFacility {
   children?: Facility[];
 }
 
-// Dữ liệu form thêm hoặc cập nhật cơ sở
 export interface FacilityFormValues {
   facilityCode: string;
   facilityName: string;
   isActive: boolean;
 }
 
-// Các thao tác trên cơ sở
 export type FacilityAction = "create" | "edit" | "delete";
 
 export type FacilityFormMode = "create" | "edit";
 
-// Các tab trong trang Quản lý cơ sở
 export type FacilityTabKey =
   | "info"
   | "users"
