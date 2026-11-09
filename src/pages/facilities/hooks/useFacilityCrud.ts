@@ -1,4 +1,7 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
+import axios from "axios";
+
+import { facilityApi } from "../../../api/facilityApi";
 
 import type {
   Facility,
@@ -14,10 +17,72 @@ interface UseFacilityCrudProps {
   facilities: Facility[];
   activeModal: FacilityModalType;
   setActiveModal: (value: FacilityModalType) => void;
+
   targetFacility: Facility | null;
   setTargetFacility: (facility: Facility | null) => void;
+
   closeFacilityModal: () => void;
+  refreshFacilities: () => Promise<void>;
+
   onInfo: (content: string) => void;
+  onSuccess: (content: string) => void;
+  onError: (content: string) => void;
+}
+
+// Lấy thông báo lỗi từ Axios hoặc API.
+function getErrorMessage(error: unknown, fallback: string): string {
+  if (axios.isAxiosError(error)) {
+    const data = error.response?.data as
+      | {
+          message?: string;
+          errors?: unknown;
+        }
+      | undefined;
+
+    if (data?.message) {
+      return data.message;
+    }
+
+    if (Array.isArray(data?.errors)) {
+      const messages = data.errors.filter(
+        (item): item is string => typeof item === "string",
+      );
+
+      if (messages.length > 0) {
+        return messages.join(", ");
+      }
+    }
+
+    if (error.response?.status === 409) {
+      return "Dữ liệu đã tồn tại hoặc bị trùng.";
+    }
+
+    if (error.response?.status === 400) {
+      return "Dữ liệu không hợp lệ. Vui lòng kiểm tra lại.";
+    }
+
+    if (error.response?.status === 401) {
+      return "Phiên đăng nhập không hợp lệ.";
+    }
+
+    if (error.response?.status === 403) {
+      return "Bạn không có quyền thực hiện thao tác này.";
+    }
+
+    if (error.response?.status === 500) {
+      return "Máy chủ gặp lỗi. Vui lòng kiểm tra dữ liệu hoặc liên hệ Back-end.";
+    }
+
+    if (!error.response) {
+      return "Không thể kết nối đến máy chủ.";
+    }
+  }
+
+  if (error instanceof Error && error.message) {
+    return error.message;
+  }
+
+  return fallback;
 }
 
 export function useFacilityCrud({
@@ -27,11 +92,18 @@ export function useFacilityCrud({
   targetFacility,
   setTargetFacility,
   closeFacilityModal,
+  refreshFacilities,
   onInfo,
+  onSuccess,
+  onError,
 }: UseFacilityCrudProps) {
-  // Mở modal thêm, sửa hoặc xóa cơ sở
+  const [submitting, setSubmitting] = useState(false);
+  const submittingRef = useRef(false);
+
   const handleFacilityAction = useCallback(
     (action: FacilityAction, facility: Facility) => {
+      if (submittingRef.current) return;
+
       setTargetFacility(facility);
 
       switch (action) {
@@ -46,59 +118,123 @@ export function useFacilityCrud({
         case "delete":
           setActiveModal("delete");
           break;
-
-        default:
-          setActiveModal(null);
-          setTargetFacility(null);
       }
     },
     [setActiveModal, setTargetFacility],
   );
 
-  // Đóng modal
-  const handleCloseModal = closeFacilityModal;
+  const handleCloseModal = useCallback(() => {
+    if (submittingRef.current) return;
+    closeFacilityModal();
+  }, [closeFacilityModal]);
 
-  // Xác nhận thêm hoặc sửa cơ sở
+  const reloadAfterSuccess = useCallback(async () => {
+    try {
+      await refreshFacilities();
+    } catch {
+      onError(
+        "Thao tác đã thành công nhưng không thể tải lại danh sách cơ sở.",
+      );
+    }
+  }, [refreshFacilities, onError]);
+
   const handleSubmitFacility = useCallback(
-    (values: FacilityFormValues) => {
-      if (!targetFacility) return;
-
-      if (activeModal === "create") {
-        console.log("Thêm cơ sở trực thuộc", {
-          parentFacilityId: targetFacility.id,
-          values,
-        });
-
-        onInfo("Đã nhận thông tin thêm cơ sở. Chưa lưu vào danh sách.");
-      } else if (activeModal === "edit") {
-        console.log("Cập nhật thông tin cơ sở", {
-          facilityId: targetFacility.id,
-          values,
-        });
-
-        onInfo("Đã nhận thông tin cập nhật. Chưa lưu vào danh sách.");
+    async (values: FacilityFormValues) => {
+      if (
+        !targetFacility ||
+        submittingRef.current ||
+        (activeModal !== "create" && activeModal !== "edit")
+      ) {
+        return;
       }
 
-      handleCloseModal();
+      submittingRef.current = true;
+      setSubmitting(true);
+
+      try {
+        if (activeModal === "create") {
+          const response = await facilityApi.create({
+            organizationId: targetFacility.organizationId,
+            facilityCode: values.facilityCode.trim(),
+            facilityName: values.facilityName.trim(),
+            parentId: targetFacility.id,
+          });
+
+          if (!response.success) {
+            throw new Error(response.message || "Không thể thêm cơ sở");
+          }
+
+          closeFacilityModal();
+          onSuccess(response.message || "Thêm cơ sở thành công");
+
+          await reloadAfterSuccess();
+        } else {
+          const response = await facilityApi.update(targetFacility.id, {
+            facilityName: values.facilityName.trim(),
+            isActive: values.isActive,
+          });
+
+          if (!response.success) {
+            throw new Error(response.message || "Không thể cập nhật cơ sở");
+          }
+
+          closeFacilityModal();
+          onSuccess(response.message || "Cập nhật cơ sở thành công");
+
+          await reloadAfterSuccess();
+        }
+      } catch (error) {
+        console.error("Lỗi lưu cơ sở:", error);
+
+        onError(getErrorMessage(error, "Không thể lưu thông tin cơ sở"));
+      } finally {
+        submittingRef.current = false;
+        setSubmitting(false);
+      }
     },
-    [targetFacility, activeModal, onInfo, handleCloseModal],
+    [
+      targetFacility,
+      activeModal,
+      closeFacilityModal,
+      onSuccess,
+      onError,
+      reloadAfterSuccess,
+    ],
   );
 
-  // Xác nhận xóa cơ sở
-  const handleDeleteFacility = useCallback(() => {
-    if (!targetFacility) return;
+  const handleDeleteFacility = useCallback(async () => {
+    if (!targetFacility || submittingRef.current) return;
 
-    console.log("Xóa cơ sở", {
-      facilityId: targetFacility.id,
-      facilityName: targetFacility.facilityName,
-    });
+    submittingRef.current = true;
+    setSubmitting(true);
 
-    onInfo("Đã xác nhận xóa cơ sở. Chưa xóa dữ liệu khỏi danh sách.");
+    try {
+      const response = await facilityApi.delete(targetFacility.id);
 
-    handleCloseModal();
-  }, [targetFacility, onInfo, handleCloseModal]);
+      if (!response.success) {
+        throw new Error(response.message || "Không thể xóa cơ sở");
+      }
 
-  // Tìm cơ sở cha khi sửa
+      closeFacilityModal();
+      onSuccess(response.message || "Xóa cơ sở thành công");
+
+      await reloadAfterSuccess();
+    } catch (error) {
+      console.error("Lỗi xóa cơ sở:", error);
+
+      onError(getErrorMessage(error, "Không thể xóa cơ sở"));
+    } finally {
+      submittingRef.current = false;
+      setSubmitting(false);
+    }
+  }, [
+    targetFacility,
+    closeFacilityModal,
+    onSuccess,
+    onError,
+    reloadAfterSuccess,
+  ]);
+
   const parentFacility = useMemo(() => {
     if (activeModal !== "edit" || !targetFacility?.parentId) {
       return null;
@@ -107,7 +243,6 @@ export function useFacilityCrud({
     return findFacilityById(facilities, targetFacility.parentId);
   }, [activeModal, targetFacility, facilities]);
 
-  // Dữ liệu ban đầu cho form
   const initialValues = useMemo(
     () => ({
       facilityName:
@@ -127,11 +262,15 @@ export function useFacilityCrud({
     [activeModal, targetFacility, parentFacility],
   );
 
+  // Giữ tương thích với interface hook hiện tại.
+  void onInfo;
+
   return {
     handleFacilityAction,
     handleCloseModal,
     handleSubmitFacility,
     handleDeleteFacility,
     initialValues,
+    submitting,
   };
 }

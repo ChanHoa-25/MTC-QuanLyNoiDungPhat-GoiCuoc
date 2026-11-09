@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 
-import { message } from "antd";
+import { Alert, Button, Empty, Spin, message } from "antd";
 
 import AppTabs from "../../components/common/AppTabs";
 import FacilityConfirmModals from "./components/FacilitiesConfirmModals/FacilityConfirmModals";
@@ -34,6 +34,9 @@ function FacilitiesPage() {
     selectedFacilityId,
     setSelectedFacilityId,
     selectedFacility,
+    refreshFacilities,
+    loading,
+    error,
   } = useFacilityContext();
   const { setActions } = useActionPanel();
   const { activeTab, changeTab, resetTab } = useFacilityTabs();
@@ -103,12 +106,28 @@ function FacilitiesPage() {
     onWarning: messageApi.warning,
     onInfo: messageApi.info,
   });
+  // const {
+  //   handleFacilityAction,
+  //   handleCloseModal,
+  //   handleSubmitFacility,
+  //   handleDeleteFacility,
+  //   initialValues,
+  // } = useFacilityCrud({
+  //   facilities,
+  //   activeModal,
+  //   setActiveModal,
+  //   targetFacility,
+  //   setTargetFacility,
+  //   closeFacilityModal,
+  //   onInfo: messageApi.info,
+  // });
   const {
     handleFacilityAction,
     handleCloseModal,
     handleSubmitFacility,
     handleDeleteFacility,
     initialValues,
+    submitting,
   } = useFacilityCrud({
     facilities,
     activeModal,
@@ -116,9 +135,11 @@ function FacilitiesPage() {
     targetFacility,
     setTargetFacility,
     closeFacilityModal,
+    refreshFacilities,
     onInfo: messageApi.info,
+    onSuccess: messageApi.success,
+    onError: messageApi.error,
   });
-
   const [openCreateUser, setOpenCreateUser] = useState(false);
 
   const [deleteUserRequestId, setDeleteUserRequestId] = useState(0);
@@ -276,12 +297,44 @@ function FacilitiesPage() {
   return (
     <div className="facilities-page">
       {contextHolder}
-      <LocationTree
-        facilities={facilities}
-        selectedId={selectedFacilityId}
-        onSelect={handleSelectFacility}
-        onAction={handleFacilityAction}
-      />
+      <div className="facilities-tree-wrapper">
+        {loading && facilities.length === 0 ? (
+          <div className="facilities-tree-state">
+            <Spin size="large" />
+            <span>Đang tải danh sách cơ sở...</span>
+          </div>
+        ) : error ? (
+          <div className="facilities-tree-state">
+            <Alert
+              type="error"
+              showIcon
+              title="Không thể tải danh sách cơ sở"
+              description={error}
+            />
+
+            <Button
+              type="primary"
+              onClick={() => {
+                void refreshFacilities().catch(() => {
+                  // Lỗi được quản lý trong FacilityContext.
+                });
+              }}>
+              Thử lại
+            </Button>
+          </div>
+        ) : facilities.length === 0 ? (
+          <div className="facilities-tree-state">
+            <Empty description="Chưa có cơ sở nào" />
+          </div>
+        ) : (
+          <LocationTree
+            facilities={facilities}
+            selectedId={selectedFacilityId}
+            onSelect={handleSelectFacility}
+            onAction={handleFacilityAction}
+          />
+        )}
+      </div>
       <main className="facilities-main">
         <AppTabs
           items={facilityTabs}
@@ -333,11 +386,13 @@ function FacilitiesPage() {
         open={activeModal === "create" || activeModal === "edit"}
         mode={activeModal === "edit" ? "edit" : "create"}
         initialValues={initialValues}
+        loading={submitting}
         onCancel={handleCloseModal}
         onSubmit={handleSubmitFacility}
       />
       <FacilityConfirmModals
         openDeleteFacility={activeModal === "delete"}
+        deletingFacility={submitting}
         onCloseFacility={handleCloseModal}
         onConfirmDeleteFacility={handleDeleteFacility}
         openDeleteUser={openDeleteUser}

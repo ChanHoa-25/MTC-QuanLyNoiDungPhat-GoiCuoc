@@ -58,6 +58,67 @@
   margin: 0;
 }
 
+/* Container cây cơ sở */
+
+.facilities-tree-wrapper {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+}
+
+/* Loading, Error và Empty State */
+
+.facilities-tree-state {
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  min-height: 280px;
+  height: 100%;
+
+  padding: 20px;
+  gap: 16px;
+
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(243, 198, 179, 0.2);
+
+  color: #666666;
+  font-size: 14px;
+  text-align: center;
+}
+
+.facilities-tree-state .ant-alert {
+  width: 100%;
+  text-align: left;
+}
+
+.facilities-tree-state .ant-btn-primary {
+  min-width: 120px;
+}
+
+/* Responsive */
+
+@media (max-width: 700px) {
+  .facilities-tree-wrapper {
+    height: 350px;
+    max-height: 350px;
+  }
+
+  .facilities-tree-state {
+    min-height: 250px;
+  }
+}
+
 @media (max-width: 1100px) {
   .facilities-page {
     grid-template-columns: 240px minmax(0, 1fr);

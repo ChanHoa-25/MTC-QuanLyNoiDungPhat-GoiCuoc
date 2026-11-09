@@ -4,6 +4,7 @@ type DeviceConfirmType = "restart" | "delete" | null;
 
 interface FacilityConfirmModalsProps {
   openDeleteFacility: boolean;
+  deletingFacility: boolean;
   onCloseFacility: () => void;
   onConfirmDeleteFacility: () => void;
 
@@ -36,6 +37,7 @@ function FacilityConfirmModals({
   openDeleteFacility,
   onCloseFacility,
   onConfirmDeleteFacility,
+  deletingFacility,
 
   openDeleteUser,
   onCloseDeleteUser,
@@ -67,10 +69,11 @@ function FacilityConfirmModals({
         open={openDeleteFacility}
         type="delete"
         title="Xác nhận xóa cơ sở"
-        description="Cơ sở này sẽ bị xóa và không thể khôi phục."
+        description="Bạn có chắc chắn muốn xóa cơ sở này?"
         confirmText="Xác nhận"
         cancelText="Hủy"
         width={500}
+        confirmLoading={deletingFacility}
         onCancel={onCloseFacility}
         onConfirm={onConfirmDeleteFacility}
       />
