@@ -1,0 +1,141 @@
+.dash-admin-wrapper {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  background-color: #FFF8F4;
+  padding: 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 5 Thẻ thống kê */
+.dash-admin-stats {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+.dash-admin-card {
+  flex: 1;
+  min-width: 180px;
+  border-radius: 12px;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 20px 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+.dash-admin-card.pink { background-color: #FF8A8A; }
+.dash-admin-card.green { background-color: #73D13D; }
+.dash-admin-card.light-pink { background-color: #FFADD2; }
+.dash-admin-card.blue { background-color: #69C0FF; }
+.dash-admin-card.orange { background-color: #FF9C6E; }
+
+.dash-admin-value {
+  font-size: 38px;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+}
+.dash-admin-unit {
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 4px;
+}
+.dash-admin-label {
+  font-size: 13px;
+  font-weight: 500;
+  background: rgba(255, 255, 255, 0.25);
+  padding: 4px 16px;
+  border-radius: 20px;
+  text-align: center;
+}
+
+/* Bộ lọc */
+.dash-admin-filters {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 16px;
+  align-items: flex-end;
+}
+.dash-admin-filter-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #595959;
+  margin-bottom: 8px;
+}
+
+/* Bản đồ */
+.dash-admin-map-container {
+  flex: 1 1 0;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  position: relative;
+  min-height: 400px;
+}
+.dash-admin-map-leaflet {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Popup Bản đồ - Theme Tối theo Figma */
+.dark-map-popup .leaflet-popup-content-wrapper {
+  background-color: #1A1A2E;
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 0;
+}
+.dark-map-popup .leaflet-popup-tip {
+  background-color: #1A1A2E;
+}
+.dark-map-popup .leaflet-popup-content {
+  margin: 0;
+  padding: 16px;
+  min-width: 260px;
+}
+.dark-popup-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+  padding-bottom: 8px;
+}
+.dark-popup-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+.dark-popup-label {
+  color: #a0a0b0;
+  white-space: nowrap;
+}
+.dark-popup-value {
+  text-align: right;
+  font-weight: 500;
+}
+.dark-popup-status {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  justify-content: flex-end;
+}
+.dark-popup-status.online { color: #4CC764; }
+.dark-popup-status.offline { color: #E8484F; }
+.dark-popup-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.dark-popup-dot.online { background-color: #4CC764; }
+.dark-popup-dot.offline { background-color: #E8484F; }

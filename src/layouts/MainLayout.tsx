@@ -3,6 +3,7 @@ import { Layout } from "antd";
 import { Outlet } from "react-router-dom";
 
 import AppSidebar from "./components/AppSidebar";
+import type { AppSidebarRole } from "./components/AppSidebar";
 import AppHeader from "./components/AppHeader";
 import AppActionPanel from "../components/common/AppActionPanel";
 
@@ -15,7 +16,11 @@ import "./Mainlayout.css";
 
 const { Header, Content, Footer } = Layout;
 
-function MainLayoutContent() {
+export interface MainLayoutProps {
+  role?: AppSidebarRole;
+}
+
+function MainLayoutContent({ role }: MainLayoutProps) {
   const [collapsed, setCollapsed] = useState(false);
   const { actions } = useActionPanel();
 
@@ -26,7 +31,7 @@ function MainLayoutContent() {
   return (
     <Layout className="main-layout">
       {/* Sidebar nằm bên trái */}
-      <AppSidebar collapsed={collapsed} onCollapse={handleCollapse} />
+      <AppSidebar collapsed={collapsed} onCollapse={handleCollapse} role={role} />
 
       {/* Phần nội dung nằm bên phải */}
       <Layout className="main-layout-right">
@@ -52,10 +57,10 @@ function MainLayoutContent() {
   );
 }
 
-function MainLayout() {
+function MainLayout({ role }: MainLayoutProps) {
   return (
     <ActionPanelProvider>
-      <MainLayoutContent />
+      <MainLayoutContent role={role} />
     </ActionPanelProvider>
   );
 }

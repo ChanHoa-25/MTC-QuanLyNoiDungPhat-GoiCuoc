@@ -28,9 +28,19 @@ const breadcrumbs: Record<string, BreadcrumbConfig> = {
     icon: <Command className="breadcrumb-icon" />,
   },
 
+  "/admin/dashboard": {
+    label: "Tổng quan",
+    icon: <Command className="breadcrumb-icon" />,
+  },
+
   [ROUTES.FACILITIES]: {
     label: "Cơ sở",
     icon: <Network className="breadcrumb-icon" />,
+  },
+
+  [ROUTES.ORGANIZATIONS]: {
+    label: "Quản lý tổ chức",
+    icon: <FileText className="breadcrumb-icon" />,
   },
 
   [ROUTES.SOURCES]: {
@@ -62,6 +72,15 @@ const breadcrumbs: Record<string, BreadcrumbConfig> = {
   [ROUTES.BROADCASTS]: {
     label: "Bản tin",
     icon: <FileText className="breadcrumb-icon" />,
+  },
+
+  [ROUTES.NOTIFICATIONS]: {
+    label: "Quản lý thông báo",
+    icon: <FileText className="breadcrumb-icon" />,
+  },
+
+  [ROUTES.PACKAGES]: {
+    label: "Gói cước",
   },
 
   [ROUTES.REPORTS]: {
@@ -100,9 +119,177 @@ const breadcrumbs: Record<string, BreadcrumbConfig> = {
 };
 
 function AppBreadcrumb() {
-  const { pathname } = useLocation();
+  const { pathname, search } = useLocation();
 
   const { selectedFacilityPath, setSelectedFacilityId } = useFacilityContext();
+
+  if (
+    pathname === ROUTES.ORGANIZATIONS ||
+    pathname.startsWith(`${ROUTES.ORGANIZATIONS}/`)
+  ) {
+    const searchParams = new URLSearchParams(search);
+    const isEditOrDetail =
+      searchParams.get("action") === "edit" ||
+      searchParams.get("view") === "detail" ||
+      searchParams.has("id") ||
+      pathname.length > ROUTES.ORGANIZATIONS.length;
+
+    const orgItems = [
+      {
+        title: (
+          <span className="breadcrumb-item">
+            <FileText className="breadcrumb-icon" />
+            <Link to={ROUTES.ORGANIZATIONS} className="breadcrumb-parent">
+              Quản lý tổ chức
+            </Link>
+          </span>
+        ),
+      },
+      {
+        title: (
+          <span className="breadcrumb-item">
+            {isEditOrDetail ? (
+              <Link to={ROUTES.ORGANIZATIONS} className="breadcrumb-parent">
+                Danh sách tổ chức
+              </Link>
+            ) : (
+              <span className="breadcrumb-current">Danh sách tổ chức</span>
+            )}
+          </span>
+        ),
+      },
+    ];
+
+    if (isEditOrDetail) {
+      orgItems.push({
+        title: (
+          <span className="breadcrumb-item">
+            <span className="breadcrumb-current">Chỉnh sửa tổ chức</span>
+          </span>
+        ),
+      });
+    }
+
+    return (
+      <Breadcrumb
+        className="app-breadcrumb"
+        items={orgItems}
+        separator={<RightOutlined className="breadcrumb-separator-icon" />}
+      />
+    );
+  }
+
+  if (
+    pathname === ROUTES.NOTIFICATIONS ||
+    pathname.startsWith(`${ROUTES.NOTIFICATIONS}/`)
+  ) {
+    const searchParams = new URLSearchParams(search);
+    const isEditOrDetail =
+      searchParams.get("action") === "edit" ||
+      searchParams.get("view") === "detail" ||
+      searchParams.has("id") ||
+      pathname.length > ROUTES.NOTIFICATIONS.length;
+
+    const notifItems = [
+      {
+        title: (
+          <span className="breadcrumb-item">
+            <FileText className="breadcrumb-icon" />
+            <Link to={ROUTES.NOTIFICATIONS} className="breadcrumb-parent">
+              Quản lý thông báo
+            </Link>
+          </span>
+        ),
+      },
+      {
+        title: (
+          <span className="breadcrumb-item">
+            {isEditOrDetail ? (
+              <Link to={ROUTES.NOTIFICATIONS} className="breadcrumb-parent">
+                Danh sách thông báo
+              </Link>
+            ) : (
+              <span className="breadcrumb-current">Danh sách thông báo</span>
+            )}
+          </span>
+        ),
+      },
+    ];
+
+    if (isEditOrDetail) {
+      notifItems.push({
+        title: (
+          <span className="breadcrumb-item">
+            <span className="breadcrumb-current">Chi tiết thông báo</span>
+          </span>
+        ),
+      });
+    }
+
+    return (
+      <Breadcrumb
+        className="app-breadcrumb"
+        items={notifItems}
+        separator={<RightOutlined className="breadcrumb-separator-icon" />}
+      />
+    );
+  }
+
+  if (
+    pathname === ROUTES.NOTIFICATIONS ||
+    pathname.startsWith(`${ROUTES.NOTIFICATIONS}/`)
+  ) {
+    const searchParams = new URLSearchParams(search);
+    const isEditOrDetail =
+      searchParams.get("action") === "edit" ||
+      searchParams.get("view") === "detail" ||
+      searchParams.has("id") ||
+      pathname.length > ROUTES.NOTIFICATIONS.length;
+
+    const notifItems = [
+      {
+        title: (
+          <span className="breadcrumb-item">
+            <FileText className="breadcrumb-icon" />
+            <Link to={ROUTES.NOTIFICATIONS} className="breadcrumb-parent">
+              Quản lý thông báo
+            </Link>
+          </span>
+        ),
+      },
+      {
+        title: (
+          <span className="breadcrumb-item">
+            {isEditOrDetail ? (
+              <Link to={ROUTES.NOTIFICATIONS} className="breadcrumb-parent">
+                Danh sách thông báo
+              </Link>
+            ) : (
+              <span className="breadcrumb-current">Danh sách thông báo</span>
+            )}
+          </span>
+        ),
+      },
+    ];
+
+    if (isEditOrDetail) {
+      notifItems.push({
+        title: (
+          <span className="breadcrumb-item">
+            <span className="breadcrumb-current">Chi tiết thông báo</span>
+          </span>
+        ),
+      });
+    }
+
+    return (
+      <Breadcrumb
+        className="app-breadcrumb"
+        items={notifItems}
+        separator={<RightOutlined className="breadcrumb-separator-icon" />}
+      />
+    );
+  }
 
   const segments = pathname.split("/").filter(Boolean);
 
