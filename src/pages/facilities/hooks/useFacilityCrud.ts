@@ -7,28 +7,51 @@ import type {
 } from "../types/facility.types";
 
 import { findFacilityById } from "../utils/facility.utils";
+import {
+  useFacilityContext,
+  type FacilityResult,
+} from "../../../contexts/FacilityContext";
 
 type FacilityModalType = "create" | "edit" | "delete" | null;
 
 interface UseFacilityCrudProps {
-  facilities: Facility[];
+  facilities?: Facility[];
   activeModal: FacilityModalType;
   setActiveModal: (value: FacilityModalType) => void;
   targetFacility: Facility | null;
   setTargetFacility: (facility: Facility | null) => void;
   closeFacilityModal: () => void;
-  onInfo: (content: string) => void;
+  onSuccess?: (content: string) => void;
+  onError?: (content: string) => void;
+  onInfo?: (content: string) => void;
+  addFacility?: (parentId: string | null, values: FacilityFormValues) => Promise<FacilityResult>;
+  updateFacility?: (id: string, values: FacilityFormValues) => Promise<FacilityResult>;
+  deleteFacility?: (id: string) => Promise<FacilityResult>;
 }
 
 export function useFacilityCrud({
-  facilities,
+  facilities: propFacilities,
   activeModal,
   setActiveModal,
   targetFacility,
   setTargetFacility,
   closeFacilityModal,
+  onSuccess,
+  onError,
   onInfo,
+  addFacility: propAddFacility,
+  updateFacility: propUpdateFacility,
+  deleteFacility: propDeleteFacility,
 }: UseFacilityCrudProps) {
+  const context = useFacilityContext();
+  const facilities = propFacilities ?? context.facilities;
+  const addFacility = propAddFacility ?? context.addFacility;
+  const updateFacility = propUpdateFacility ?? context.updateFacility;
+  const deleteFacility = propDeleteFacility ?? context.deleteFacility;
+
+  const notifySuccess = onSuccess ?? onInfo ?? console.log;
+  const notifyError = onError ?? onInfo ?? console.error;
+
   // Mở modal thêm, sửa hoặc xóa cơ sở
   const handleFacilityAction = useCallback(
     (action: FacilityAction, facility: Facility) => {
@@ -60,43 +83,56 @@ export function useFacilityCrud({
 
   // Xác nhận thêm hoặc sửa cơ sở
   const handleSubmitFacility = useCallback(
-    (values: FacilityFormValues) => {
+    async (values: FacilityFormValues) => {
       if (!targetFacility) return;
 
       if (activeModal === "create") {
-        console.log("Thêm cơ sở trực thuộc", {
-          parentFacilityId: targetFacility.id,
-          values,
-        });
-
-        onInfo("Đã nhận thông tin thêm cơ sở. Chưa lưu vào danh sách.");
+        const res = await addFacility(targetFacility.id, values);
+        if (res.success) {
+          notifySuccess(res.message || "Thêm cơ sở thành công!");
+          handleCloseModal();
+        } else {
+          notifyError(res.message || "Thêm cơ sở thất bại");
+        }
       } else if (activeModal === "edit") {
-        console.log("Cập nhật thông tin cơ sở", {
-          facilityId: targetFacility.id,
-          values,
-        });
-
-        onInfo("Đã nhận thông tin cập nhật. Chưa lưu vào danh sách.");
+        const res = await updateFacility(targetFacility.id, values);
+        if (res.success) {
+          notifySuccess(res.message || "Cập nhật thông tin cơ sở thành công!");
+          handleCloseModal();
+        } else {
+          notifyError(res.message || "Cập nhật cơ sở thất bại");
+        }
       }
-
-      handleCloseModal();
     },
-    [targetFacility, activeModal, onInfo, handleCloseModal],
+    [
+      targetFacility,
+      activeModal,
+      addFacility,
+      updateFacility,
+      notifySuccess,
+      notifyError,
+      handleCloseModal,
+    ],
   );
 
   // Xác nhận xóa cơ sở
-  const handleDeleteFacility = useCallback(() => {
+  const handleDeleteFacility = useCallback(async () => {
     if (!targetFacility) return;
 
-    console.log("Xóa cơ sở", {
-      facilityId: targetFacility.id,
-      facilityName: targetFacility.facilityName,
-    });
-
-    onInfo("Đã xác nhận xóa cơ sở. Chưa xóa dữ liệu khỏi danh sách.");
-
-    handleCloseModal();
-  }, [targetFacility, onInfo, handleCloseModal]);
+    const res = await deleteFacility(targetFacility.id);
+    if (res.success) {
+      notifySuccess(res.message || "Xóa cơ sở thành công!");
+      handleCloseModal();
+    } else {
+      notifyError(res.message || "Xóa cơ sở thất bại");
+    }
+  }, [
+    targetFacility,
+    deleteFacility,
+    notifySuccess,
+    notifyError,
+    handleCloseModal,
+  ]);
 
   // Tìm cơ sở cha khi sửa
   const parentFacility = useMemo(() => {
@@ -122,7 +158,7 @@ export function useFacilityCrud({
       parentName:
         activeModal === "create"
           ? (targetFacility?.facilityName ?? "")
-          : (parentFacility?.facilityName ?? ""),
+          : (parentFacility?.facilityName ?? "—"),
     }),
     [activeModal, targetFacility, parentFacility],
   );

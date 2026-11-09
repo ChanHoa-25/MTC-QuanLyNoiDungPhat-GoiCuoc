@@ -1,4 +1,6 @@
 import type { Facility } from "../types/facility.types";
+import { findFacilityById } from "../utils/facility.utils";
+import { useFacilityContext } from "../../../contexts/FacilityContext";
 
 import AppStatusTag from "../../../components/common/AppStatusTag";
 
@@ -10,7 +12,14 @@ interface FacilityInfoProps {
 }
 
 function FacilityInfo({ facility, parentName = "—" }: FacilityInfoProps) {
+  const { facilities } = useFacilityContext();
   const isActive = facility.isActive;
+
+  const resolvedParentName =
+    parentName !== "—" ? parentName :
+    facility.parentId
+      ? findFacilityById(facilities, facility.parentId)?.facilityName ?? "—"
+      : "—";
 
   return (
     <section className="facility-info">
@@ -34,7 +43,7 @@ function FacilityInfo({ facility, parentName = "—" }: FacilityInfoProps) {
         <div className="facility-info-field">
           <span className="facility-info-label">Trực thuộc:</span>
 
-          <span className="facility-info-value">{parentName}</span>
+          <span className="facility-info-value">{resolvedParentName}</span>
         </div>
 
         <div className="facility-info-field">

@@ -1,5 +1,4 @@
-import { createContext, useContext, useMemo, useState } from "react";
-
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import type { ReactNode } from "react";
 
 import { facilitiesMock } from "../pages/facilities/data/facilities.mock";
@@ -14,6 +13,13 @@ import {
   findFacilityPath,
 } from "../pages/facilities/utils/facility.utils";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:5006/api";
+
+export interface FacilityResult {
+  success: boolean;
+  message?: string;
+}
+
 interface FacilityContextType {
   facilities: Facility[];
   setFacilities: (facilities: Facility[]) => void;
@@ -24,146 +30,213 @@ interface FacilityContextType {
   selectedFacility: Facility | null;
   selectedFacilityPath: Facility[];
 
-  addFacility: (parentId: string, values: FacilityFormValues) => void;
+  loading: boolean;
+  refreshFacilities: () => Promise<void>;
 
-  updateFacility: (id: string, values: FacilityFormValues) => void;
-
-  deleteFacility: (id: string) => void;
+  addFacility: (parentId: string | null, values: FacilityFormValues) => Promise<FacilityResult>;
+  updateFacility: (id: string, values: FacilityFormValues) => Promise<FacilityResult>;
+  deleteFacility: (id: string) => Promise<FacilityResult>;
 }
 
-const FacilityContext = createContext<FacilityContextType | undefined>(
-  undefined,
-);
+const FacilityContext = createContext<FacilityContextType | undefined>(undefined);
 
 interface FacilityProviderProps {
   children: ReactNode;
 }
 
-function addFacilityToTree(
-  facilities: Facility[],
-  parentId: string,
-  newFacility: Facility,
-): Facility[] {
-  return facilities.map((facility) => {
-    if (facility.id === parentId) {
-      return {
-        ...facility,
-        children: [...(facility.children ?? []), newFacility],
-      };
-    }
-
-    if (facility.children?.length) {
-      return {
-        ...facility,
-        children: addFacilityToTree(facility.children, parentId, newFacility),
-      };
-    }
-
-    return facility;
-  });
-}
-
-function updateFacilityInTree(
-  facilities: Facility[],
-  id: string,
-  values: FacilityFormValues,
-): Facility[] {
-  return facilities.map((facility) => {
-    if (facility.id === id) {
-      return {
-        ...facility,
-        facilityCode: values.facilityCode,
-        facilityName: values.facilityName,
-        isActive: values.isActive,
-      };
-    }
-
-    if (facility.children?.length) {
-      return {
-        ...facility,
-        children: updateFacilityInTree(facility.children, id, values),
-      };
-    }
-
-    return facility;
-  });
-}
-
-function removeFacilityFromTree(
-  facilities: Facility[],
-  facilityId: string,
-): Facility[] {
-  return facilities
-    .filter((facility) => facility.id !== facilityId)
-    .map((facility) => ({
-      ...facility,
-      children: facility.children
-        ? removeFacilityFromTree(facility.children, facilityId)
-        : facility.children,
-    }));
-}
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("accessToken");
+  const headers: Record<string, string> = {
+    "Content-Type": "application/json",
+  };
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  return headers;
+};
 
 export function FacilityProvider({ children }: FacilityProviderProps) {
-  const [facilities, setFacilities] = useState<Facility[]>(facilitiesMock);
+  const [facilities, setFacilities] = useState<Facility[]>([]);
+  const [selectedFacilityId, setSelectedFacilityId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [orgId, setOrgId] = useState<string>("");
 
-  const [selectedFacilityId, setSelectedFacilityId] = useState<string | null>(
-    facilitiesMock[0]?.id ?? null,
-  );
+  // 1. Tải cây cơ sở từ Backend
+  const loadFacilities = async () => {
+    try {
+      setLoading(true);
+      const userStr = localStorage.getItem("currentUser");
+      const user = userStr ? JSON.parse(userStr) : null;
+
+      let currentOrgId = user?.organizationId;
+      if (!currentOrgId) {
+        const orgRes = await fetch(`${API_BASE_URL}/Organizations`, {
+          headers: getAuthHeaders(),
+        });
+        const orgData = await orgRes.json();
+        currentOrgId = orgData.data?.[0]?.id;
+      }
+
+      if (!currentOrgId) {
+        if (facilities.length === 0) {
+          setFacilities(facilitiesMock);
+          setSelectedFacilityId(facilitiesMock[0]?.id ?? null);
+        }
+        return;
+      }
+      setOrgId(currentOrgId);
+
+      const res = await fetch(`${API_BASE_URL}/Facilities/tree/${currentOrgId}`, {
+        headers: getAuthHeaders(),
+      });
+      const result = await res.json();
+
+      if (result.success && Array.isArray(result.data)) {
+        setFacilities(result.data);
+        if (result.data.length > 0) {
+          setSelectedFacilityId((prev) => {
+            if (prev && findFacilityById(result.data, prev)) return prev;
+            return result.data[0].id;
+          });
+        }
+      } else if (facilities.length === 0) {
+        setFacilities(facilitiesMock);
+        setSelectedFacilityId(facilitiesMock[0]?.id ?? null);
+      }
+    } catch (err) {
+      console.error("Lỗi nạp cây cơ sở:", err);
+      if (facilities.length === 0) {
+        setFacilities(facilitiesMock);
+        setSelectedFacilityId(facilitiesMock[0]?.id ?? null);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadFacilities();
+  }, []);
 
   const selectedFacility = useMemo(() => {
-    if (!selectedFacilityId) {
-      return null;
-    }
-
+    if (!selectedFacilityId) return null;
     return findFacilityById(facilities, selectedFacilityId);
   }, [facilities, selectedFacilityId]);
 
   const selectedFacilityPath = useMemo(() => {
-    if (!selectedFacilityId) {
-      return [];
-    }
-
+    if (!selectedFacilityId) return [];
     return findFacilityPath(facilities, selectedFacilityId);
   }, [facilities, selectedFacilityId]);
 
-  const addFacility = (parentId: string, values: FacilityFormValues) => {
-    if (!findFacilityById(facilities, parentId)) {
-      return;
+  // 2. Thêm cơ sở
+  const addFacility = async (parentId: string | null, values: FacilityFormValues): Promise<FacilityResult> => {
+    try {
+      let currentOrgId = orgId;
+      if (!currentOrgId && parentId) {
+        const parent = findFacilityById(facilities, parentId);
+        if (parent?.organizationId) currentOrgId = parent.organizationId;
+      }
+      if (!currentOrgId) {
+        const userStr = localStorage.getItem("currentUser");
+        const user = userStr ? JSON.parse(userStr) : null;
+        if (user?.organizationId) currentOrgId = user.organizationId;
+      }
+      if (!currentOrgId) {
+        const orgRes = await fetch(`${API_BASE_URL}/Organizations`, {
+          headers: getAuthHeaders(),
+        });
+        const orgData = await orgRes.json();
+        currentOrgId = orgData.data?.[0]?.id;
+        if (currentOrgId) setOrgId(currentOrgId);
+      }
+
+      if (!currentOrgId) {
+        return { success: false, message: "Không tìm thấy thông tin tổ chức" };
+      }
+
+      const response = await fetch(`${API_BASE_URL}/Facilities`, {
+        method: "POST",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({
+          organizationId: currentOrgId,
+          facilityCode: values.facilityCode.trim(),
+          facilityName: values.facilityName.trim(),
+          parentId: parentId || null,
+        }),
+      });
+      const result = await response.json();
+      if (result.success) {
+        await loadFacilities();
+        if (result.data?.id) {
+          setSelectedFacilityId(result.data.id);
+        }
+        return { success: true, message: result.message || "Thêm cơ sở thành công" };
+      }
+      const errorMsg =
+        result.message ||
+        (result.errors
+          ? Array.isArray(result.errors)
+            ? result.errors.join(", ")
+            : JSON.stringify(result.errors)
+          : "Thêm cơ sở thất bại");
+      return { success: false, message: errorMsg };
+    } catch {
+      return { success: false, message: "Không thể kết nối đến máy chủ" };
     }
-
-    const newFacility: Facility = {
-      id: crypto.randomUUID(),
-      organizationId:
-        findFacilityById(facilities, parentId)?.organizationId ?? "",
-      facilityCode: values.facilityCode,
-      facilityName: values.facilityName,
-      parentId,
-      isActive: values.isActive,
-      createdAt: new Date().toISOString(),
-      children: [],
-    };
-
-    setFacilities((previous) =>
-      addFacilityToTree(previous, parentId, newFacility),
-    );
-
-    setSelectedFacilityId(newFacility.id);
   };
 
-  const updateFacility = (id: string, values: FacilityFormValues) => {
-    setFacilities((previous) => updateFacilityInTree(previous, id, values));
+  // 3. Cập nhật cơ sở
+  const updateFacility = async (id: string, values: FacilityFormValues): Promise<FacilityResult> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/Facilities/${id}`, {
+        method: "PUT",
+        headers: getAuthHeaders(),
+        body: JSON.stringify({
+          facilityName: values.facilityName.trim(),
+          isActive: values.isActive,
+        }),
+      });
+      const result = await response.json();
+      if (result.success) {
+        await loadFacilities();
+        return { success: true, message: result.message || "Cập nhật cơ sở thành công" };
+      }
+      const errorMsg =
+        result.message ||
+        (result.errors
+          ? Array.isArray(result.errors)
+            ? result.errors.join(", ")
+            : JSON.stringify(result.errors)
+          : "Cập nhật cơ sở thất bại");
+      return { success: false, message: errorMsg };
+    } catch {
+      return { success: false, message: "Không thể kết nối đến máy chủ" };
+    }
   };
 
-  const deleteFacility = (id: string) => {
-    const nextFacilities = removeFacilityFromTree(facilities, id);
-
-    setFacilities(nextFacilities);
-
-    if (
-      selectedFacilityId &&
-      !findFacilityById(nextFacilities, selectedFacilityId)
-    ) {
-      setSelectedFacilityId(nextFacilities[0]?.id ?? null);
+  // 4. Xóa cơ sở
+  const deleteFacility = async (id: string): Promise<FacilityResult> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/Facilities/${id}`, {
+        method: "DELETE",
+        headers: getAuthHeaders(),
+      });
+      const result = await response.json();
+      if (result.success) {
+        await loadFacilities();
+        setSelectedFacilityId((prev) => (prev === id ? null : prev));
+        return { success: true, message: result.message || "Xóa cơ sở thành công" };
+      }
+      const errorMsg =
+        result.message ||
+        (result.errors
+          ? Array.isArray(result.errors)
+            ? result.errors.join(", ")
+            : JSON.stringify(result.errors)
+          : "Xóa cơ sở thất bại");
+      return { success: false, message: errorMsg };
+    } catch {
+      return { success: false, message: "Không thể kết nối đến máy chủ" };
     }
   };
 
@@ -176,6 +249,8 @@ export function FacilityProvider({ children }: FacilityProviderProps) {
         setSelectedFacilityId,
         selectedFacility,
         selectedFacilityPath,
+        loading,
+        refreshFacilities: loadFacilities,
         addFacility,
         updateFacility,
         deleteFacility,

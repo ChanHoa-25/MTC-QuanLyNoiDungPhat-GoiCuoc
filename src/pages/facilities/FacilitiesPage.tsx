@@ -116,6 +116,8 @@ function FacilitiesPage() {
     targetFacility,
     setTargetFacility,
     closeFacilityModal,
+    onSuccess: messageApi.success,
+    onError: messageApi.error,
     onInfo: messageApi.info,
   });
 

@@ -112,7 +112,13 @@ function FacilityFormModal({
               message: "Vui lòng nhập mã cơ sở",
             },
           ]}>
-          <AppInput width="100%" height={44} placeholder="Nhập mã cơ sở" />
+          <AppInput
+            width="100%"
+            height={44}
+            placeholder="Nhập mã cơ sở"
+            readOnly={isEdit}
+            disabled={isEdit}
+          />
         </Form.Item>
 
         {/* Cơ sở trực thuộc */}

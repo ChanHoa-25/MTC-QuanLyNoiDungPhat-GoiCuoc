@@ -49,10 +49,13 @@ function LocationTree({
   onSelect,
   onAction,
 }: LocationTreeProps) {
-  // Mặc định mở rộng các cơ sở cấp gốc
-  const [expandedIds, setExpandedIds] = useState<string[]>(() =>
-    facilities.map((facility) => facility.id),
-  );
+  const [expandedIds, setExpandedIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (facilities.length > 0) {
+      setExpandedIds((previous) => [...new Set([...previous, ...facilities.map((f) => f.id)])]);
+    }
+  }, [facilities]);
 
   // Tự động mở rộng các cơ sở cha khi chọn cơ sở con
   useEffect(() => {

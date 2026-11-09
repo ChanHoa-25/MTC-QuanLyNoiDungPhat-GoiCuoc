@@ -1,11 +1,14 @@
 import { Checkbox, Form, message } from "antd";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import AuthForm from "../../components/auth/AuthForm";
 import type { AuthField } from "../../components/auth/AuthForm";
+import { ROUTES } from "../../constants/route.constants";
 
 import "./LoginPage.css";
+
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5006/api";
 
 const fields: AuthField[] = [
   {
@@ -25,12 +28,35 @@ const fields: AuthField[] = [
 ];
 
 function LoginPage() {
-  const handleLogin = async (values: Record<string, string>) => {
-    // TODO: Tích hợp API đăng nhập.
-    // Không in mật khẩu ra console.
-    void values;
+  const navigate = useNavigate();
 
-    message.info("API đăng nhập chưa được kết nối.");
+  const handleLogin = async (values: Record<string, any>) => {
+    try {
+      const response = await fetch(`${API_URL}/Auth/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: values.username?.trim(),
+          password: values.password,
+          rememberMe: !!values.remember,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        localStorage.setItem("accessToken", result.data.accessToken);
+        localStorage.setItem("refreshToken", result.data.refreshToken);
+        localStorage.setItem("currentUser", JSON.stringify(result.data.user));
+
+        message.success(result.message || "Đăng nhập thành công!");
+        navigate(ROUTES.DASHBOARD);
+      } else {
+        message.error(result.message || "Tên đăng nhập hoặc mật khẩu không chính xác!");
+      }
+    } catch {
+      message.error("Không thể kết nối đến máy chủ. Vui lòng kiểm tra lại!");
+    }
   };
 
   return (
@@ -46,7 +72,7 @@ function LoginPage() {
               <Checkbox>Ghi nhớ mật khẩu</Checkbox>
             </Form.Item>
 
-            <Link to="/forgot-password" className="forgot-password">
+            <Link to={ROUTES.FORGOT_PASSWORD} className="forgot-password">
               Quên mật khẩu?
             </Link>
           </div>
