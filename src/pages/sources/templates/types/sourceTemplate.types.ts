@@ -37,27 +37,14 @@ export interface TemplatePresetLayout {
   zones: Omit<TemplateZone, "mediaId" | "mediaTitle" | "mediaThumbnail">[];
 }
 
-export type BroadcastType = "urgent" | "normal";
-export type BroadcastApprovalStatus = "approved" | "pending" | "rejected";
-export type BroadcastPlayStatus =
-  | "playing"
-  | "paused"
-  | "waiting"
-  | "ended"
-  | "cancelled";
-export type BroadcastRepeatType = "none" | "daily" | "weekly" | "monthly";
+// Kiểu bản tin sử dụng được dùng chung với Danh sách phát -> chuyển về sources/types
+export type {
+  BroadcastType,
+  BroadcastApprovalStatus,
+  BroadcastPlayStatus,
+  BroadcastRepeatType,
+} from "../../types/sourceUsedNews.types";
+import type { SourceUsedNewsItem } from "../../types/sourceUsedNews.types";
 
-export interface TemplateUsedNewsItem {
-  id: string;
-  code: string;
-  title: string;
-  type: BroadcastType;
-  approvalStatus: BroadcastApprovalStatus;
-  playStatus: BroadcastPlayStatus;
-  repeatType: BroadcastRepeatType;
-  broadcastDate: string;
-  broadcastTime: string;
-  facilityName: string;
-  createdBy: string;
-}
+export type TemplateUsedNewsItem = SourceUsedNewsItem;
 

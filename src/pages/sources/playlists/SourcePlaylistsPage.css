@@ -1,0 +1,41 @@
+.source-playlists-page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.source-playlists-page__body {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
+}
+
+.source-playlists-page__title {
+  font-size: 20px;
+  font-weight: 700;
+  color: #ff7506;
+  margin: 0 0 20px 0;
+}
+
+.source-playlists-page__table-wrapper {
+  margin-top: 16px;
+}
+
+.playlist-name-cell {
+  font-weight: 500;
+  color: #373839;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.playlist-name-cell:hover {
+  color: #ff7506;
+}
+
+.playlist-row-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+

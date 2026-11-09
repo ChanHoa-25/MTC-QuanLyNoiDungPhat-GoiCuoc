@@ -35,6 +35,10 @@ import SourceTemplatesPage, {
   SourceTemplateFormPage,
   SourceTemplateDetailPage,
 } from "../pages/sources/templates";
+import SourcePlaylistsPage, {
+  SourcePlaylistFormPage,
+  SourcePlaylistDetailPage,
+} from "../pages/sources/playlists";
 
 import SourcePlaceholderPage from "../pages/sources/components/SourcePlaceholderPage";
 import SystemSettings from "../pages/settings/system/SystemSettings";
@@ -145,7 +149,19 @@ export const routes: RouteObject[] = [
       },
       {
         path: ROUTES.SOURCE_PLAYLISTS,
-        element: <SourcePlaceholderPage title="Danh sách phát" />,
+        element: <SourcePlaylistsPage />,
+      },
+      {
+        path: "sources/playlists/create",
+        element: <SourcePlaylistFormPage mode="create" />,
+      },
+      {
+        path: "sources/playlists/:id/edit",
+        element: <SourcePlaylistFormPage mode="edit" />,
+      },
+      {
+        path: "sources/playlists/:id",
+        element: <SourcePlaylistDetailPage />,
       },
       {
         path: ROUTES.SOURCE_TEMPLATES,
