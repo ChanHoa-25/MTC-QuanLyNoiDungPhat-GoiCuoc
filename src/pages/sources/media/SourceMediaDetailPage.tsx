@@ -340,9 +340,9 @@ function SourceMediaDetailPage() {
 
   const handleToggleAllCurrentPageBroadcasts = (checked: boolean) => {
     if (checked) {
-      setSelectedBroadcastKeys((prev) => [
-        ...new Set([...prev, ...currentPageBroadcastIds]),
-      ]);
+      setSelectedBroadcastKeys((prev) =>
+        Array.from(new Set([...prev, ...currentPageBroadcastIds]))
+      );
     } else {
       const currentSet = new Set(currentPageBroadcastIds);
       setSelectedBroadcastKeys((prev) =>

@@ -207,6 +207,7 @@ export function PackagesPage() {
     return () => {
       setActions([]);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [activeTab, packages, upgradePackages, transactions]);
 
   // Filtered lists

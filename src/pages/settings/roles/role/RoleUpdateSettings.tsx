@@ -108,7 +108,7 @@ function RoleUpdateSettings({
   const togglePermission = (permissionId: string, checked: boolean) => {
     setSelectedPermissions((prev) =>
       checked
-        ? [...new Set([...prev, permissionId])]
+        ? Array.from(new Set([...prev, permissionId]))
         : prev.filter((id) => id !== permissionId),
     );
   };
@@ -118,7 +118,7 @@ function RoleUpdateSettings({
 
     setSelectedPermissions((prev) =>
       checked
-        ? [...new Set([...prev, ...groupIds])]
+        ? Array.from(new Set([...prev, ...groupIds]))
         : prev.filter((id) => !groupIds.includes(id)),
     );
   };

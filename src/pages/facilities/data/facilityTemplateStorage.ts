@@ -117,7 +117,7 @@ export function deleteStoredTemplates(facilityId: string, ids: string[]) {
     deleted = {};
   }
 
-  deleted[facilityId] = [...new Set([...(deleted[facilityId] ?? []), ...ids])];
+  deleted[facilityId] = Array.from(new Set([...(deleted[facilityId] ?? []), ...ids]));
 
   localStorage.setItem(DELETED_STORAGE_KEY, JSON.stringify(deleted));
 

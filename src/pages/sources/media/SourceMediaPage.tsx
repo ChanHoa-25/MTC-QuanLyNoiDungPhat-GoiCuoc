@@ -66,9 +66,9 @@ function SourceMediaPage() {
   const [approveModalOpen, setApproveModalOpen] = useState(false);
 
   const categoryOptions = useMemo(() => {
-    const uniqueCategories = [
-      ...new Set(mediaItems.map((item) => item.category)),
-    ];
+    const uniqueCategories = Array.from(
+      new Set(mediaItems.map((item) => item.category))
+    );
 
     return [
       { label: "Tất cả", value: "all" },
@@ -191,7 +191,7 @@ function SourceMediaPage() {
 
   const handleToggleSelect = (id: string, checked: boolean) => {
     setSelectedIds((prev) =>
-      checked ? [...new Set([...prev, id])] : prev.filter((x) => x !== id),
+      checked ? Array.from(new Set([...prev, id])) : prev.filter((x) => x !== id),
     );
   };
 

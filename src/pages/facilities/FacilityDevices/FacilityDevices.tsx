@@ -174,7 +174,7 @@ function FacilityDevices({
   const isIdentifierExists = (identifier: string) => {
     const normalized = identifier.trim().toLowerCase();
 
-    for (const facilityDevices of deviceStore.values()) {
+    for (const facilityDevices of Array.from(deviceStore.values())) {
       if (
         facilityDevices.some(
           (device) => device.identifier.trim().toLowerCase() === normalized,

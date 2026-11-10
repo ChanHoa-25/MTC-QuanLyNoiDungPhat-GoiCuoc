@@ -127,9 +127,9 @@ function FacilityMedia({
       "Giáo dục",
     ];
 
-    const all = [
-      ...new Set([...categories, ...mediaList.map((media) => media.category)]),
-    ];
+    const all = Array.from(
+      new Set([...categories, ...mediaList.map((media) => media.category)])
+    );
 
     return [
       { value: "all", label: "Tất cả" },
@@ -180,7 +180,7 @@ function FacilityMedia({
 
   const handleSelect = (id: string, checked: boolean) => {
     const next = checked
-      ? [...new Set([...selectedIds, id])]
+      ? Array.from(new Set([...selectedIds, id]))
       : selectedIds.filter((item) => item !== id);
 
     onSelectionChange(next);

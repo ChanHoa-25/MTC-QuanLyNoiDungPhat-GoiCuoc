@@ -74,7 +74,7 @@ function FacilitiesShareModal({
   const handleSelect = (id: string, checked: boolean) => {
     setSelectedIds((previous) =>
       checked
-        ? [...new Set([...previous, id])]
+        ? Array.from(new Set([...previous, id]))
         : previous.filter((item) => item !== id),
     );
   };

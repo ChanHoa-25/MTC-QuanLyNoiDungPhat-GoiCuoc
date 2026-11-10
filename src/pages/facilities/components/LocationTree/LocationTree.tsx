@@ -32,9 +32,9 @@ function LocationTree({
 
   // Mở rộng các cơ sở gốc sau khi API tải dữ liệu.
   useEffect(() => {
-    setExpandedIds((previous) => [
-      ...new Set([...previous, ...facilities.map((facility) => facility.id)]),
-    ]);
+    setExpandedIds((previous) =>
+      Array.from(new Set([...previous, ...facilities.map((facility) => facility.id)]))
+    );
   }, [facilities]);
 
   // Mở rộng các cơ sở cha khi chọn cơ sở con.
@@ -47,7 +47,7 @@ function LocationTree({
 
     const ancestorIds = path.slice(0, -1).map((facility) => facility.id);
 
-    setExpandedIds((previous) => [...new Set([...previous, ...ancestorIds])]);
+    setExpandedIds((previous) => Array.from(new Set([...previous, ...ancestorIds])));
   }, [facilities, selectedId]);
 
   const isExpanded = (id: string) => expandedIds.includes(id);

@@ -5,7 +5,7 @@ Dự án Front-end xây dựng giao diện hệ thống **MTC CMS** phục vụ 
 ## 1. Công nghệ sử dụng
 
 - **React** + **TypeScript**
-- **Vite** – công cụ chạy môi trường phát triển và build
+- **React Scripts** – công cụ chạy môi trường phát triển và build (CRA)
 - **Ant Design** – thư viện giao diện
 - **React Router** – điều hướng trang
 - **Lucide React / Ant Design Icons** – biểu tượng giao diện
@@ -63,16 +63,16 @@ Lệnh này sẽ cài các dependencies vào thư mục `node_modules/`.
 Chạy môi trường phát triển:
 
 ```bash
-npm run dev
+npm start
 ```
 
 Terminal sẽ hiển thị đường dẫn truy cập, thường là:
 
 ```text
-http://localhost:5173/
+http://localhost:3000/
 ```
 
-Mở đường dẫn được in ra trong Terminal bằng trình duyệt. Nếu cổng 5173 đang được sử dụng, Vite có thể tự chọn cổng khác; hãy dùng đúng URL hiển thị.
+Mở đường dẫn được in ra trong Terminal bằng trình duyệt.
 
 Để dừng server, nhấn **Ctrl + C** trong Terminal.
 
@@ -81,9 +81,9 @@ Mở đường dẫn được in ra trong Terminal bằng trình duyệt. Nếu 
 | Lệnh              | Mục đích                               |
 | ----------------- | -------------------------------------- |
 | `npm install`     | Cài đặt dependencies                   |
-| `npm run dev`     | Chạy dự án trong môi trường phát triển |
+| `npm start`       | Chạy dự án trong môi trường phát triển |
 | `npm run build`   | Build phiên bản production             |
-| `npm run preview` | Xem thử bản build production           |
+| `npm test`        | Chạy kiểm thử tự động                  |
 
 Các lệnh bổ sung như lint hoặc kiểm tra TypeScript phụ thuộc vào phần `scripts` trong `package.json` hiện tại.
 
@@ -151,37 +151,4 @@ Nếu dự án bổ sung file môi trường như `.env.example`, hãy tạo fil
 
 ---
 
-**Repository:** https://github.com/ChanHoa-25/MTC-QuanLyNoiDungPhat-GoiCu
-
-# React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+**Repository:** https://github.com/ChanHoa-25/MTC-QuanLyNoiDungPhat-GoiCuoc

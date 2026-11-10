@@ -50,7 +50,7 @@ export function deleteFacilityTemplateUsedNews(
     data = {};
   }
 
-  data[templateId] = [...new Set([...(data[templateId] ?? []), ...newsIds])];
+  data[templateId] = Array.from(new Set([...(data[templateId] ?? []), ...newsIds]));
 
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
