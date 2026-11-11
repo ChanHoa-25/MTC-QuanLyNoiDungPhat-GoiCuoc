@@ -149,6 +149,11 @@ function AppSidebar({ collapsed, onCollapse }: AppSidebarProps) {
       label: "Dashboard",
     },
     {
+      type: "divider",
+      className: "sidebar-menu-divider",
+    },
+
+    {
       key: ROUTES.FACILITIES,
       icon: renderIcon(Network, selectedParentKey === ROUTES.FACILITIES),
       label: "Cơ sở",
@@ -178,6 +183,11 @@ function AppSidebar({ collapsed, onCollapse }: AppSidebarProps) {
       icon: renderIcon(ChartLine, selectedParentKey === ROUTES.REPORTS),
       label: "Báo cáo",
     },
+    {
+      type: "divider",
+      className: "sidebar-menu-divider",
+    },
+
     {
       key: ROUTES.SETTINGS,
       icon: renderIcon(Settings, selectedParentKey === ROUTES.SETTINGS),
