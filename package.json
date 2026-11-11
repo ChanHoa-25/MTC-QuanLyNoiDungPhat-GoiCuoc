@@ -1,15 +1,17 @@
 {
-  "name": "mtc",
+  "name": "mtc-quanlynoidungphat-goicuoc",
+  "version": "0.1.0",
   "private": true,
-  "version": "0.0.0",
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc -b && vite build",
-    "lint": "oxlint",
-    "preview": "vite preview"
-  },
+  "proxy": "http://localhost:5006",
   "dependencies": {
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^13.5.0",
+    "@types/jest": "^27.5.2",
+    "@types/node": "^16.18.126",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "antd": "^6.6.7",
     "axios": "^1.20.0",
     "dayjs": "^1.11.23",
@@ -19,16 +21,36 @@
     "react-dom": "^19.3.1",
     "react-leaflet": "^5.0.0",
     "react-router-dom": "^7.18.4",
-    "recharts": "^3.10.1"
+    "react-scripts": "5.0.1",
+    "recharts": "^3.10.1",
+    "typescript": "^4.9.5",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "devDependencies": {
-    "@types/leaflet": "^1.9.22",
-    "@types/node": "^24.19.2",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
-    "@vitejs/plugin-react": "^6.1.2",
-    "oxlint": "^1.88.0",
-    "typescript": "~6.0.3",
-    "vite": "^8.3.4"
+    "@types/leaflet": "^1.9.22"
   }
 }

@@ -102,7 +102,7 @@ function FacilityDevices({
     setConnectionFilter("all");
     setKeyword("");
     setEditingDevice(null);
-  }, [facility.id, facility.facilityName]);
+  }, [facility]);
 
   // Danh sách sau khi lọc.
   const filteredDevices = useMemo(() => {

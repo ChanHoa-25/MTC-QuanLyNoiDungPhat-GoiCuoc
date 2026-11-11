@@ -60,7 +60,7 @@ export const authApi = {
     payload: RefreshTokenRequest,
   ): Promise<LoginResponse> => {
     const response = await axios.post<ApiResponse<LoginResponse>>(
-      `${import.meta.env.VITE_API_BASE_URL}/Auth/refresh-token`,
+      `${process.env.REACT_APP_API_BASE_URL || "/api"}/Auth/refresh-token`,
       payload,
       { timeout: 10000 },
     );

@@ -232,5 +232,6 @@ export function useFacilityActions({
     onAddTemplate,
     onDeleteTemplate,
     onAddPlaylist,
+    onDeletePlaylist,
   ]);
 }

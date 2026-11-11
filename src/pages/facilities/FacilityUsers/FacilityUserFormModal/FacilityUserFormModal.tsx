@@ -57,19 +57,26 @@ function FacilityUserFormModal({
 
   const isEdit = mode === "edit";
 
+  const username = initialValues?.username;
+  const fullName = initialValues?.fullName;
+  const identityNumber = initialValues?.identityNumber;
+  const phone = initialValues?.phone;
+  const email = initialValues?.email;
+  const role = initialValues?.role;
+
   useEffect(() => {
     if (!open) return;
 
     form.resetFields();
 
-    if (isEdit && initialValues) {
+    if (isEdit && username !== undefined) {
       form.setFieldsValue({
-        username: initialValues.username ?? "",
-        fullName: initialValues.fullName ?? "",
-        identityNumber: initialValues.identityNumber ?? "",
-        phone: initialValues.phone ?? "",
-        email: initialValues.email ?? "",
-        role: initialValues.role ?? "Group Admin",
+        username: username ?? "",
+        fullName: fullName ?? "",
+        identityNumber: identityNumber ?? "",
+        phone: phone ?? "",
+        email: email ?? "",
+        role: role ?? "Group Admin",
       });
     } else {
       form.setFieldsValue({
@@ -93,12 +100,12 @@ function FacilityUserFormModal({
     open,
     isEdit,
     form,
-    initialValues?.username,
-    initialValues?.fullName,
-    initialValues?.identityNumber,
-    initialValues?.phone,
-    initialValues?.email,
-    initialValues?.role,
+    username,
+    fullName,
+    identityNumber,
+    phone,
+    email,
+    role,
   ]);
 
   useEffect(() => {

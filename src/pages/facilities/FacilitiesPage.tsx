@@ -106,21 +106,6 @@ function FacilitiesPage() {
     onWarning: messageApi.warning,
     onInfo: messageApi.info,
   });
-  // const {
-  //   handleFacilityAction,
-  //   handleCloseModal,
-  //   handleSubmitFacility,
-  //   handleDeleteFacility,
-  //   initialValues,
-  // } = useFacilityCrud({
-  //   facilities,
-  //   activeModal,
-  //   setActiveModal,
-  //   targetFacility,
-  //   setTargetFacility,
-  //   closeFacilityModal,
-  //   onInfo: messageApi.info,
-  // });
   const {
     handleFacilityAction,
     handleCloseModal,
@@ -227,7 +212,7 @@ function FacilitiesPage() {
 
   const handleDeleteUser = useCallback(() => {
     setOpenDeleteUser(true);
-  }, []);
+  }, [setOpenDeleteUser]);
 
   const handleAddMedia = useCallback(() => {
     setOpenCreateMedia(true);
@@ -235,7 +220,7 @@ function FacilitiesPage() {
 
   const handleDeleteMedia = useCallback(() => {
     setOpenDeleteMedia(true);
-  }, []);
+  }, [setOpenDeleteMedia]);
 
   const handleAddTemplate = useCallback(() => {
     setOpenCreateTemplate(true);
@@ -243,7 +228,7 @@ function FacilitiesPage() {
 
   const handleDeleteTemplate = useCallback(() => {
     setOpenDeleteTemplate(true);
-  }, []);
+  }, [setOpenDeleteTemplate]);
 
   const handleAddPlaylist = useCallback(() => {
     setOpenCreatePlaylist(true);
@@ -251,7 +236,7 @@ function FacilitiesPage() {
 
   const handleDeletePlaylist = useCallback(() => {
     setOpenDeletePlaylist(true);
-  }, []);
+  }, [setOpenDeletePlaylist]);
   const tabActions = useFacilityActions({
     activeTab,
     hasSelectedFacility: Boolean(selectedFacility),
