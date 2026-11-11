@@ -3,18 +3,22 @@ import type { Key } from "react";
 import type { TableColumnsType } from "antd";
 import { Form, Input, message } from "antd";
 import { SquarePen, Search } from "lucide-react";
+
 import AppTable from "../../../components/common/AppTable";
 import AppTableActions from "../../../components/common/AppTableActions";
 import AppSelect from "../../../components/common/AppSelect";
 import AppFilter, {
   AppFilterField,
 } from "../../../components/common/AppFilter";
+
+import { userApi, type UserDto } from "../../../api/userApi";
 import FacilityUserFormModal from "./FacilityUserFormModal";
 import type { FacilityUserFormValues } from "./FacilityUserFormModal";
-import { facilityUsersMock } from "../data/facilitiesUsers.mock";
 import type { Facility } from "../types/facility.types";
 import type { FacilityUser } from "../types/facilityUser.types";
+
 import "./FacilityUsers.css";
+
 interface FacilityUsersProps {
   facility: Facility;
   selectedRowKeys: Key[];
@@ -24,6 +28,21 @@ interface FacilityUsersProps {
   deleteRequestId: number;
   onDeleteComplete: () => void;
 }
+
+const mapUserToFacilityUser = (user: UserDto): FacilityUser => ({
+  id: user.id,
+  facilityId: user.facilityId ?? "",
+  username: user.username,
+  fullName: user.fullName,
+  phone: user.phoneNumber ?? "",
+  email: user.email,
+  role: user.roleName ?? user.roleCode ?? "",
+  status: user.isActive ? "active" : "inactive",
+  updatedAt: user.lastActivityAt
+    ? new Date(user.lastActivityAt).toLocaleString("vi-VN")
+    : "",
+});
+
 function FacilityUsers({
   facility,
   selectedRowKeys,
@@ -33,66 +52,126 @@ function FacilityUsers({
   deleteRequestId,
   onDeleteComplete,
 }: FacilityUsersProps) {
-  const [users, setUsers] = useState<FacilityUser[]>(() => [
-    ...facilityUsersMock,
-  ]);
+  const [users, setUsers] = useState<FacilityUser[]>([]);
+  const [loading, setLoading] = useState(false);
+
   const [roleFilter, setRoleFilter] = useState("all");
   const [statusFilter, setStatusFilter] = useState("all");
   const [keyword, setKeyword] = useState("");
+
   const [editingUser, setEditingUser] = useState<FacilityUser | null>(null);
   const [updating, setUpdating] = useState(false);
   const [creating, setCreating] = useState(false);
+
   const avatarUrlsRef = useRef<Set<string>>(new Set());
   const handledDeleteRequestRef = useRef(deleteRequestId);
+
+  // Load users
+  useEffect(() => {
+    let cancelled = false;
+
+    const fetchUsers = async () => {
+      setLoading(true);
+
+      try {
+        const result = await userApi.getAll({
+          FacilityId: facility.id,
+          Page: 1,
+          PageSize: 100,
+        });
+
+        if (!cancelled) {
+          setUsers(
+            result.items
+              .filter((user) => user.facilityId === facility.id)
+              .map(mapUserToFacilityUser),
+          );
+        }
+      } catch {
+        if (!cancelled) {
+          message.error("Không thể tải danh sách tài khoản");
+          setUsers([]);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    };
+
+    void fetchUsers();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [facility.id]);
+
+  // Avatar
   useEffect(() => {
     const avatarUrls = avatarUrlsRef.current;
+
     return () => {
       avatarUrls.forEach((url) => URL.revokeObjectURL(url));
       avatarUrls.clear();
     };
   }, []);
+
   const createAvatarUrl = (file?: File): string | undefined => {
     if (!file) return undefined;
+
     const url = URL.createObjectURL(file);
     avatarUrlsRef.current.add(url);
+
     return url;
   };
+
+  // Delete
   useEffect(() => {
     if (deleteRequestId === handledDeleteRequestRef.current) {
       return;
     }
+
     handledDeleteRequestRef.current = deleteRequestId;
+
     if (selectedRowKeys.length === 0) {
       onDeleteComplete();
       return;
     }
+
     const selectedIds = new Set(selectedRowKeys);
+
     const deletedUsers = users.filter(
       (user) => user.facilityId === facility.id && selectedIds.has(user.id),
     );
+
     if (deletedUsers.length === 0) {
       onSelectionChange([]);
       onDeleteComplete();
       return;
     }
+
     deletedUsers.forEach((user) => {
       if (user.avatar && avatarUrlsRef.current.has(user.avatar)) {
         avatarUrlsRef.current.delete(user.avatar);
         URL.revokeObjectURL(user.avatar);
       }
     });
+
     setUsers((previousUsers) =>
       previousUsers.filter(
         (user) =>
           !(user.facilityId === facility.id && selectedIds.has(user.id)),
       ),
     );
+
     if (editingUser && selectedIds.has(editingUser.id)) {
       setEditingUser(null);
     }
+
     onSelectionChange([]);
     onDeleteComplete();
-    message.success(`Đã xóa ${deletedUsers.length} tài khoản thành công`);
+
+    message.success(`Đã xóa tạm thời ${deletedUsers.length} tài khoản`);
   }, [
     deleteRequestId,
     selectedRowKeys,
@@ -102,20 +181,42 @@ function FacilityUsers({
     onSelectionChange,
     onDeleteComplete,
   ]);
+
+  // Filter
   const filteredUsers = useMemo(() => {
     const normalizedKeyword = keyword.trim().toLowerCase();
+
     return users.filter((user) => {
       const matchFacility = user.facilityId === facility.id;
+
       const matchRole = roleFilter === "all" || user.role === roleFilter;
+
       const matchStatus =
         statusFilter === "all" || user.status === statusFilter;
+
       const matchKeyword =
         !normalizedKeyword ||
         user.username.toLowerCase().includes(normalizedKeyword) ||
         (user.fullName ?? "").toLowerCase().includes(normalizedKeyword);
+
       return matchFacility && matchRole && matchStatus && matchKeyword;
     });
   }, [users, facility.id, roleFilter, statusFilter, keyword]);
+
+  const roleOptions = useMemo(() => {
+    const roles = [...new Set(users.map((user) => user.role))]
+      .filter(Boolean)
+      .sort();
+
+    return [
+      { label: "Tất cả", value: "all" },
+      ...roles.map((role) => ({
+        label: role,
+        value: role,
+      })),
+    ];
+  }, [users]);
+
   const isUsernameExists = (username: string, excludeId?: string) => {
     return users.some(
       (user) =>
@@ -123,17 +224,23 @@ function FacilityUsers({
         user.username.toLowerCase() === username.trim().toLowerCase(),
     );
   };
+
+  // Create
   const handleCloseCreateModal = () => {
     if (creating) return;
     onCloseCreate();
   };
+
   const handleCreateUser = (values: FacilityUserFormValues) => {
     if (creating) return;
+
     if (isUsernameExists(values.username)) {
       message.error("Tên đăng nhập đã tồn tại");
       return;
     }
+
     setCreating(true);
+
     try {
       const newUser: FacilityUser = {
         id: crypto.randomUUID(),
@@ -148,33 +255,46 @@ function FacilityUsers({
         status: "active",
         updatedAt: new Date().toLocaleString("vi-VN"),
       };
+
       setUsers((previousUsers) => [newUser, ...previousUsers]);
-      message.success("Thêm tài khoản quản trị thành công");
+
+      message.info("Đã thêm tài khoản tạm thời, chưa lưu vào Database");
+
       onCloseCreate();
     } finally {
       setCreating(false);
     }
   };
+
+  // Edit
   const handleOpenEditModal = (user: FacilityUser) => {
     setEditingUser(user);
   };
+
   const handleCloseEditModal = () => {
     if (updating) return;
     setEditingUser(null);
   };
+
   const handleUpdateUser = (values: FacilityUserFormValues) => {
     if (!editingUser || updating) return;
+
     if (isUsernameExists(values.username, editingUser.id)) {
       message.error("Tên đăng nhập đã tồn tại");
       return;
     }
+
     setUpdating(true);
+
     try {
       const oldAvatar = editingUser.avatar;
+
       const newAvatar = values.avatar
         ? createAvatarUrl(values.avatar)
         : undefined;
+
       const avatarUrl = newAvatar ?? oldAvatar;
+
       setUsers((previousUsers) =>
         previousUsers.map((user) =>
           user.id === editingUser.id
@@ -192,16 +312,21 @@ function FacilityUsers({
             : user,
         ),
       );
+
       if (newAvatar && oldAvatar && avatarUrlsRef.current.has(oldAvatar)) {
         avatarUrlsRef.current.delete(oldAvatar);
         URL.revokeObjectURL(oldAvatar);
       }
-      message.success("Cập nhật tài khoản thành công");
+
+      message.info("Đã cập nhật tạm thời, chưa lưu vào Database");
+
       setEditingUser(null);
     } finally {
       setUpdating(false);
     }
   };
+
+  // Table
   const columns: TableColumnsType<FacilityUser> = [
     {
       title: "Tên đăng nhập",
@@ -264,10 +389,12 @@ function FacilityUsers({
       ),
     },
   ];
+
   return (
     <div className="facility-users">
       <div className="facility-users__panel">
         <h2 className="facility-users__title">Tài khoản quản trị</h2>
+
         <AppFilter
           showActions={false}
           gap={28}
@@ -278,19 +405,11 @@ function FacilityUsers({
                 width="100%"
                 value={roleFilter}
                 onChange={setRoleFilter}
-                options={[
-                  {
-                    label: "Tất cả",
-                    value: "all",
-                  },
-                  {
-                    label: "Group Admin",
-                    value: "Group Admin",
-                  },
-                ]}
+                options={roleOptions}
               />
             </Form.Item>
           </AppFilterField>
+
           <AppFilterField width={180}>
             <Form.Item label="Trạng thái">
               <AppSelect
@@ -314,6 +433,7 @@ function FacilityUsers({
               />
             </Form.Item>
           </AppFilterField>
+
           <AppFilterField width={353} className="facility-users__search">
             <Form.Item label="Từ khóa">
               <Input
@@ -326,10 +446,12 @@ function FacilityUsers({
             </Form.Item>
           </AppFilterField>
         </AppFilter>
+
         <AppTable<FacilityUser>
           rowKey="id"
           columns={columns}
           dataSource={filteredUsers}
+          loading={loading}
           selectable
           selectedLabel="tài khoản"
           rowSelection={{
@@ -346,6 +468,7 @@ function FacilityUsers({
           }}
         />
       </div>
+
       <FacilityUserFormModal
         open={openCreate}
         mode="create"
@@ -353,6 +476,7 @@ function FacilityUsers({
         onCancel={handleCloseCreateModal}
         onSubmit={handleCreateUser}
       />
+
       <FacilityUserFormModal
         open={editingUser !== null}
         mode="edit"
@@ -364,4 +488,5 @@ function FacilityUsers({
     </div>
   );
 }
+
 export default FacilityUsers;
