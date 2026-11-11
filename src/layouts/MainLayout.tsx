@@ -11,7 +11,7 @@ import {
   useActionPanel,
 } from "../contexts/ActionPanelContext";
 
-import "./Mainlayout.css";
+import "./MainLayout.css";
 
 const { Header, Content, Footer } = Layout;
 
