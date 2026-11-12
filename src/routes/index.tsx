@@ -56,6 +56,13 @@ import RoleUpdateSettings from "../pages/settings/roles/role/RoleUpdateSettings"
 import RoleDetailSettings from "../pages/settings/roles/role/RoleDetailSettings";
 
 import OrganizationApiDemo from "../pages/OrganizationApiDemo";
+import TwoFactorPage from "../pages/auth/TwoFactorPage";
+import AccountPage from "../pages/account/AccountPage";
+import TwoFactorSettings from "../pages/account/two-factor/TwoFactorSettings";
+import AuthenticatorAppPage from "../pages/account/two-factor/AuthenticatorAppPage";
+import RecoveryCodesPage from "../pages/account/two-factor/RecoveryCodesPage";
+import AccountLayout from "../layouts/AccountLayout/AccountLayout";
+import PermissionRoute from "../app/PermissionRoute";
 
 export const routes: RouteObject[] = [
   // Auth
@@ -66,6 +73,11 @@ export const routes: RouteObject[] = [
         path: ROUTES.LOGIN,
         element: <LoginPage />,
       },
+      {
+        path: ROUTES.VERIFY_2FA,
+        element: <TwoFactorPage />,
+      },
+
       {
         path: ROUTES.FORGOT_PASSWORD,
         element: <ForgotPasswordPage />,
@@ -95,6 +107,29 @@ export const routes: RouteObject[] = [
           {
             path: "renewal-history",
             element: <RenewalHistoryPage />,
+          },
+        ],
+      },
+
+      {
+        path: "/account",
+        element: <AccountLayout />,
+        children: [
+          {
+            index: true,
+            element: <AccountPage />,
+          },
+          {
+            path: "two-factor",
+            element: <TwoFactorSettings />,
+          },
+          {
+            path: "two-factor/authenticator",
+            element: <AuthenticatorAppPage />,
+          },
+          {
+            path: "two-factor/recovery-codes",
+            element: <RecoveryCodesPage />,
           },
         ],
       },
@@ -197,21 +232,35 @@ export const routes: RouteObject[] = [
           },
 
           // Devices
+
+          // Devices - Xem danh sách và chi tiết
           {
-            path: ROUTES.DEVICES,
-            element: <DevicesPage />,
+            element: <PermissionRoute permission="DEVICE_VIEW" />,
+            children: [
+              {
+                path: ROUTES.DEVICES,
+                element: <DevicesPage />,
+              },
+              {
+                path: "devices/:id",
+                element: <DeviceDetailPage />,
+              },
+            ],
           },
+
+          // Devices - Thêm và chỉnh sửa
           {
-            path: "devices/create",
-            element: <DeviceForm mode="create" />,
-          },
-          {
-            path: "devices/:id",
-            element: <DeviceDetailPage />,
-          },
-          {
-            path: "devices/:id/edit",
-            element: <DeviceForm mode="edit" />,
+            element: <PermissionRoute permission="DEVICE_MANAGE" />,
+            children: [
+              {
+                path: "devices/create",
+                element: <DeviceForm mode="create" />,
+              },
+              {
+                path: "devices/:id/edit",
+                element: <DeviceForm mode="edit" />,
+              },
+            ],
           },
 
           // Broadcasts

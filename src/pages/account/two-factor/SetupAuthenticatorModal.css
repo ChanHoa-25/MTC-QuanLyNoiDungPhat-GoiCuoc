@@ -1,0 +1,164 @@
+.setup-authenticator-modal {
+  font-family: "Open Sans", sans-serif;
+}
+
+.setup-authenticator-modal .ant-modal-content {
+  padding: 48px 48px 40px;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 0 24px rgba(242, 109, 33, 0.35);
+}
+
+.setup-authenticator-modal .ant-modal-close {
+  top: 24px;
+  right: 24px;
+  width: 36px;
+  height: 36px;
+  color: #333333;
+}
+
+.setup-authenticator-modal .ant-modal-close-x {
+  font-size: 24px;
+}
+
+.setup-authenticator-modal h2 {
+  margin: 0 40px 32px 0;
+  color: #f26d21;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 38px;
+}
+
+.setup-authenticator-modal__content {
+  color: #666666;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+.setup-authenticator-modal__content h3 {
+  margin: 0;
+  color: #666666;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 30px;
+}
+
+.setup-authenticator-modal__content p {
+  margin: 0 0 12px;
+  padding-left: 24px;
+  color: #666666;
+  font-size: 18px;
+  line-height: 28px;
+}
+
+.setup-authenticator-modal__qr {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 180px;
+  min-height: 180px;
+  margin: 24px 0 28px;
+  padding: 16px;
+  border: 1px solid #c2c2c2;
+  border-radius: 12px;
+  background: #f7f7f7;
+  color: #777777;
+  font-size: 14px;
+  line-height: 22px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.setup-authenticator-modal__actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  width: 100%;
+  margin-top: 36px;
+}
+
+.setup-authenticator-modal__actions .app-button {
+  min-width: 0;
+  min-height: 52px;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.setup-authenticator-modal__actions .app-button:first-child {
+  flex: 0 0 150px;
+}
+
+.setup-authenticator-modal__actions .app-button:last-child {
+  flex: 1;
+}
+
+.setup-authenticator-modal__qr-image {
+  display: block;
+  width: 220px;
+  height: 220px;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.setup-authenticator-modal__manual-key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 16px 0 24px;
+}
+
+.setup-authenticator-modal__manual-key span {
+  color: #4d4d4d;
+  font-size: 14px;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 768px) {
+  .setup-authenticator-modal {
+    max-width: calc(100vw - 32px);
+  }
+
+  .setup-authenticator-modal .ant-modal-content {
+    padding: 36px 20px 24px;
+    border-radius: 12px;
+  }
+
+  .setup-authenticator-modal h2 {
+    font-size: 22px;
+    line-height: 30px;
+  }
+
+  .setup-authenticator-modal__content h3 {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .setup-authenticator-modal__content p {
+    padding-left: 12px;
+    font-size: 15px;
+    line-height: 24px;
+  }
+
+  .setup-authenticator-modal__qr {
+    width: 160px;
+    min-height: 160px;
+  }
+
+  .setup-authenticator-modal__actions {
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .setup-authenticator-modal__actions .app-button {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  .setup-authenticator-modal__actions .app-button:first-child {
+    flex-basis: 110px;
+  }
+}

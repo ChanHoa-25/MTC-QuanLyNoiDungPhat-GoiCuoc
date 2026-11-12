@@ -1,0 +1,147 @@
+.account-security {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+.account-security__title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 92px;
+  margin: 0;
+  color: #5b5b5f;
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 33px;
+}
+
+.account-security__content {
+  padding: 0 42px 40px;
+}
+
+.account-security__intro {
+  margin-bottom: 18px;
+}
+
+.account-security__intro h3 {
+  margin: 0 0 4px;
+  color: #f26d21;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 27px;
+}
+
+.account-security__intro p {
+  margin: 0;
+  color: #5b5b5f;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 22px;
+}
+
+.account-security__list {
+  overflow: hidden;
+  padding: 0 16px;
+  border-radius: 16px;
+  background: #fff5f0;
+}
+
+.account-security__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  min-height: 120px;
+  padding: 20px;
+  border: 0;
+  border-bottom: 1px solid #bfbfbf;
+  background: transparent;
+  font-family: "Open Sans", Arial, sans-serif;
+  text-align: left;
+  cursor: pointer;
+}
+
+.account-security__item:last-child {
+  border-bottom: none;
+}
+
+.account-security__item:hover {
+  background: #ffede3;
+}
+
+.account-security__item-info {
+  min-width: 0;
+}
+
+.account-security__item-info h4 {
+  margin: 0 0 4px;
+  color: #666666;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 27px;
+}
+
+.account-security__item-info p {
+  margin: 0;
+  color: #222222;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.account-security__arrow {
+  display: flex;
+  flex: 0 0 48px;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background: #ff9960;
+  color: #ffffff;
+  transition: background 0.2s ease;
+}
+
+.account-security__item:hover .account-security__arrow {
+  background: #f26d21;
+}
+
+@media (max-width: 1200px) {
+  .account-security__content {
+    padding: 0 24px 32px;
+  }
+}
+
+@media (max-width: 768px) {
+  .account-security__title {
+    height: 72px;
+    font-size: 20px;
+  }
+
+  .account-security__content {
+    padding: 0 16px 24px;
+  }
+
+  .account-security__intro h3 {
+    font-size: 18px;
+  }
+
+  .account-security__item {
+    min-height: 100px;
+    padding: 16px 8px;
+  }
+
+  .account-security__item-info h4 {
+    font-size: 16px;
+  }
+
+  .account-security__item-info p {
+    font-size: 13px;
+  }
+
+  .account-security__arrow {
+    flex-basis: 40px;
+    width: 40px;
+    height: 40px;
+  }
+}

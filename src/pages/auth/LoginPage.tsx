@@ -1,15 +1,16 @@
 import { Checkbox, Form, message } from "antd";
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import AuthForm from "../../components/auth/AuthForm";
-import type { AuthField } from "../../components/auth/AuthForm";
+import type { AuthField, AuthFormValues } from "../../components/auth/AuthForm";
 
 import { authApi } from "../../api/authApi";
 import { authStorage } from "../../utils/authStorage";
 
 import "./LoginPage.css";
+import { ROUTES } from "../../constants/route.constants";
 
 const fields: AuthField[] = [
   {
@@ -28,27 +29,37 @@ const fields: AuthField[] = [
   },
 ];
 
-interface LoginFormValues {
-  username: string;
-  password: string;
-  remember?: boolean;
-}
-
 function LoginPage() {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleLogin = async (values: Record<string, string>) => {
-    const formValues = values as unknown as LoginFormValues;
+  const handleLogin = async (values: AuthFormValues) => {
+    const username = String(values.username ?? "").trim();
+    const password = String(values.password ?? "");
+    const rememberMe = values.remember === true;
 
     try {
       const result = await authApi.login({
-        username: formValues.username.trim(),
-        password: formValues.password,
-        rememberMe: Boolean(formValues.remember),
+        username,
+        password,
+        rememberMe,
       });
 
       if (result.requires2FA) {
-        message.info("Tài khoản yêu cầu xác thực hai bước.");
+        if (!result.user?.userId) {
+          message.error("Không nhận được thông tin xác thực 2FA.");
+          return;
+        }
+
+        // Chưa lưu token khi chưa hoàn tất 2FA.
+        navigate(ROUTES.VERIFY_2FA, {
+          replace: true,
+          state: {
+            userId: result.user.userId,
+            from: location.state?.from,
+          },
+        });
+
         return;
       }
 
@@ -61,7 +72,15 @@ function LoginPage() {
 
       message.success("Đăng nhập thành công!");
 
-      navigate("/dashboard", { replace: true });
+      const from = location.state?.from;
+      const redirectPath =
+        typeof from?.pathname === "string" &&
+        from.pathname.startsWith("/") &&
+        !from.pathname.startsWith("//")
+          ? `${from.pathname}${from.search ?? ""}${from.hash ?? ""}`
+          : "/dashboard";
+
+      navigate(redirectPath, { replace: true });
     } catch (error) {
       if (axios.isAxiosError(error)) {
         const errorMessage =
@@ -85,7 +104,11 @@ function LoginPage() {
         onSubmit={handleLogin}
         footer={
           <div className="login-options">
-            <Form.Item name="remember" valuePropName="checked" noStyle>
+            <Form.Item
+              name="remember"
+              valuePropName="checked"
+              initialValue={false}
+              noStyle>
               <Checkbox>Ghi nhớ mật khẩu</Checkbox>
             </Form.Item>
 

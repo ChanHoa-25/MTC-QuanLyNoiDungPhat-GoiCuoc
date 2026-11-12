@@ -1,0 +1,365 @@
+.account-detail-page {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: 0 24px 45px;
+  box-sizing: border-box;
+}
+
+.account-detail-page__card {
+  flex: 1;
+  width: 100%;
+  max-width: 1114px;
+  min-width: 0;
+  min-height: 0;
+  margin: 0 auto;
+  padding: 60px 68px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.tf-details {
+  width: 100%;
+  min-width: 0;
+}
+
+.tf-details__description {
+  margin: 0 0 22px;
+  color: #666666;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+}
+
+.tf-details__description a {
+  color: #527fbc;
+  text-decoration: underline;
+}
+
+.tf-details__section {
+  width: 100%;
+}
+
+.tf-details__section h2 {
+  margin: 0 0 24px;
+  color: #333333;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.tf-details__authenticator-card {
+  width: min(590px, 100%);
+  padding: 22px 24px 30px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.tf-details__item {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  width: 100%;
+  min-width: 0;
+}
+
+.tf-details__item-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  color: #333333;
+}
+
+.tf-details__item-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.tf-details__item-info h3 {
+  margin: 0 0 2px;
+  color: #333333;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 22px;
+}
+
+.tf-details__item-info p {
+  margin: 0 0 14px;
+  color: #777777;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.tf-details__link {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #1677ff;
+  font-family: inherit;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.tf-details__link:hover {
+  text-decoration: underline;
+}
+
+.tf-details__delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #333333;
+  cursor: pointer;
+}
+
+.tf-details__delete:hover {
+  color: #f26d21;
+}
+
+.tf-details__setup-button,
+.tf-details__generate-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: min(368px, 100%);
+  min-height: 38px;
+  padding: 8px 20px;
+  border: none;
+  border-radius: 6px;
+  background: #f26d21;
+  color: #ffffff;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tf-details__setup-button:hover,
+.tf-details__generate-button:hover {
+  background: #dd5f19;
+}
+
+.tf-details__recovery {
+  width: min(655px, 100%);
+  padding: 24px 25px 28px;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.tf-details__recovery-title {
+  margin: 0 0 28px;
+  color: #333333;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 24px;
+}
+
+.tf-details__recovery-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tf-details__recovery-info {
+  min-width: 0;
+}
+
+.tf-details__recovery-info h3 {
+  margin: 0 0 4px;
+  color: #333333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+}
+
+.tf-details__recovery-info p {
+  margin: 0;
+  color: #666666;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+.tf-details__recovery-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tf-details__recovery-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #444444;
+  cursor: pointer;
+}
+
+.tf-details__recovery-actions button:hover {
+  color: #f26d21;
+}
+
+.tf-details__codes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 36px;
+  row-gap: 26px;
+  padding: 26px 60px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.tf-details__code {
+  color: #333333;
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 24px;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.tf-details__recovery-footer {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-top: 24px;
+}
+
+.tf-details__recovery-footer .app-button {
+  border-radius: 24px;
+  color: #1677ff;
+  font-size: 14px;
+}
+
+.tf-details__recovery-footer .app-button:hover {
+  color: #0958d9;
+}
+
+.tf-details__empty {
+  padding: 40px 20px;
+  color: #999999;
+  font-size: 16px;
+  text-align: center;
+}
+
+.recovery-delete-modal .ant-modal-content {
+  padding: 44px 48px 42px;
+  border-radius: 16px;
+}
+
+.recovery-delete-modal__title {
+  margin: 0 0 26px;
+  color: #f26d21;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 40px;
+}
+
+.recovery-delete-modal__description {
+  margin: 0 0 34px;
+  color: #666666;
+  font-size: 20px;
+  line-height: 30px;
+}
+
+.recovery-delete-modal__actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.recovery-delete-modal__actions .app-button:last-child {
+  flex: 1;
+}
+
+@media (max-width: 1200px) {
+  .account-detail-page__card {
+    padding: 45px 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .account-detail-page {
+    padding: 0 16px 30px;
+  }
+
+  .account-detail-page__card {
+    padding: 30px 20px;
+  }
+
+  .tf-details__description {
+    font-size: 15px;
+    line-height: 24px;
+  }
+
+  .tf-details__authenticator-card {
+    padding: 20px 16px;
+  }
+
+  .tf-details__item {
+    gap: 12px;
+  }
+
+  .tf-details__item-icon {
+    width: 32px;
+    height: 32px;
+  }
+
+  .tf-details__recovery {
+    padding: 20px 16px;
+  }
+
+  .tf-details__codes {
+    column-gap: 12px;
+    row-gap: 18px;
+    padding: 24px 0;
+  }
+
+  .tf-details__code {
+    font-size: 14px;
+  }
+
+  .recovery-delete-modal .ant-modal-content {
+    padding: 32px 20px;
+  }
+
+  .recovery-delete-modal__title {
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  .recovery-delete-modal__description {
+    font-size: 16px;
+    line-height: 25px;
+  }
+
+  .recovery-delete-modal__actions {
+    gap: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .tf-details__codes {
+    grid-template-columns: 1fr;
+  }
+}

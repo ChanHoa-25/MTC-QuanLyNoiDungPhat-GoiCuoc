@@ -1,0 +1,145 @@
+.verify-authenticator-modal {
+  font-family: "Open Sans", sans-serif;
+}
+
+.verify-authenticator-modal .ant-modal-content {
+  padding: 48px 48px 40px;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 0 24px rgba(242, 109, 33, 0.35);
+}
+
+.verify-authenticator-modal .ant-modal-close {
+  top: 24px;
+  right: 24px;
+  width: 36px;
+  height: 36px;
+  color: #333333;
+}
+
+.verify-authenticator-modal .ant-modal-close-x {
+  font-size: 24px;
+}
+
+.verify-authenticator-modal h2 {
+  margin: 0 40px 32px 0;
+  color: #f26d21;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 38px;
+}
+
+.verify-authenticator-modal .ant-modal-body > p {
+  margin: 0 0 28px;
+  color: #666666;
+  font-size: 18px;
+  line-height: 28px;
+}
+
+.verify-authenticator-modal h3 {
+  margin: 0 0 24px;
+  color: #666666;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 32px;
+}
+
+.verify-authenticator-modal .ant-otp {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+}
+
+.verify-authenticator-modal .ant-otp-input {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  height: 88px;
+  border: 1px solid #aaaaaa;
+  border-radius: 10px;
+  background: #ffffff;
+  color: #555555;
+  font-family: inherit;
+  font-size: 40px;
+  font-weight: 500;
+  text-align: center;
+}
+
+.verify-authenticator-modal .ant-otp-input:focus {
+  border-color: #f26d21;
+  box-shadow: 0 0 0 2px rgba(242, 109, 33, 0.12);
+}
+
+.verify-authenticator-modal__actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 36px;
+}
+
+.verify-authenticator-modal__actions .app-button {
+  min-width: 0;
+  min-height: 52px;
+  border-radius: 10px;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.verify-authenticator-modal__actions .app-button:first-child {
+  flex: 0 0 150px;
+}
+
+.verify-authenticator-modal__actions .app-button:last-child {
+  flex: 1;
+}
+
+@media (max-width: 768px) {
+  .verify-authenticator-modal {
+    max-width: calc(100vw - 32px);
+  }
+
+  .verify-authenticator-modal .ant-modal-content {
+    padding: 36px 20px 24px;
+    border-radius: 12px;
+  }
+
+  .verify-authenticator-modal h2 {
+    font-size: 22px;
+    line-height: 30px;
+  }
+
+  .verify-authenticator-modal .ant-modal-body > p {
+    font-size: 15px;
+    line-height: 24px;
+  }
+
+  .verify-authenticator-modal h3 {
+    font-size: 17px;
+    line-height: 26px;
+  }
+
+  .verify-authenticator-modal .ant-otp {
+    gap: 6px;
+  }
+
+  .verify-authenticator-modal .ant-otp-input {
+    height: 56px;
+    font-size: 24px;
+    border-radius: 6px;
+  }
+
+  .verify-authenticator-modal__actions {
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .verify-authenticator-modal__actions .app-button {
+    min-height: 44px;
+    font-size: 16px;
+  }
+
+  .verify-authenticator-modal__actions .app-button:first-child {
+    flex-basis: 110px;
+  }
+}
