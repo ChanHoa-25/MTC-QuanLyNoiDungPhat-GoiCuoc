@@ -177,18 +177,16 @@
 
 /* SIDEBAR */
 
-.app-sidebar.ant-layout-sider {
-  overflow: visible;
-  margin: 18px 0;
-  background: linear-gradient(180deg, #ff9960 0%, #ff7024 100%);
-  border-radius: 12px;
-  box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
-}
-
 .app-sidebar.ant-layout-sider,
 .app-sidebar.ant-layout-sider .ant-layout-sider-children {
   background: linear-gradient(180deg, #ff9960 0%, #ff7024 100%);
   border-radius: 12px;
+}
+
+.app-sidebar.ant-layout-sider {
+  overflow: visible;
+  margin: 18px 0;
+  box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
 }
 
 .app-sidebar .sidebar {
@@ -234,10 +232,22 @@
   width: 22px;
   height: 22px;
   padding: 0;
-  color: #fff;
+  color: #fff !important;
   background: #ff8a4c;
   border: 1px solid rgb(255 255 255 / 75%);
   border-radius: 50%;
+}
+
+.sidebar-collapse-button.ant-btn .anticon,
+.sidebar-collapse-button.ant-btn svg {
+  color: #fff !important;
+  stroke: #fff;
+}
+
+.sidebar-collapse-button.ant-btn:hover {
+  color: #fff !important;
+  background: #ff8a4c !important;
+  border-color: rgb(255 255 255 / 75%) !important;
 }
 
 .sidebar-navigation {
@@ -245,6 +255,10 @@
   min-height: 0;
   overflow-x: hidden;
   overflow-y: auto;
+}
+
+.app-sidebar:not(.ant-layout-sider-collapsed) .sidebar-navigation {
+  overflow: visible;
 }
 
 .sidebar-menu.ant-menu {
@@ -256,6 +270,7 @@
 }
 
 .sidebar-menu.ant-menu .ant-menu-item {
+  position: relative;
   display: flex;
   align-items: center;
   box-sizing: border-box;
@@ -298,9 +313,28 @@
   flex-shrink: 0;
 }
 
+.sidebar-menu.ant-menu .sidebar-menu-divider.ant-menu-item-divider {
+  height: 1px;
+  min-height: 1px;
+  margin: 0 12px 10px;
+  padding: 0;
+  background: rgb(255 255 255 / 65%);
+  border: none;
+}
+
 .sidebar-menu.ant-menu .ant-menu-item-selected {
+  z-index: 2;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
   color: var(--color-primary) !important;
-  background: #ffb17f !important;
+  background: var(--color-bg-page) !important;
+  border-radius: 12px 0 0 12px !important;
+}
+
+.app-sidebar:not(.ant-layout-sider-collapsed)
+  .sidebar-menu.ant-menu
+  .ant-menu-item-selected {
+  width: calc(100% + 6px) !important;
 }
 
 .sidebar-menu.ant-menu .ant-menu-item-selected .ant-menu-title-content {
@@ -310,21 +344,56 @@
 
 .sidebar-menu.ant-menu .ant-menu-item-selected .sidebar-menu-icon {
   color: var(--color-primary) !important;
+  stroke: var(--color-primary) !important;
 }
 
-.sidebar-menu.ant-menu .ant-menu-item:not(.ant-menu-item-selected) {
-  color: #fff;
+.app-sidebar:not(.ant-layout-sider-collapsed)
+  .sidebar-menu.ant-menu
+  .ant-menu-item-selected::before,
+.app-sidebar:not(.ant-layout-sider-collapsed)
+  .sidebar-menu.ant-menu
+  .ant-menu-item-selected::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  pointer-events: none;
 }
 
-.sidebar-menu.ant-menu
-  .ant-menu-item:not(.ant-menu-item-selected)
-  .sidebar-menu-icon {
-  color: #fff;
+.app-sidebar:not(.ant-layout-sider-collapsed)
+  .sidebar-menu.ant-menu
+  .ant-menu-item-selected::before {
+  top: -20px;
+  border-bottom-right-radius: 20px;
+  box-shadow: 0 10px 0 var(--color-bg-page);
+}
+
+.app-sidebar:not(.ant-layout-sider-collapsed)
+  .sidebar-menu.ant-menu
+  .ant-menu-item-selected::after {
+  bottom: -20px;
+  border-top-right-radius: 20px;
+  box-shadow: 0 -10px 0 var(--color-bg-page);
 }
 
 .sidebar-menu.ant-menu .ant-menu-item:not(.ant-menu-item-selected):hover {
-  color: var(--color-primary) !important;
-  background: rgb(255 255 255 / 25%) !important;
+  width: 100% !important;
+  margin-left: 0 !important;
+  color: #fff !important;
+  background: rgb(255 255 255 / 20%) !important;
+  border-radius: 6px !important;
+}
+
+.sidebar-menu.ant-menu
+  .ant-menu-item:not(.ant-menu-item-selected):hover
+  .ant-menu-title-content,
+.sidebar-menu.ant-menu
+  .ant-menu-item:not(.ant-menu-item-selected):hover
+  .sidebar-menu-icon {
+  color: #fff !important;
+  stroke: #fff !important;
 }
 
 .sidebar-menu.ant-menu .ant-menu-item::after {
@@ -389,47 +458,29 @@
   border-radius: 4px;
 }
 
+.sidebar-more-dropdown .ant-dropdown-menu-item:last-child {
+  margin-bottom: 0;
+}
+
 .sidebar-more-dropdown
   .ant-dropdown-menu-item
   .ant-dropdown-menu-title-content {
   color: inherit !important;
 }
 
-.sidebar-more-dropdown .ant-dropdown-menu-item:last-child {
-  margin-bottom: 0;
-}
-
-.sidebar-more-dropdown .ant-dropdown-menu-item:hover {
+.sidebar-more-dropdown .ant-dropdown-menu-item:hover,
+.sidebar-more-dropdown .ant-dropdown-menu-item-selected,
+.sidebar-more-dropdown .ant-dropdown-menu-item-active {
   color: var(--color-primary) !important;
-  background: rgb(255 255 255 / 20%) !important;
+  background: rgb(255 255 255 / 25%) !important;
 }
 
 .sidebar-more-dropdown
   .ant-dropdown-menu-item:hover
-  .ant-dropdown-menu-title-content {
-  color: var(--color-primary) !important;
-}
-
-.sidebar-more-dropdown .ant-dropdown-menu-item-selected {
-  color: var(--color-primary) !important;
-  background: rgb(255 255 255 / 25%) !important;
-}
-
+  .ant-dropdown-menu-title-content,
 .sidebar-more-dropdown
   .ant-dropdown-menu-item-selected
-  .ant-dropdown-menu-title-content {
-  color: var(--color-primary) !important;
-}
-
-.sidebar-more-dropdown .ant-dropdown-menu-item-selected:hover {
-  color: var(--color-primary) !important;
-  background: rgb(255 255 255 / 25%) !important;
-}
-
-.sidebar-more-dropdown .ant-dropdown-menu-item-active {
-  color: var(--color-primary) !important;
-}
-
+  .ant-dropdown-menu-title-content,
 .sidebar-more-dropdown
   .ant-dropdown-menu-item-active
   .ant-dropdown-menu-title-content {
@@ -454,6 +505,24 @@
   .ant-menu-item
   .ant-menu-item-icon {
   margin-inline-end: 0;
+}
+
+.app-sidebar.ant-layout-sider-collapsed
+  .sidebar-menu.ant-menu
+  .ant-menu-item-selected {
+  width: 100% !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+  border-radius: 8px !important;
+}
+
+.app-sidebar.ant-layout-sider-collapsed
+  .sidebar-menu.ant-menu
+  .ant-menu-item-selected::before,
+.app-sidebar.ant-layout-sider-collapsed
+  .sidebar-menu.ant-menu
+  .ant-menu-item-selected::after {
+  display: none;
 }
 
 .sidebar-footer {
