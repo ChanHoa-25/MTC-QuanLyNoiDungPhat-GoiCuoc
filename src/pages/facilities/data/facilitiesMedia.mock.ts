@@ -1,4 +1,5 @@
 import type { FacilityMediaItem } from "../types/facilityMedia.types";
+import defaultThumbnail from "../../../assets/images/media.png";
 
 const mediaTitles = [
   "Thông tin buổi sáng",
@@ -19,8 +20,6 @@ const categories = [
 ];
 
 const mediaTypes: FacilityMediaItem["type"][] = ["video", "image", "audio"];
-
-import defaultThumbnail from "../../../assets/images/media.png";
 
 const DEFAULT_THUMBNAIL = defaultThumbnail;
 

@@ -43,7 +43,7 @@ function getErrorMessage(error: unknown, fallback: string): string {
       return data.message;
     }
 
-    if (Array.isArray(data?.errors)) {
+    if (data && Array.isArray(data.errors)) {
       const messages = data.errors.filter(
         (item): item is string => typeof item === "string",
       );
