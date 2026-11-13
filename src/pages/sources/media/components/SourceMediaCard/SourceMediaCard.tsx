@@ -1,24 +1,22 @@
-import { Checkbox, Dropdown } from "antd";
-import type { MenuProps } from "antd";
+import { Checkbox } from "antd";
 import dayjs from "dayjs";
 import {
   Download,
-  Eye,
   Info,
-  Loader2,
-  MoreVertical,
+  Network,
   Play,
   Share2,
   SquarePen,
-  Trash2,
 } from "lucide-react";
 
+import AppIconButton from "../../../../../components/common/AppIconButton";
 import AppStatusTag from "../../../../../components/common/AppStatusTag";
 import type { AppStatusVariant } from "../../../../../components/common/AppStatusTag";
 import { DEFAULT_MEDIA_THUMBNAIL } from "../../data/sourceMedia.mock";
 import type {
   SourceMediaApprovalStatus,
   SourceMediaItem,
+  SourceMediaType,
 } from "../../types/sourceMedia.types";
 
 import "./SourceMediaCard.css";
@@ -29,10 +27,11 @@ interface SourceMediaCardProps {
   activePreview?: boolean;
   onSelect: (id: string, checked: boolean) => void;
   onPreview: (media: SourceMediaItem) => void;
+  onPlayModal: (media: SourceMediaItem) => void;
   onOpenDetail: (media: SourceMediaItem) => void;
-  onEdit?: (media: SourceMediaItem) => void;
-  onShare?: (media: SourceMediaItem) => void;
-  onDelete?: (media: SourceMediaItem) => void;
+  onEdit: (media: SourceMediaItem) => void;
+  onShare: (media: SourceMediaItem) => void;
+  onDownload: (media: SourceMediaItem) => void;
 }
 
 const APPROVAL_STATUS_MAP: Record<
@@ -44,83 +43,30 @@ const APPROVAL_STATUS_MAP: Record<
   rejected: { label: "Từ chối duyệt", variant: "red" },
 };
 
+const MEDIA_TYPE_LABEL: Record<SourceMediaType, string> = {
+  video: "Video",
+  audio: "Âm thanh",
+  image: "Hình ảnh",
+};
+
 function SourceMediaCard({
   media,
   selected,
   activePreview = false,
   onSelect,
   onPreview,
+  onPlayModal,
   onOpenDetail,
   onEdit,
   onShare,
-  onDelete,
+  onDownload,
 }: SourceMediaCardProps) {
-  const statusInfo = APPROVAL_STATUS_MAP[media.approvalStatus];
-  const formattedCreatedAt = dayjs(media.createdAt).format("D/M/YYYY HH:mm");
+  const statusInfo = media.isProcessing
+    ? { label: "Đang xử lý", variant: "blue" as AppStatusVariant }
+    : APPROVAL_STATUS_MAP[media.approvalStatus];
 
-  const menuItems: MenuProps["items"] = [
-    {
-      key: "detail",
-      icon: <Info size={15} />,
-      label: "Chi tiết file media",
-    },
-    {
-      key: "preview",
-      icon: <Eye size={15} />,
-      label: "Xem nhanh thông tin",
-    },
-    {
-      key: "edit",
-      icon: <SquarePen size={15} />,
-      label: "Cập nhật thông tin",
-    },
-    {
-      key: "share",
-      icon: <Share2 size={15} />,
-      label: "Chia sẻ nguồn tin",
-    },
-    {
-      key: "download",
-      icon: <Download size={15} />,
-      label: "Tải xuống",
-    },
-    {
-      type: "divider",
-    },
-    {
-      key: "delete",
-      icon: <Trash2 size={15} />,
-      label: "Xóa nguồn tin",
-      danger: true,
-    },
-  ];
-
-  const handleMenuClick: MenuProps["onClick"] = ({ key, domEvent }) => {
-    domEvent.stopPropagation();
-
-    switch (key) {
-      case "detail":
-        onOpenDetail(media);
-        break;
-      case "preview":
-        onPreview(media);
-        break;
-      case "edit":
-        onEdit?.(media);
-        break;
-      case "share":
-        onShare?.(media);
-        break;
-      case "download":
-        window.open(media.thumbnail, "_blank", "noopener,noreferrer");
-        break;
-      case "delete":
-        onDelete?.(media);
-        break;
-      default:
-        break;
-    }
-  };
+  const formattedCreatedAt = dayjs(media.createdAt).format("D/M/YYYY");
+  const isApproved = media.approvalStatus === "approved";
 
   return (
     <article
@@ -152,13 +98,11 @@ function SourceMediaCard({
           />
         </div>
 
-        {media.isProcessing && (
-          <span
-            className="source-media-card__processing"
-            title="Đang xử lý phiên bản">
-            <Loader2 size={16} className="source-media-card__spinner" />
-          </span>
-        )}
+        <span
+          className="source-media-card__network-badge"
+          title="Nguồn thông tin cơ sở">
+          <Network size={14} />
+        </span>
 
         <button
           type="button"
@@ -166,7 +110,7 @@ function SourceMediaCard({
           aria-label={`Phát thử ${media.title}`}
           onClick={(event) => {
             event.stopPropagation();
-            onPreview(media);
+            onPlayModal(media);
           }}>
           <Play size={14} fill="currentColor" />
         </button>
@@ -181,35 +125,85 @@ function SourceMediaCard({
         </div>
       </div>
 
-      <div className="source-media-card__footer">
-        <div className="source-media-card__info">
-          <h3
-            className="source-media-card__title"
-            title={media.title}
-            onClick={(event) => {
-              event.stopPropagation();
-              onOpenDetail(media);
-            }}>
-            {media.title}
-          </h3>
+      <div className="source-media-card__content">
+        <h3
+          className="source-media-card__title"
+          title={media.title}
+          onClick={(event) => {
+            event.stopPropagation();
+            onOpenDetail(media);
+          }}>
+          {media.title}
+        </h3>
 
-          <p className="source-media-card__date">
-            Ngày tạo: {formattedCreatedAt}
-          </p>
-        </div>
+        <div className="source-media-card__body">
+          <div className="source-media-card__details">
+            <div className="source-media-card__detail-row">
+              <span className="source-media-card__detail-label">
+                Người tạo:
+              </span>
+              <span className="source-media-card__detail-value">
+                {media.createdBy}
+              </span>
+            </div>
 
-        <Dropdown
-          menu={{ items: menuItems, onClick: handleMenuClick }}
-          trigger={["click"]}
-          placement="bottomRight">
-          <button
-            type="button"
-            className="source-media-card__more"
-            aria-label="Thao tác media"
+            <div className="source-media-card__detail-row">
+              <span className="source-media-card__detail-label">Ngày tạo:</span>
+              <span className="source-media-card__detail-value">
+                {formattedCreatedAt}
+              </span>
+            </div>
+
+            <div className="source-media-card__detail-row">
+              <span className="source-media-card__detail-label">
+                Loại media:
+              </span>
+              <span className="source-media-card__detail-value">
+                {MEDIA_TYPE_LABEL[media.type]}
+              </span>
+            </div>
+          </div>
+
+          <div
+            className="source-media-card__actions"
             onClick={(event) => event.stopPropagation()}>
-            <MoreVertical size={16} />
-          </button>
-        </Dropdown>
+            {!media.isProcessing && (
+              <>
+                <AppIconButton
+                  icon={<Download size={16} />}
+                  tooltip="Tải xuống"
+                  size={24}
+                  iconSize={16}
+                  onClick={() => onDownload(media)}
+                />
+
+                <AppIconButton
+                  icon={
+                    isApproved ? (
+                      <Share2 size={16} />
+                    ) : (
+                      <SquarePen size={16} />
+                    )
+                  }
+                  tooltip={
+                    isApproved ? "Chia sẻ nguồn thông tin" : "Cập nhật file media"
+                  }
+                  size={24}
+                  iconSize={16}
+                  onClick={() => (isApproved ? onShare(media) : onEdit(media))}
+                />
+              </>
+            )}
+
+            <AppIconButton
+              icon={<Info size={16} />}
+              tooltip="Chi tiết file media"
+              size={24}
+              iconSize={16}
+              onClick={() => onOpenDetail(media)}
+            />
+          </div>
+        </div>
       </div>
     </article>
   );
