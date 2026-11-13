@@ -1,0 +1,138 @@
+.ant-modal.app-modal.source-media-reject-modal {
+  max-width: calc(100vw - 32px);
+}
+
+.ant-modal.app-modal.source-media-reject-modal .ant-modal-container {
+  width: 100%;
+  padding: 0;
+  overflow: visible;
+  border: none;
+  border-top: 8px solid #ff4444;
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.ant-modal.app-modal.source-media-reject-modal .ant-modal-content {
+  position: relative;
+  width: 100%;
+  padding: 0;
+  border-radius: 0 0 8px 8px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.ant-modal.app-modal.source-media-reject-modal .ant-modal-body {
+  width: 100%;
+  padding: 48px 36px 28px;
+}
+
+.source-media-reject-modal__icon {
+  position: absolute;
+  z-index: 2;
+  top: -46px;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 76px;
+  height: 76px;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: #ff4444;
+  color: #ffffff;
+}
+
+.source-media-reject-modal__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.source-media-reject-modal__title {
+  margin: 0 0 8px;
+  color: #4d4d4d;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 30px;
+  text-align: center;
+}
+
+.source-media-reject-modal__subtitle {
+  margin: 0 0 18px;
+  color: #595959;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 20px;
+  text-align: center;
+}
+
+.source-media-reject-modal__field {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.source-media-reject-modal__label {
+  display: block;
+  margin-bottom: 10px;
+  color: #666666;
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 20px;
+}
+
+.source-media-reject-modal__textarea {
+  width: 100%;
+  min-height: 118px;
+  padding: 12px 14px;
+  border: 1px solid #d4d4d4;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #333333;
+  font-family: inherit;
+  font-size: 14px;
+  line-height: 20px;
+  resize: vertical;
+  box-sizing: border-box;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.source-media-reject-modal__textarea::placeholder {
+  color: #c2c2c2;
+}
+
+.source-media-reject-modal__textarea:focus {
+  border-color: #ff4444;
+}
+
+.source-media-reject-modal__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+}
+
+.source-media-reject-modal__actions .ant-btn {
+  width: 120px;
+  height: 40px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.source-media-reject-modal__cancel {
+  border: 1px solid #ff4444 !important;
+  background: #ffffff !important;
+  color: #ff4444 !important;
+}
+
+.source-media-reject-modal__confirm {
+  border: 1px solid #ff4444 !important;
+  background: #ff4444 !important;
+  color: #ffffff !important;
+}
+
+.source-media-reject-modal__confirm:hover {
+  opacity: 0.92;
+}

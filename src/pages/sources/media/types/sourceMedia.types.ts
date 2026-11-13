@@ -2,6 +2,8 @@ export type SourceMediaType = "video" | "audio" | "image";
 
 export type SourceMediaApprovalStatus = "approved" | "pending" | "rejected";
 
+export type SourceMediaContentType = "file" | "live" | "url" | "frequency";
+
 export interface MediaResolutionItem {
   label: "4K" | "2K" | "FHD" | "HD";
   state: "processing" | "disabled" | "ready-blue" | "ready-green";
@@ -13,6 +15,7 @@ export interface SourceMediaItem {
   fileName: string;
   category: string;
   type: SourceMediaType;
+  contentType?: SourceMediaContentType;
   approvalStatus: SourceMediaApprovalStatus;
   duration: string;
   sizeMB: number;
@@ -23,9 +26,19 @@ export interface SourceMediaItem {
   createdBy: string;
   createdAt: string;
   sharedArea: string;
+  sharedFacilityIds?: string[];
+  rejectionReason?: string;
   isProcessing?: boolean;
   processingNote?: string;
   resolutions: MediaResolutionItem[];
+}
+
+export interface SourceMediaFormValues {
+  title: string;
+  category: string;
+  contentType: SourceMediaContentType;
+  contentValue?: string;
+  file?: File | null;
 }
 
 export type BroadcastPriorityType = "priority" | "normal";

@@ -32,6 +32,16 @@ export function addSourceMediaItems(newItems: SourceMediaItem[]) {
   emitChange();
 }
 
+export function updateSourceMediaItem(
+  id: string,
+  patch: Partial<SourceMediaItem>,
+) {
+  mediaItemsState = mediaItemsState.map((item) =>
+    item.id === id ? { ...item, ...patch } : item,
+  );
+  emitChange();
+}
+
 export function deleteSourceMediaByIds(ids: string[]) {
   const idSet = new Set(ids);
   mediaItemsState = mediaItemsState.filter((item) => !idSet.has(item.id));
@@ -41,10 +51,18 @@ export function deleteSourceMediaByIds(ids: string[]) {
 export function updateSourceMediaApproval(
   ids: string[],
   status: SourceMediaApprovalStatus,
+  rejectionReason?: string,
 ) {
   const idSet = new Set(ids);
   mediaItemsState = mediaItemsState.map((item) =>
-    idSet.has(item.id) ? { ...item, approvalStatus: status } : item,
+    idSet.has(item.id)
+      ? {
+          ...item,
+          approvalStatus: status,
+          isProcessing: false,
+          ...(rejectionReason !== undefined ? { rejectionReason } : {}),
+        }
+      : item,
   );
   emitChange();
 }
@@ -58,6 +76,7 @@ export function useSourceMediaStore() {
     mediaItems: items,
     getMediaById,
     addMediaItems: addSourceMediaItems,
+    updateMediaItem: updateSourceMediaItem,
     deleteMediaByIds: deleteSourceMediaByIds,
     updateApproval: updateSourceMediaApproval,
   };
