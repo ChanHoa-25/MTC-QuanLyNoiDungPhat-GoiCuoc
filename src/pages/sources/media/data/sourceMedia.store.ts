@@ -23,6 +23,15 @@ function getSnapshot() {
   return mediaItemsState;
 }
 
+export function addSourceMediaItems(newItems: SourceMediaItem[]) {
+  if (newItems.length === 0) return;
+  const existingIds = new Set(mediaItemsState.map((item) => item.id));
+  const uniqueItems = newItems.filter((item) => !existingIds.has(item.id));
+  if (uniqueItems.length === 0) return;
+  mediaItemsState = [...uniqueItems, ...mediaItemsState];
+  emitChange();
+}
+
 export function deleteSourceMediaByIds(ids: string[]) {
   const idSet = new Set(ids);
   mediaItemsState = mediaItemsState.filter((item) => !idSet.has(item.id));
@@ -48,6 +57,7 @@ export function useSourceMediaStore() {
   return {
     mediaItems: items,
     getMediaById,
+    addMediaItems: addSourceMediaItems,
     deleteMediaByIds: deleteSourceMediaByIds,
     updateApproval: updateSourceMediaApproval,
   };

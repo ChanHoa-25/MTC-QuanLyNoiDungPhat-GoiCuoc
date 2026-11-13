@@ -1,0 +1,80 @@
+.source-shared-page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+}
+
+.source-shared-panel {
+  width: 100%;
+  min-width: 0;
+  padding: 20px 24px 24px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(243, 198, 179, 0.2);
+  box-sizing: border-box;
+}
+
+.source-shared-panel__title {
+  margin: 0 0 14px;
+  color: var(--color-primary);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+.source-shared-panel__filters {
+  margin-bottom: 18px;
+}
+
+.source-shared-panel__filters .app-filter__fields {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  width: 100%;
+}
+
+.source-shared-panel__filters .ant-form-item {
+  margin-bottom: 0;
+}
+
+.source-shared-panel__filters .ant-form-item-label > label {
+  color: #262626;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.source-shared-panel__search-field {
+  margin-left: auto;
+}
+
+.source-shared-panel__table {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Đảm bảo AppConfirmModal co giãn chiều cao tự động khi tiêu đề dài 2 dòng */
+.ant-modal.app-modal.app-confirm-modal.source-shared-confirm-modal
+  .ant-modal-container {
+  height: auto;
+  min-height: 250px;
+}
+
+.ant-modal.app-modal.app-confirm-modal.source-shared-confirm-modal
+  .ant-modal-body {
+  height: auto;
+  min-height: 242px;
+  padding: 50px 40px 88px;
+}
+
+@media (max-width: 1200px) {
+  .source-shared-panel__search-field {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .source-shared-panel {
+    padding: 16px;
+  }
+}
