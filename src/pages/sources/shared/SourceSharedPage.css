@@ -1,13 +1,22 @@
 .source-shared-page {
   display: flex;
   flex-direction: column;
+  gap: 0;
   width: 100%;
   min-width: 0;
+  max-width: 100%;
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
 }
 
 .source-shared-panel {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
   width: 100%;
   min-width: 0;
+  min-height: 600px;
   padding: 20px 24px 24px;
   background: #ffffff;
   border-radius: 12px;
@@ -16,14 +25,18 @@
 }
 
 .source-shared-panel__title {
+  flex-shrink: 0;
   margin: 0 0 14px;
-  color: var(--color-primary);
+  color: var(--color-primary, #f26d21);
   font-size: 20px;
   font-weight: 700;
   line-height: 28px;
 }
 
 .source-shared-panel__filters {
+  flex-shrink: 0;
+  width: 100%;
+  min-width: 0;
   margin-bottom: 18px;
 }
 
@@ -49,11 +62,31 @@
 }
 
 .source-shared-panel__table {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
   width: 100%;
   min-width: 0;
+  min-height: 0;
 }
 
-/* Đảm bảo AppConfirmModal co giãn chiều cao tự động khi tiêu đề dài 2 dòng */
+/* AppTable chiếm chiều cao còn lại */
+.source-shared-panel__table > .ant-table-wrapper,
+.source-shared-panel__table > .app-table {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Đẩy phân trang xuống cuối khung */
+.source-shared-panel__table .ant-pagination,
+.source-shared-panel__table .app-pagination {
+  margin-top: auto;
+}
+
+/* Popup xác nhận */
 .ant-modal.app-modal.app-confirm-modal.source-shared-confirm-modal
   .ant-modal-container {
   height: auto;
@@ -67,6 +100,7 @@
   padding: 50px 40px 88px;
 }
 
+/* Responsive */
 @media (max-width: 1200px) {
   .source-shared-panel__search-field {
     margin-left: 0;
@@ -76,5 +110,9 @@
 @media (max-width: 768px) {
   .source-shared-panel {
     padding: 16px;
+  }
+
+  .source-shared-panel__title {
+    font-size: 18px;
   }
 }

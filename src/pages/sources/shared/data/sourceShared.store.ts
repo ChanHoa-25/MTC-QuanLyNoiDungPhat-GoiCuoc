@@ -39,7 +39,7 @@ export function acceptSharedMediaByIds(ids: string[]) {
       fileName: item.title,
       category: item.category,
       type: item.type,
-      approvalStatus: "approved",
+      status: "approved",
       duration: item.duration,
       sizeMB: 165,
       detailSizeLabel: "300MB",
