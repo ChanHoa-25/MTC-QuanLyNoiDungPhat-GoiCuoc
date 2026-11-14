@@ -63,6 +63,9 @@ import AccountLayout from "../layouts/AccountLayout/AccountLayout";
 import PermissionRoute from "../app/PermissionRoute";
 import FacilityMediaDetail from "../pages/facilities/FacilityMedia/FacilityMediaDetail/FacilityMediaDetail";
 import SourcePlaylistDetail from "../pages/sources/playlists/SourcePlaylistDetail";
+import BroadcastPage from "../pages/broadcasts/BroadcastPage";
+import CreateBroadcastPage from "../pages/broadcasts/CreateBroadcast/CreateBroadcast";
+import BroadcastDetailPage from "../pages/broadcasts/BroadcastDetailPage/BroadcastDetailPage";
 
 export const routes: RouteObject[] = [
   // Auth
@@ -209,7 +212,7 @@ export const routes: RouteObject[] = [
             path: "sources/playlists/:playlistId",
             element: <SourcePlaylistDetail />,
           },
-        
+
           {
             path: ROUTES.SOURCE_TEMPLATES,
             element: <SourceTemplatesPage />,
@@ -226,8 +229,6 @@ export const routes: RouteObject[] = [
             path: "sources/templates/:templateId",
             element: <SourceTemplateFormPage mode="view" />,
           },
-
-          // Devices
 
           // Devices - Xem danh sách và chi tiết
           {
@@ -262,7 +263,15 @@ export const routes: RouteObject[] = [
           // Broadcasts
           {
             path: ROUTES.BROADCASTS,
-            element: <ComingSoonPage title="Quản lý bản tin" />,
+            element: <BroadcastPage />,
+          },
+          {
+            path: "/broadcasts/create",
+            element: <CreateBroadcastPage />,
+          },
+          {
+            path: "/broadcasts/:id",
+            element: <BroadcastDetailPage />,
           },
 
           // Reports

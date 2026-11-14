@@ -9,13 +9,14 @@ import "./MediaRejectModal.css";
 interface MediaRejectModalProps {
   open: boolean;
   loading?: boolean;
+  subject?: string;
   onCancel: () => void;
   onConfirm: (reason: string) => Promise<void>;
 }
-
 function MediaRejectModal({
   open,
   loading = false,
+  subject = "media",
   onCancel,
   onConfirm,
 }: MediaRejectModalProps) {
@@ -45,11 +46,11 @@ function MediaRejectModal({
     <AppConfirmModal
       open={open}
       type="delete"
-      title="Xác nhận từ chối duyệt media"
+      title={`Xác nhận từ chối duyệt ${subject}`}
       description={
         <div className="media-reject-modal__body">
           <p className="media-reject-modal__message">
-            Bạn có chắc chắn muốn từ chối duyệt media này không?
+            Bạn có chắc chắn muốn từ chối duyệt {subject} này không?
           </p>
 
           <div className="media-reject-modal__field">

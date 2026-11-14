@@ -1,20 +1,21 @@
 import type { ReactNode } from "react";
 import { Breadcrumb } from "antd";
 import { RightOutlined } from "@ant-design/icons";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useSearchParams } from "react-router-dom";
 
 import {
   Command,
   Network,
   CloudDownload,
   Radio,
-  FileText,
   ChartLine,
   Settings,
 } from "lucide-react";
 
 import { ROUTES } from "../../constants/route.constants";
 import { useFacilityContext } from "../../contexts/FacilityContext";
+import { getBroadcastBreadcrumbs } from "../../config/breadcrumbs/broadcastBreadcrumb";
+
 import "../MainLayout.css";
 
 interface BreadcrumbConfig {
@@ -59,11 +60,6 @@ const breadcrumbs: Record<string, BreadcrumbConfig> = {
     icon: <Radio className="breadcrumb-icon" />,
   },
 
-  [ROUTES.BROADCASTS]: {
-    label: "Bản tin",
-    icon: <FileText className="breadcrumb-icon" />,
-  },
-
   [ROUTES.REPORTS]: {
     label: "Báo cáo",
     icon: <ChartLine className="breadcrumb-icon" />,
@@ -101,6 +97,7 @@ const breadcrumbs: Record<string, BreadcrumbConfig> = {
 
 function AppBreadcrumb() {
   const { pathname } = useLocation();
+  const [searchParams] = useSearchParams();
 
   const { selectedFacilityPath, setSelectedFacilityId } = useFacilityContext();
 
@@ -110,11 +107,17 @@ function AppBreadcrumb() {
     return null;
   }
 
+  const broadcastItems = getBroadcastBreadcrumbs(pathname, searchParams);
+
   const isFacilityTemplateRoute =
     segments[0] === ROUTES.FACILITIES.replace(/^\//, "") &&
     segments[2] === "templates";
 
   const items = segments.flatMap((segment, index) => {
+    if (broadcastItems) {
+      return [];
+    }
+
     const path = `/${segments.slice(0, index + 1).join("/")}`;
 
     const isLast = index === segments.length - 1;
@@ -180,6 +183,31 @@ function AppBreadcrumb() {
       },
     ];
   });
+
+  if (broadcastItems) {
+    broadcastItems.forEach((item, index) => {
+      const isLast = index === broadcastItems.length - 1;
+
+      items.push({
+        title: (
+          <span className="breadcrumb-item">
+            {item.icon}
+
+            {item.path && !isLast ? (
+              <Link to={item.path} className="breadcrumb-parent">
+                {item.label}
+              </Link>
+            ) : (
+              <span
+                className={isLast ? "breadcrumb-current" : "breadcrumb-parent"}>
+                {item.label}
+              </span>
+            )}
+          </span>
+        ),
+      });
+    });
+  }
 
   if (pathname === ROUTES.FACILITIES) {
     selectedFacilityPath.forEach((facility, index) => {
