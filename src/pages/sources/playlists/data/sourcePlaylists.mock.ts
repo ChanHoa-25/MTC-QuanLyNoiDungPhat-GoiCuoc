@@ -16,9 +16,12 @@
  */
 
 import { initialSourceMediaMock } from "../../media/data/sourceMedia.mock";
-import { INITIAL_SOURCE_TEMPLATES } from "../../templates/data/sourceTemplates.mock";
+import { createSourceTemplatesMock } from "../../templates/data/sourceTemplates.mock";
 import type { SourceUsedNewsItem } from "../../types/sourceUsedNews.types";
-import type { PlaylistEntry, SourcePlaylistItem } from "../types/sourcePlaylist.types";
+import type {
+  PlaylistEntry,
+  SourcePlaylistItem,
+} from "../types/sourcePlaylist.types";
 
 /** [MOCK] Danh mục lĩnh vực - sau này lấy từ API danh mục lĩnh vực. */
 export const PLAYLIST_CATEGORY_OPTIONS = [
@@ -48,15 +51,17 @@ function mediaEntry(mediaId: string, duration?: string): PlaylistEntry {
 
 /** [MOCK] Tạo phần tử playlist từ bản mẫu mock theo id. */
 function templateEntry(templateId: string, duration?: string): PlaylistEntry {
-  const template = INITIAL_SOURCE_TEMPLATES.find((item) => item.id === templateId);
+  const template = createSourceTemplatesMock().find(
+    (item) => item.id === templateId,
+  );
   mockEntrySeq += 1;
   return {
     id: `mock-entry-${mockEntrySeq}`,
     sourceId: templateId,
     sourceType: "template",
     name: template?.name ?? templateId,
-    duration: duration ?? template?.duration ?? "00:00:30",
-    thumbnail: template?.zones.find((zone) => zone.mediaThumbnail)?.mediaThumbnail,
+    duration: duration ?? "00:00:30",
+    thumbnail: undefined,
   };
 }
 
@@ -181,7 +186,11 @@ export const INITIAL_SOURCE_PLAYLISTS: SourcePlaylistItem[] = [
     createdBy: "Tuyết Nguyễn",
     createdAt: "09/03/2022 22:43:00",
     usageStatus: "unused",
-    entries: [templateEntry("tpl-3"), templateEntry("tpl-5"), mediaEntry("source-media-8")],
+    entries: [
+      templateEntry("tpl-3"),
+      templateEntry("tpl-5"),
+      mediaEntry("source-media-8"),
+    ],
   },
   {
     id: "pl-9",
@@ -340,4 +349,3 @@ export const MOCK_PLAYLIST_USED_NEWS: SourceUsedNewsItem[] = [
     createdBy: "Nguyễn Văn A",
   },
 ];
-

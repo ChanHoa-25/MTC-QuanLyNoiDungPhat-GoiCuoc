@@ -1,0 +1,330 @@
+.playlist-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  gap: 20px;
+  box-sizing: border-box;
+}
+
+.playlist-form__content {
+  display: grid;
+  grid-template-columns: 350px minmax(0, 1fr);
+  align-items: stretch;
+  gap: 20px;
+  width: 100%;
+  min-width: 0;
+  flex: 1;
+}
+
+.playlist-form__sidebar {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 600px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+.playlist-form__sidebar h2 {
+  margin: 0 0 20px;
+  color: var(--color-primary);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+.playlist-form__sidebar .ant-form {
+  width: 100%;
+}
+
+.playlist-form__sidebar .ant-form-item {
+  margin-bottom: 16px;
+}
+
+.playlist-form__sidebar .ant-form-item-label {
+  padding-bottom: 6px;
+}
+
+.playlist-form__sidebar .ant-form-item-label > label {
+  height: auto;
+  color: #444444;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.playlist-form__sidebar
+  .ant-form-item-label
+  > label.ant-form-item-required::before {
+  display: none !important;
+}
+
+.playlist-form__sidebar
+  .ant-form-item-label
+  > label.ant-form-item-required::after {
+  display: inline-block;
+  margin-left: 3px;
+  color: #ff4d4f;
+  content: "*";
+}
+
+.playlist-form__sidebar .ant-input,
+.playlist-form__sidebar .ant-input-affix-wrapper {
+  width: 100%;
+  min-height: 40px;
+  border: 1px solid #c2c2c2;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.playlist-form__sidebar .ant-input:focus,
+.playlist-form__sidebar .ant-input-focused,
+.playlist-form__sidebar .ant-input-affix-wrapper-focused {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.04);
+}
+
+.playlist-form__sidebar .ant-input:disabled {
+  background: #d9d9d9;
+  color: #333333;
+  cursor: not-allowed;
+}
+
+.playlist-form__sidebar textarea.ant-input {
+  min-height: 96px;
+  padding: 10px 12px;
+  resize: vertical;
+}
+
+.playlist-form__sidebar .ant-radio-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 12px 0 4px;
+}
+
+.playlist-form__sidebar .ant-radio-wrapper {
+  margin: 0;
+  color: #666666;
+  font-size: 14px;
+}
+
+.playlist-form__sidebar .ant-radio-checked .ant-radio-inner {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+}
+
+.playlist-form__sidebar .ant-radio-wrapper:hover .ant-radio-inner {
+  border-color: var(--color-primary);
+}
+
+.playlist-form__required-note {
+  margin: auto 0 0;
+  padding-top: 20px;
+  color: #999999;
+  font-size: 11px;
+  line-height: 18px;
+}
+
+.playlist-form__required-note span {
+  color: #ff4d4f;
+  font-weight: 600;
+}
+
+.playlist-form__main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 600px;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+.playlist-form__main h2 {
+  flex-shrink: 0;
+  margin: 0 0 20px;
+  color: var(--color-primary);
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+.playlist-form__main .ant-table-wrapper {
+  width: 100%;
+  min-width: 0;
+}
+
+.playlist-form__main .ant-table {
+  font-size: 13px;
+}
+
+.playlist-form__main .ant-table-container {
+  overflow: hidden;
+  border-radius: 8px;
+}
+
+.playlist-form__main .ant-table-thead > tr > th {
+  height: 40px;
+  padding: 10px 12px;
+  background: #ffe1d2;
+  color: var(--color-primary);
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  border-bottom: none;
+}
+
+.playlist-form__main .ant-table-thead > tr > th::before {
+  background: #f4c6b2 !important;
+}
+
+.playlist-form__main .ant-table-tbody > tr > td {
+  height: 42px;
+  padding: 8px 12px;
+  background: #f8f8f8;
+  color: #666666;
+  font-size: 13px;
+  border-bottom: 4px solid #ffffff;
+}
+
+.playlist-form__main .ant-table-tbody > tr:hover > td {
+  background: #fff1e8 !important;
+}
+
+.playlist-form__main .ant-checkbox-inner {
+  border-color: var(--color-primary);
+  border-radius: 4px;
+}
+
+.playlist-form__main .ant-checkbox-checked .ant-checkbox-inner {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+}
+
+.playlist-form__main .ant-table-selection-column {
+  width: 48px;
+}
+
+.playlist-form__row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+.playlist-form__row-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 28px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: var(--color-primary);
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.playlist-form__row-actions button:hover:not(:disabled) {
+  opacity: 0.7;
+}
+
+.playlist-form__row-actions button:disabled {
+  color: #c2c2c2;
+  cursor: not-allowed;
+}
+
+.playlist-form__row-actions button:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.playlist-form__footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  gap: 34px;
+  width: 100%;
+  padding: 8px 0 12px;
+}
+
+.playlist-form__footer button {
+  min-width: 136px;
+  height: 40px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+@media (max-width: 1200px) {
+  .playlist-form__content {
+    grid-template-columns: 310px minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .playlist-form__sidebar,
+  .playlist-form__main {
+    padding: 16px;
+  }
+
+  .playlist-form__sidebar h2,
+  .playlist-form__main h2 {
+    font-size: 18px;
+  }
+}
+
+@media (max-width: 900px) {
+  .playlist-form__content {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .playlist-form__sidebar,
+  .playlist-form__main {
+    min-height: auto;
+  }
+
+  .playlist-form__main {
+    min-height: 400px;
+  }
+
+  .playlist-form__required-note {
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 576px) {
+  .playlist-form {
+    gap: 12px;
+  }
+
+  .playlist-form__content {
+    gap: 12px;
+  }
+
+  .playlist-form__sidebar,
+  .playlist-form__main {
+    padding: 12px;
+  }
+
+  .playlist-form__sidebar .ant-radio-group {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .playlist-form__footer {
+    gap: 12px;
+  }
+
+  .playlist-form__footer button {
+    min-width: 110px;
+  }
+}
