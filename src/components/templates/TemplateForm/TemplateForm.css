@@ -1,37 +1,39 @@
 .template-form {
   display: grid;
   grid-template-columns: 340px minmax(0, 1fr);
+  align-items: stretch;
   gap: 20px;
   width: 100%;
   min-width: 0;
-  min-height: 770px;
+  min-height: 0;
   font-family: var(--font-family);
 }
-
-/* SIDEBAR VÀ WORKSPACE */
 
 .template-form__sidebar,
 .template-form__workspace {
   min-width: 0;
   background: #ffffff;
   border-radius: 12px;
+  box-sizing: border-box;
 }
-
-/* SIDEBAR */
 
 .template-form__sidebar {
   display: flex;
   flex-direction: column;
+  min-height: 0;
   padding: 20px;
-  max-height: 770px;
   overflow: hidden;
 }
 
 .template-form__sidebar h2 {
   margin: 0 0 18px;
-  color: #e85e15;
+  color: var(--color-primary);
   font-size: 20px;
   font-weight: 700;
+}
+
+.template-form__fields {
+  flex-shrink: 0;
 }
 
 .template-form__fields .ant-form-item {
@@ -39,7 +41,7 @@
 }
 
 .template-form__fields .ant-form-item-label > label {
-  color: #444;
+  color: #444444;
   font-size: 13px;
   font-weight: 600;
 }
@@ -66,7 +68,7 @@
 .template-form__property-group > label {
   display: block;
   margin-bottom: 8px;
-  color: #444;
+  color: #444444;
   font-size: 13px;
   font-weight: 600;
 }
@@ -82,13 +84,25 @@
 }
 
 .template-form__required-note {
+  flex-shrink: 0;
   margin: 0 0 14px;
-  color: #aaa;
+  color: #aaaaaa;
   font-size: 11px;
 }
 
 .template-form__required-note span {
   color: #ff4d4f;
+}
+
+.template-form__required-star {
+  color: #ff4d4f;
+  font-size: 14px;
+  font-weight: 600;
+  white-space: pre;
+}
+
+.template-form__fields .ant-form-item-required::before {
+  display: none !important;
 }
 
 .template-form__sources {
@@ -100,22 +114,32 @@
 }
 
 .template-form__sources h3 {
+  flex-shrink: 0;
   margin: 0;
-  color: #444;
+  color: #444444;
   font-size: 14px;
   font-weight: 600;
 }
 
-/* WORKSPACE */
+.template-form__sources .template-source-picker {
+  flex: 1;
+  min-height: 0;
+}
+
+.template-form__sources .template-source-picker__grid {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
 
 .template-form__workspace {
   display: flex;
   flex-direction: column;
   gap: 16px;
-  padding: 20px;
+  min-width: 0;
+  min-height: 0;
+  padding: 16px 20px 20px;
 }
-
-/* PREVIEW VÀ DANH SÁCH LAYER */
 
 .template-form__design {
   display: grid;
@@ -137,9 +161,9 @@
 .template-form__editor .template-preview {
   width: 100%;
   min-width: 0;
+  max-height: 58vh;
+  object-fit: contain;
 }
-
-/* HÀNG THUỘC TÍNH */
 
 .template-form__properties {
   display: grid;
@@ -170,8 +194,6 @@
   height: 40px;
 }
 
-/* NÚT TRÌNH CHIẾU */
-
 .template-form__present-action {
   display: flex;
   align-items: flex-end;
@@ -182,45 +204,42 @@
   width: 100%;
   min-width: 0;
   height: 40px;
-  background: #f26d21;
-  border-color: #f26d21;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
   color: #ffffff;
 }
 
 .template-form__present-action .app-button.app-button--primary:hover,
 .template-form__present-action .app-button.app-button--primary:focus {
-  background: #e85e15;
-  border-color: #e85e15;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
   color: #ffffff;
 }
-
-/* NÚT HỦY - LƯU - CHỈNH SỬA */
 
 .template-form__actions {
   display: flex;
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
+  flex-shrink: 0;
   gap: 32px;
   margin-top: auto;
-  padding-top: 28px;
+  padding: 16px 0 8px;
 }
 
 .template-form__actions .app-button.app-button--primary {
-  background-color: #f26d21;
-  border-color: #f26d21;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
   color: #ffffff;
 }
 
 .template-form__actions .app-button.app-button--primary:hover,
 .template-form__actions .app-button.app-button--primary:focus,
 .template-form__actions .app-button.app-button--primary:active {
-  background-color: #e85e15;
-  border-color: #e85e15;
+  background: var(--color-primary);
+  border-color: var(--color-primary);
   color: #ffffff;
 }
-
-/* MODAL TRÌNH CHIẾU */
 
 .template-form__presentation-modal .ant-modal-content {
   padding: 24px;
@@ -243,8 +262,6 @@
   max-width: 100%;
   max-height: 75vh;
 }
-
-/* RESPONSIVE */
 
 @media (max-width: 1400px) {
   .template-form {
@@ -273,21 +290,36 @@
 
 @media (max-width: 1000px) {
   .template-form {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .template-form__sidebar {
     max-height: none;
+    overflow: visible;
   }
 
   .template-form__sources {
     max-height: 440px;
   }
+
+  .template-form__workspace {
+    min-height: 0;
+  }
+
+  .template-form__editor .template-preview {
+    max-height: none;
+  }
 }
 
 @media (max-width: 600px) {
+  .template-form__sidebar,
+  .template-form__workspace {
+    padding: 16px;
+  }
+
   .template-form__design {
     grid-template-columns: minmax(0, 1fr) 75px;
+    gap: 10px;
   }
 
   .template-form__properties {

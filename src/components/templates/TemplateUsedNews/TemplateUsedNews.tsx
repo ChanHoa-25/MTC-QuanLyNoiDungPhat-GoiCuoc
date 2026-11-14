@@ -303,7 +303,7 @@ function TemplateUsedNews({
       title: "Hành động",
       key: "actions",
       width: 100,
-      align: "center",
+      align: "right",
       render: (_, record) => (
         <AppTableActions
           actions={[

@@ -1,30 +1,33 @@
 import { useEffect, useMemo, useState } from "react";
-import { message } from "antd";
+import { Form, message } from "antd";
 import dayjs from "dayjs";
-import type { Dayjs } from "dayjs";
-
+import { RefreshCw } from "lucide-react";
 import AppSelect from "../../../components/common/AppSelect";
 import AppSearch from "../../../components/common/AppSearch";
-import AppDatePicker from "../../../components/common/AppDatePicker";
+import AppDateRangePicker from "../../../components/common/AppDateRangePicker";
+import type { DateRangeValue } from "../../../components/common/AppDateRangePicker";
 import AppPagination from "../../../components/common/AppPagination";
-import AppConfirmModal from "../../../components/common/AppConfirmModal";
 import AppFilter, {
   AppFilterField,
 } from "../../../components/common/AppFilter";
-
-import MediaCard from "./MediaCard/MediaCard";
-import FacilityMediaFormModal from "./FacilityMediaFormModal/FacilityMediaFormModal";
-
-import { createFacilityMediaMock } from "../data/facilitiesMedia.mock";
-
+import MediaCard from "../../../components/media/MediaCard/MediaCard";
+import MediaFormModal from "../../../components/media/MediaFormModal/MediaFormModal";
+import FacilityMediaRejectModal from "../../../components/media/MediaRejectModal/MediaRejectModal";
+import FacilityMediaPreview from "../../../components/media/MediaPreview/MediaPreview";
+import mediaApi from "../../../api/mediaApi";
+import mediaCategoryApi from "../../../api/mediaCategoryApi";
+import { mapMediaToFacilityItem } from "../utils/mediaMapper";
 import type {
   FacilityMediaItem,
   FacilityMediaFormValues,
-  MediaType,
 } from "../types/facilityMedia.types";
-
+import type { MediaCategoryApiItem } from "../../../api/mediaCategoryApi";
+import { useNavigate } from "react-router-dom";
+import {
+  MEDIA_SOURCE_TYPE,
+  MEDIA_FILE_TYPE,
+} from "../constants/media.constants";
 import "./FacilityMedia.css";
-
 interface FacilityMediaProps {
   facilityId: string;
   selectedIds: string[];
@@ -35,40 +38,20 @@ interface FacilityMediaProps {
   approveRequestId: number;
   onShare?: (media: FacilityMediaItem) => void;
 }
-
-const PAGE_SIZE = 8;
-
-// Lưu mock theo từng cơ sở trong phiên chạy ứng dụng
-const mediaStore = new Map<string, FacilityMediaItem[]>();
-
-function getFacilityMedia(facilityId: string) {
-  if (!mediaStore.has(facilityId)) {
-    mediaStore.set(facilityId, createFacilityMediaMock(facilityId));
-  }
-
-  return mediaStore.get(facilityId)!;
-}
-
-function getMediaType(file: File): MediaType {
-  if (file.type.startsWith("video/")) return "video";
-  if (file.type.startsWith("audio/")) return "audio";
-  return "image";
-}
-
-function getTypeFromUrl(url: string): MediaType {
-  const path = url.split("?")[0].toLowerCase();
-
-  if (/\.(mp3|wav|ogg|aac|m4a)$/.test(path)) {
-    return "audio";
-  }
-
-  if (/\.(jpg|jpeg|png|gif|webp|svg)$/.test(path)) {
-    return "image";
-  }
-
-  return "video";
-}
-
+const PAGE_SIZE = 10;
+const MEDIA_TYPE_OPTIONS = [
+  { label: "Tất cả", value: "all" },
+  { label: "Video", value: "video" },
+  { label: "Âm thanh", value: "audio" },
+  { label: "Hình ảnh", value: "image" },
+];
+const APPROVAL_STATUS_OPTIONS = [
+  { label: "Tất cả", value: "all" },
+  { label: "Đã duyệt", value: "approved" },
+  { label: "Chờ duyệt", value: "pending" },
+  { label: "Từ chối duyệt", value: "rejected" },
+  { label: "Đang xử lý", value: "processing" },
+];
 function FacilityMedia({
   facilityId,
   selectedIds,
@@ -79,284 +62,354 @@ function FacilityMedia({
   approveRequestId,
   onShare,
 }: FacilityMediaProps) {
-  const [mediaList, setMediaList] = useState<FacilityMediaItem[]>(() =>
-    getFacilityMedia(facilityId),
-  );
-
+  // Dữ liệu từ Backend
+  const [mediaList, setMediaList] = useState<FacilityMediaItem[]>([]);
+  const [categoryNames, setCategoryNames] = useState<string[]>([]);
+  const [mediaCategories, setMediaCategories] = useState<
+    MediaCategoryApiItem[]
+  >([]);
+  const [loadingMedia, setLoadingMedia] = useState(false);
+  const [mediaError, setMediaError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
+  // Bộ lọc
   const [category, setCategory] = useState("all");
   const [mediaType, setMediaType] = useState("all");
-  const [sourceStatus, setSourceStatus] = useState("all");
-  const [createdDate, setCreatedDate] = useState<Dayjs | null>(null);
+  const [approvalStatus, setApprovalStatus] = useState("all");
+  const [dateRange, setDateRange] = useState<DateRangeValue>([null, null]);
   const [keyword, setKeyword] = useState("");
+  // Phân trang
   const [currentPage, setCurrentPage] = useState(1);
-
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-
+  // Thêm, sửa và duyệt Media
   const [editMedia, setEditMedia] = useState<FacilityMediaItem | null>(null);
-
   const [saving, setSaving] = useState(false);
-
-  const updateMedia = (
-    updater: (previous: FacilityMediaItem[]) => FacilityMediaItem[],
-  ) => {
-    const next = updater(getFacilityMedia(facilityId));
-    mediaStore.set(facilityId, next);
-    setMediaList(next);
+  const [approving, setApproving] = useState(false);
+  // Từ chối duyệt
+  const [rejectMedia, setRejectMedia] = useState<FacilityMediaItem | null>(
+    null,
+  );
+  const [rejecting, setRejecting] = useState(false);
+  const navigate = useNavigate();
+  const [previewMedia, setPreviewMedia] = useState<FacilityMediaItem | null>(
+    null,
+  );
+  const handlePreviewMedia = (media: FacilityMediaItem) => {
+    setPreviewMedia(media);
   };
-
+  const handleClosePreview = () => {
+    setPreviewMedia(null);
+  };
+  // Đặt lại trạng thái khi chuyển cơ sở
   useEffect(() => {
-    setMediaList(getFacilityMedia(facilityId));
     setCategory("all");
     setMediaType("all");
-    setSourceStatus("all");
-    setCreatedDate(null);
+    setApprovalStatus("all");
+    setDateRange([null, null]);
     setKeyword("");
     setCurrentPage(1);
-    setDeleteModalOpen(false);
     setEditMedia(null);
+    setRejectMedia(null);
+    setPreviewMedia(null);
     onSelectionChange([]);
-    // Reset khi thay đổi cơ sở
+    // Chỉ reset khi facilityId thay đổi
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [facilityId]);
-
-  const categoryOptions = useMemo(() => {
-    const categories = [
-      "Tin tức",
-      "Thể dục dưỡng sinh",
-      "Văn nghệ giải trí",
-      "Giáo dục",
-    ];
-
-    const all = [
-      ...new Set([...categories, ...mediaList.map((media) => media.category)]),
-    ];
-
-    return [
+  // Lấy Media từ Backend
+  useEffect(() => {
+    let cancelled = false;
+    const loadMedia = async () => {
+      setLoadingMedia(true);
+      setMediaError(null);
+      setMediaList([]);
+      setCategoryNames([]);
+      setMediaCategories([]);
+      try {
+        const [mediaResult, categoryResult] = await Promise.all([
+          mediaApi.getAll(),
+          mediaCategoryApi.getAll(),
+        ]);
+        if (cancelled) return;
+        const facilityMedia = mediaResult
+          .filter((item) => item.facilityId === facilityId)
+          .map((item) => mapMediaToFacilityItem(item, categoryResult));
+        setMediaList(facilityMedia);
+        setMediaCategories(categoryResult);
+        setCategoryNames(
+          Array.from(new Set(categoryResult.map((item) => item.categoryName))),
+        );
+      } catch (error) {
+        if (cancelled) return;
+        console.error("Không thể tải Media:", error);
+        setMediaList([]);
+        setCategoryNames([]);
+        setMediaCategories([]);
+        setMediaError(
+          "Không thể tải danh sách Media. Vui lòng kiểm tra quyền truy cập hoặc kết nối Backend.",
+        );
+      } finally {
+        if (!cancelled) {
+          setLoadingMedia(false);
+        }
+      }
+    };
+    void loadMedia();
+    return () => {
+      cancelled = true;
+    };
+  }, [facilityId, reloadKey]);
+  // Danh sách lĩnh vực
+  const categoryOptions = useMemo(
+    () => [
       { value: "all", label: "Tất cả" },
-      ...all.map((item) => ({
-        value: item,
-        label: item,
+      ...categoryNames.map((name) => ({
+        value: name,
+        label: name,
       })),
-    ];
-  }, [mediaList]);
+    ],
 
+    [categoryNames],
+  );
+  // Lọc Media
   const filteredMedia = useMemo(() => {
     const searchValue = keyword.trim().toLowerCase();
-
+    const [startDate, endDate] = dateRange;
     return mediaList.filter((media) => {
       const matchCategory = category === "all" || media.category === category;
-
       const matchType = mediaType === "all" || media.type === mediaType;
-
-      const matchSourceStatus =
-        sourceStatus === "all" || media.sourceStatus === sourceStatus;
-
+      const matchStatus =
+        approvalStatus === "all" || media.status === approvalStatus;
+      const createdDate = dayjs(media.createdAt);
       const matchDate =
-        !createdDate || dayjs(media.createdAt).isSame(createdDate, "day");
-
+        createdDate.isValid() &&
+        (!startDate || !createdDate.isBefore(startDate, "day")) &&
+        (!endDate || !createdDate.isAfter(endDate, "day"));
       const matchKeyword =
         !searchValue ||
         media.title.toLowerCase().includes(searchValue) ||
-        media.createdBy.toLowerCase().includes(searchValue);
-
+        (media.createdBy ?? "").toLowerCase().includes(searchValue);
       return (
-        matchCategory &&
-        matchType &&
-        matchSourceStatus &&
-        matchDate &&
-        matchKeyword
+        matchCategory && matchType && matchStatus && matchDate && matchKeyword
       );
     });
-  }, [mediaList, category, mediaType, sourceStatus, createdDate, keyword]);
-
+  }, [mediaList, category, mediaType, approvalStatus, dateRange, keyword]);
+  // Phân trang
   const total = filteredMedia.length;
   const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
   const safePage = Math.min(currentPage, totalPages);
-
   const paginatedMedia = useMemo(() => {
     const start = (safePage - 1) * PAGE_SIZE;
     return filteredMedia.slice(start, start + PAGE_SIZE);
   }, [filteredMedia, safePage]);
-
+  // Làm mới danh sách và bộ lọc
+  const handleRefresh = () => {
+    setCategory("all");
+    setMediaType("all");
+    setApprovalStatus("all");
+    setDateRange([null, null]);
+    setKeyword("");
+    setCurrentPage(1);
+    setReloadKey((key) => key + 1);
+  };
+  // Chọn Media
   const handleSelect = (id: string, checked: boolean) => {
     const next = checked
-      ? [...new Set([...selectedIds, id])]
+      ? Array.from(new Set([...selectedIds, id]))
       : selectedIds.filter((item) => item !== id);
-
     onSelectionChange(next);
   };
-
-  const handleConfirmDelete = () => {
-    if (selectedIds.length === 0) {
-      setDeleteModalOpen(false);
-      return;
-    }
-
-    updateMedia((previous) =>
-      previous.filter((media) => !selectedIds.includes(media.id)),
-    );
-
-    onSelectionChange([]);
-    setDeleteModalOpen(false);
-    message.success("Xóa Media thành công");
-  };
-
-  const handleApproveMedia = () => {
-    if (selectedIds.length === 0) {
-      message.warning("Vui lòng chọn Media cần duyệt");
-      return;
-    }
-
-    const pendingIds = selectedIds.filter((id) =>
-      mediaList.some((media) => media.id === id && media.status === "pending"),
-    );
-
-    if (pendingIds.length === 0) {
-      message.info("Các Media đã chọn đều đã được duyệt");
-      return;
-    }
-
-    updateMedia((previous) =>
-      previous.map((media) =>
-        pendingIds.includes(media.id)
-          ? { ...media, status: "approved" }
-          : media,
-      ),
-    );
-
-    onSelectionChange([]);
-    message.success("Duyệt Media thành công");
-  };
-
+  // Thêm hoặc cập nhật Media
   const handleSaveMedia = async (values: FacilityMediaFormValues) => {
-    setSaving(true);
-
-    try {
-      if (editMedia) {
-        const existing = editMedia;
-
-        const newUrl = values.file
-          ? URL.createObjectURL(values.file)
-          : undefined;
-
-        const updated: FacilityMediaItem = {
-          ...existing,
-          title: values.title,
-          category: values.category,
-          type: values.file ? getMediaType(values.file) : existing.type,
-          sizeMB: values.file
-            ? Number((values.file.size / (1024 * 1024)).toFixed(2))
-            : existing.sizeMB,
-          url: newUrl ?? existing.url,
-          fileName: values.file ? values.file.name : existing.fileName,
-          mimeType: values.file ? values.file.type : existing.mimeType,
-          contentValue: values.contentValue ?? existing.contentValue,
-          thumbnail: values.file?.type.startsWith("image/")
-            ? newUrl!
-            : existing.thumbnail,
-        };
-
-        updateMedia((previous) =>
-          previous.map((media) => (media.id === existing.id ? updated : media)),
-        );
-
-        setEditMedia(null);
-        message.success("Cập nhật Media thành công");
-      } else {
-        const newUrl = values.file
-          ? URL.createObjectURL(values.file)
-          : (values.contentValue ?? "");
-
-        const type = values.file
-          ? getMediaType(values.file)
-          : values.contentType === "frequency"
-            ? "audio"
-            : getTypeFromUrl(newUrl);
-
-        const newMedia: FacilityMediaItem = {
-          id: `${facilityId}-media-${crypto.randomUUID()}`,
-          facilityId,
-          title: values.title,
-          category: values.category,
-          type,
-          status: "pending",
-          sourceStatus: "active",
-          createdAt: new Date().toISOString(),
-          createdBy: "Người dùng hiện tại",
-          sizeMB: values.file
-            ? Number((values.file.size / (1024 * 1024)).toFixed(2))
-            : 0,
-          thumbnail: values.file?.type.startsWith("image/")
-            ? newUrl
-            : (mediaList[0]?.thumbnail ?? ""),
-          url: values.contentType === "frequency" ? undefined : newUrl,
-          contentType: values.contentType,
-          contentValue: values.contentValue,
-          fileName: values.file?.name,
-          mimeType: values.file?.type,
-        };
-
-        updateMedia((previous) => [newMedia, ...previous]);
-
-        onCloseCreate();
-        setCurrentPage(1);
-        message.success("Thêm Media thành công");
+    if (saving) return;
+    const currentMedia = editMedia;
+    const isEdit = currentMedia !== null;
+    const contentType = isEdit ? currentMedia.contentType : values.contentType;
+    if (!contentType) {
+      message.error("Không xác định được phương thức Media.");
+      return;
+    }
+    if (contentType === "file") {
+      message.warning("Chức năng tải tệp đang chờ tích hợp API upload.");
+      return;
+    }
+    const selectedCategory = mediaCategories.find(
+      (item) => item.categoryName === values.category,
+    );
+    if (!selectedCategory) {
+      message.error("Không tìm thấy lĩnh vực đã chọn.");
+      return;
+    }
+    const contentValue = values.contentValue?.trim() ?? "";
+    if (!contentValue) {
+      message.error("Vui lòng nhập nội dung Media.");
+      return;
+    }
+    let fileType: string;
+    let sourceType: number;
+    const sourceData: {
+      sourceUrl?: string;
+      url?: string;
+      frequencyHz?: number;
+    } = {};
+    switch (contentType) {
+      case "url": {
+        fileType = isEdit
+          ? (currentMedia.fileType ?? values.fileType ?? "")
+          : (values.fileType ?? "");
+        if (!["Image", "Audio", "Video"].includes(fileType)) {
+          message.error("Vui lòng chọn loại Media hợp lệ.");
+          return;
+        }
+        sourceType = MEDIA_SOURCE_TYPE.URL_DOWNLOAD;
+        sourceData.sourceUrl = contentValue;
+        break;
       }
-    } catch {
-      message.error("Không thể lưu Media");
+      case "live": {
+        fileType = MEDIA_FILE_TYPE.LIVE_STREAM;
+        sourceType = MEDIA_SOURCE_TYPE.STREAM_URL;
+        sourceData.url = contentValue;
+        break;
+      }
+      case "frequency": {
+        const frequency = Number(contentValue);
+        if (!Number.isFinite(frequency) || frequency <= 0) {
+          message.error("Tần số phải lớn hơn 0.");
+          return;
+        }
+        fileType = MEDIA_FILE_TYPE.FREQUENCY;
+        sourceType = MEDIA_SOURCE_TYPE.FREQUENCY_CHANNEL;
+        sourceData.frequencyHz = frequency;
+        break;
+      }
+      default:
+        message.error("Phương thức Media không hợp lệ.");
+        return;
+    }
+    if (isEdit && currentMedia.sourceType !== sourceType) {
+      message.error("Không được thay đổi phương thức nguồn Media.");
+      return;
+    }
+    const payload = {
+      mediaName: values.title.trim(),
+      fileType,
+      sourceType,
+      facilityId: isEdit ? currentMedia.facilityId : facilityId,
+      categoryId: selectedCategory.id,
+      ...sourceData,
+    };
+    if (!payload.facilityId) {
+      message.error("Không xác định được cơ sở của Media.");
+      return;
+    }
+    setSaving(true);
+    try {
+      if (isEdit) {
+        await mediaApi.update(currentMedia.id, payload);
+        message.success("Cập nhật Media thành công!");
+        setEditMedia(null);
+      } else {
+        await mediaApi.create(payload);
+        message.success("Thêm Media thành công!");
+        onCloseCreate();
+      }
+      setCurrentPage(1);
+      setReloadKey((key) => key + 1);
+    } catch (error) {
+      console.error("Lỗi khi lưu Media:", error);
+      message.error(
+        isEdit
+          ? "Không thể cập nhật Media. Vui lòng kiểm tra dữ liệu hoặc quyền truy cập."
+          : "Không thể thêm Media. Vui lòng kiểm tra dữ liệu hoặc quyền truy cập.",
+      );
     } finally {
       setSaving(false);
     }
   };
-
+  // Xóa Media: chờ API Backend
   useEffect(() => {
     if (deleteRequestId <= 0) return;
-
-    if (selectedIds.length === 0) {
-      message.warning("Vui lòng chọn Media cần xóa");
+    message.warning(
+      "Chưa có API xóa Media. Không thể xóa dữ liệu trên Backend.",
+    );
+  }, [deleteRequestId]);
+  // Duyệt Media được chọn
+  useEffect(() => {
+    if (approveRequestId <= 0 || approving) {
       return;
     }
-
-    setDeleteModalOpen(true);
-    // Mỗi lần nhấn xóa sẽ tăng request ID
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [deleteRequestId]);
-
-  useEffect(() => {
-    if (approveRequestId <= 0) return;
-
-    handleApproveMedia();
+    const selectedMedia = mediaList.filter((media) =>
+      selectedIds.includes(media.id),
+    );
+    if (selectedMedia.length === 0) {
+      message.warning("Vui lòng chọn Media cần duyệt.");
+      return;
+    }
+    const pendingMedia = selectedMedia.filter(
+      (media) => media.status === "pending",
+    );
+    if (pendingMedia.length === 0) {
+      message.warning("Không có Media đang chờ duyệt.");
+      return;
+    }
+    const approveSelectedMedia = async () => {
+      setApproving(true);
+      try {
+        const results = await Promise.allSettled(
+          pendingMedia.map((media) => mediaApi.approve(media.id)),
+        );
+        const successIds = pendingMedia
+          .filter((_, index) => results[index].status === "fulfilled")
+          .map((media) => media.id);
+        const failedCount = results.length - successIds.length;
+        if (successIds.length > 0) {
+          message.success(`Đã duyệt thành công ${successIds.length} Media.`);
+          onSelectionChange(
+            selectedIds.filter((id) => !successIds.includes(id)),
+          );
+          setReloadKey((key) => key + 1);
+        }
+        if (failedCount > 0) {
+          message.error(
+            `Không thể duyệt ${failedCount} Media. Vui lòng kiểm tra quyền truy cập hoặc trạng thái Media.`,
+          );
+        }
+      } catch (error) {
+        console.error("Lỗi duyệt Media:", error);
+        message.error("Có lỗi xảy ra khi duyệt Media.");
+      } finally {
+        setApproving(false);
+      }
+    };
+    void approveSelectedMedia();
+    // Chỉ xử lý khi có yêu cầu mới từ component cha
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [approveRequestId]);
-
+  // Xem chi tiết Media
   const handleViewMedia = (media: FacilityMediaItem) => {
-    if (!media.url) {
-      message.info("Media này chưa có nội dung để xem trước");
+    navigate(
+      `/facilities/${encodeURIComponent(facilityId)}/media/${encodeURIComponent(media.id)}`,
+    );
+  };
+  // Chỉnh sửa Media
+  const handleEditMedia = (media: FacilityMediaItem) => {
+    if (media.status !== "pending") {
+      message.warning("Chỉ có thể chỉnh sửa Media đang chờ duyệt.");
       return;
     }
-
-    window.open(media.url, "_blank", "noopener,noreferrer");
-  };
-
-  const handleEditMedia = (media: FacilityMediaItem) => {
     setEditMedia(media);
   };
-
+  // Chia sẻ Media
   const handleShareMedia = (media: FacilityMediaItem) => {
     onShare?.(media);
   };
-
+  // Tải xuống Media
   const handleDownloadMedia = (media: FacilityMediaItem) => {
-    if (!media.url) {
-      message.warning("Media chưa có đường dẫn tải xuống");
-      return;
-    }
-
     if (media.contentType === "frequency") {
-      message.warning("Media tần số không có file để tải xuống");
+      message.warning("Media tần số không có file để tải xuống.");
       return;
     }
-
+    if (!media.url) {
+      message.warning("Media chưa có đường dẫn tải xuống.");
+      return;
+    }
     const link = document.createElement("a");
     link.href = media.url;
     link.download = media.fileName ?? media.title;
@@ -366,93 +419,148 @@ function FacilityMedia({
     link.click();
     link.remove();
   };
-
+  // Mở popup từ chối duyệt
+  const handleRejectMedia = (media: FacilityMediaItem) => {
+    if (media.status !== "pending") {
+      message.warning("Chỉ có thể từ chối Media đang chờ duyệt.");
+      return;
+    }
+    setRejectMedia(media);
+  };
+  // Xác nhận từ chối duyệt
+  const handleConfirmRejectMedia = async (reason: string) => {
+    if (!rejectMedia || rejecting) return;
+    const mediaId = rejectMedia.id;
+    setRejecting(true);
+    try {
+      await mediaApi.reject(mediaId, {
+        rejectionReason: reason,
+      });
+      message.success("Từ chối duyệt Media thành công!");
+      onSelectionChange(selectedIds.filter((id) => id !== mediaId));
+      setRejectMedia(null);
+      setReloadKey((key) => key + 1);
+    } catch (error) {
+      console.error("Lỗi từ chối duyệt Media:", error);
+      message.error(
+        error instanceof Error
+          ? error.message
+          : "Không thể từ chối duyệt Media.",
+      );
+    } finally {
+      setRejecting(false);
+    }
+  };
   return (
-    <div className="facility-media-layout">
+    <div
+      className={[
+        "facility-media-layout",
+        previewMedia ? "facility-media-layout--detail-open" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}>
       <section className="facility-media">
-        <h2 className="facility-media__heading">Danh sách Media</h2>
-
+        {/* Tiêu đề và làm mới */}
+        <div className="facility-media__header">
+          <h2 className="facility-media__heading">
+            Danh sách Media cơ sở đang quản lý
+          </h2>
+          <button
+            type="button"
+            className="facility-media__refresh"
+            onClick={handleRefresh}
+            disabled={loadingMedia}
+            title="Làm mới danh sách"
+            aria-label="Làm mới danh sách Media">
+            <RefreshCw size={20} />
+          </button>
+        </div>
+        {/* Bộ lọc */}
         <div className="facility-media__filters">
-          <AppFilter gap={18} showActions={false}>
-            <AppFilterField width={210}>
-              <label>Lĩnh vực</label>
-              <AppSelect
-                width="100%"
-                value={category}
-                options={categoryOptions}
-                onChange={(value) => {
-                  setCategory(value);
-                  setCurrentPage(1);
-                }}
-              />
+          <AppFilter gap={12} showActions={false}>
+            <AppFilterField width={175}>
+              <Form.Item label="Lĩnh vực">
+                <AppSelect
+                  width="100%"
+                  value={category}
+                  options={categoryOptions}
+                  onChange={(value) => {
+                    setCategory(value);
+                    setCurrentPage(1);
+                  }}
+                />
+              </Form.Item>
             </AppFilterField>
-
-            <AppFilterField width={210}>
-              <label>Loại media</label>
-              <AppSelect
-                width="100%"
-                value={mediaType}
-                options={[
-                  { value: "all", label: "Tất cả" },
-                  { value: "video", label: "Video" },
-                  { value: "image", label: "Hình ảnh" },
-                  { value: "audio", label: "Âm thanh" },
-                ]}
-                onChange={(value) => {
-                  setMediaType(value);
-                  setCurrentPage(1);
-                }}
-              />
+            <AppFilterField width={155}>
+              <Form.Item label="Loại media">
+                <AppSelect
+                  width="100%"
+                  value={mediaType}
+                  options={MEDIA_TYPE_OPTIONS}
+                  onChange={(value) => {
+                    setMediaType(value);
+                    setCurrentPage(1);
+                  }}
+                />
+              </Form.Item>
             </AppFilterField>
-
-            <AppFilterField width={210}>
-              <label>Trạng thái nguồn thông tin</label>
-              <AppSelect
-                width="100%"
-                value={sourceStatus}
-                options={[
-                  { value: "all", label: "Tất cả" },
-                  { value: "active", label: "Hoạt động" },
-                  {
-                    value: "inactive",
-                    label: "Ngưng hoạt động",
-                  },
-                ]}
-                onChange={(value) => {
-                  setSourceStatus(value);
-                  setCurrentPage(1);
-                }}
-              />
+            <AppFilterField width={165}>
+              <Form.Item label="Trạng thái">
+                <AppSelect
+                  width="100%"
+                  value={approvalStatus}
+                  options={APPROVAL_STATUS_OPTIONS}
+                  onChange={(value) => {
+                    setApprovalStatus(value);
+                    setCurrentPage(1);
+                  }}
+                />
+              </Form.Item>
             </AppFilterField>
-
-            <AppFilterField width={210}>
-              <label>Ngày tạo</label>
-              <AppDatePicker
-                width="100%"
-                value={createdDate}
-                onChange={(date) => {
-                  setCreatedDate(dayjs.isDayjs(date) ? date : null);
-                  setCurrentPage(1);
-                }}
-              />
+            <AppFilterField width={388}>
+              <Form.Item label="Ngày tạo">
+                <AppDateRangePicker
+                  width="100%"
+                  value={dateRange}
+                  startPlaceholder="Từ ngày"
+                  endPlaceholder="Đến ngày"
+                  onChange={(dates) => {
+                    setDateRange(dates);
+                    setCurrentPage(1);
+                  }}
+                />
+              </Form.Item>
             </AppFilterField>
-
-            <AppFilterField width={226}>
-              <label>Từ khóa</label>
-              <AppSearch
-                width="100%"
-                placeholder="Tên media/người tạo"
-                value={keyword}
-                onChange={(value) => {
-                  setKeyword(value);
-                  setCurrentPage(1);
-                }}
-              />
+            <AppFilterField width={250}>
+              <Form.Item label="Từ khóa">
+                <AppSearch
+                  width="100%"
+                  placeholder="Từ khóa"
+                  value={keyword}
+                  onChange={(value) => {
+                    setKeyword(value);
+                    setCurrentPage(1);
+                  }}
+                />
+              </Form.Item>
             </AppFilterField>
           </AppFilter>
         </div>
-
-        {paginatedMedia.length > 0 ? (
+        {/* Danh sách Media */}
+        {loadingMedia ? (
+          <div className="facility-media__empty">
+            Đang tải danh sách Media...
+          </div>
+        ) : mediaError ? (
+          <div className="facility-media__empty">
+            <p>{mediaError}</p>
+            <button
+              type="button"
+              onClick={() => setReloadKey((key) => key + 1)}>
+              Thử lại
+            </button>
+          </div>
+        ) : paginatedMedia.length > 0 ? (
           <div className="facility-media__grid">
             {paginatedMedia.map((media) => (
               <MediaCard
@@ -460,8 +568,10 @@ function FacilityMedia({
                 media={media}
                 selected={selectedIds.includes(media.id)}
                 onSelect={handleSelect}
+                onPreview={handlePreviewMedia}
                 onView={handleViewMedia}
                 onEdit={handleEditMedia}
+                onReject={handleRejectMedia}
                 onShare={handleShareMedia}
                 onDownload={handleDownloadMedia}
               />
@@ -472,7 +582,7 @@ function FacilityMedia({
             Không tìm thấy Media phù hợp
           </div>
         )}
-
+        {/* Phân trang */}
         <div className="facility-media__pagination">
           <AppPagination
             current={safePage}
@@ -482,41 +592,44 @@ function FacilityMedia({
           />
         </div>
       </section>
-
-      <FacilityMediaFormModal
+      {/* Popup thêm Media */}
+      <MediaFormModal
         open={openCreate}
         mode="create"
-        categories={categoryOptions
-          .filter((option) => option.value !== "all")
-          .map((option) => option.value)}
+        categories={categoryNames}
         loading={saving}
         onCancel={onCloseCreate}
         onSubmit={handleSaveMedia}
       />
-
-      <FacilityMediaFormModal
+      {/* Popup sửa Media */}
+      <MediaFormModal
         open={editMedia !== null}
         mode="edit"
         initialValues={editMedia}
-        categories={categoryOptions
-          .filter((option) => option.value !== "all")
-          .map((option) => option.value)}
+        categories={categoryNames}
         loading={saving}
         onCancel={() => setEditMedia(null)}
         onSubmit={handleSaveMedia}
       />
-
-      <AppConfirmModal
-        open={deleteModalOpen}
-        type="delete"
-        title="Xóa Media"
-        description={`Bạn có chắc chắn muốn xóa ${selectedIds.length} Media đã chọn?`}
-        confirmText="Xóa"
-        onConfirm={handleConfirmDelete}
-        onCancel={() => setDeleteModalOpen(false)}
+      {/* Popup từ chối duyệt */}
+      <FacilityMediaRejectModal
+        open={rejectMedia !== null}
+        loading={rejecting}
+        onCancel={() => {
+          if (!rejecting) {
+            setRejectMedia(null);
+          }
+        }}
+        onConfirm={handleConfirmRejectMedia}
       />
+      {previewMedia && (
+        <FacilityMediaPreview
+          key={previewMedia.id}
+          media={previewMedia}
+          onClose={handleClosePreview}
+        />
+      )}
     </div>
   );
 }
-
 export default FacilityMedia;

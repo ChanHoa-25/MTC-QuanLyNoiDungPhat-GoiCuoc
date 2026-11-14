@@ -1,17 +1,9 @@
-/* =========================
-   AUTH LAYOUT
-========================= */
-
 .auth-layout {
   display: flex;
   width: 100%;
   min-height: 100vh;
   overflow: hidden;
 }
-
-/* =========================
-   LEFT
-========================= */
 
 .auth-layout__left {
   position: relative;
@@ -23,20 +15,12 @@
   min-height: 100vh;
 }
 
-/* =========================
-   LANGUAGE
-========================= */
-
 .auth-layout__language {
   position: absolute;
   top: 60px;
   right: max(24px, calc((100% - 540px) / 2));
   z-index: 2;
 }
-
-/* =========================
-   CONTENT
-========================= */
 
 .auth-layout__content {
   display: flex;
@@ -45,10 +29,6 @@
   max-width: calc(100% - 48px);
   margin-top: 228px;
 }
-
-/* =========================
-   BRAND
-========================= */
 
 .auth-layout__brand {
   display: flex;
@@ -75,17 +55,9 @@
   white-space: nowrap;
 }
 
-/* =========================
-   FORM
-========================= */
-
 .auth-layout__form {
   width: 100%;
 }
-
-/* =========================
-   RIGHT
-========================= */
 
 .auth-layout__right {
   position: relative;
@@ -108,10 +80,6 @@
   object-position: right center;
   transform: translateY(-50%);
 }
-
-/* =========================
-   RESPONSIVE
-========================= */
 
 @media (max-width: 1200px) {
   .auth-layout__left {

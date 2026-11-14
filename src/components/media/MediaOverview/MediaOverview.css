@@ -1,0 +1,240 @@
+/* .media-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 387px;
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  height: 209px;
+  min-height: 209px;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-sizing: border-box;
+} */
+.media-overview {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 387px;
+  width: 100%;
+  min-width: 0;
+  height: 209px;
+  min-height: 209px;
+  background: #ffffff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.media-overview__main {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+  min-height: 0;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.media-overview__preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 314.5px;
+  width: 314.5px;
+  height: 176.73px;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #e9edf0;
+}
+
+.media-overview__preview video,
+.media-overview__preview img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.media-overview__preview audio {
+  width: 95%;
+}
+
+.media-overview__placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #999999;
+  font-size: 12px;
+}
+
+.media-overview__summary {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.media-overview__chips {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.media-overview__chips span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 70px;
+  height: 20px;
+  padding: 2px 6px;
+  box-sizing: border-box;
+  border-radius: 1000px;
+  background: #f0f0f0;
+  color: #666666;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
+  white-space: nowrap;
+}
+
+.media-overview__name {
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  color: #4d4d4d;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+  overflow-wrap: anywhere;
+}
+
+.media-overview__status-group {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.media-overview__approval {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.media-overview__reason {
+  color: #ff4444;
+  font-size: 12px;
+  line-height: 16px;
+  overflow-wrap: anywhere;
+}
+
+.media-overview__information {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  padding: 16px;
+  background: #ffffff;
+  border-left: 1px solid #e0e0e0;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #e0e0e0 transparent;
+}
+
+.media-overview__information::-webkit-scrollbar {
+  width: 4px;
+}
+
+.media-overview__information::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.media-overview__information::-webkit-scrollbar-thumb {
+  background: #e0e0e0;
+  border-radius: 10px;
+}
+
+.media-overview__information::-webkit-scrollbar-thumb:hover {
+  background: #c2c2c2;
+}
+
+.media-overview__info-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex-shrink: 0;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 19px;
+}
+
+.media-overview__info-item strong {
+  color: #4d4d4d;
+  font-weight: 600;
+}
+
+.media-overview__info-item span {
+  color: #4d4d4d;
+  font-weight: 400;
+}
+
+.media-overview__break {
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1400px) {
+  .media-overview {
+    grid-template-columns: minmax(0, 1fr) 300px;
+  }
+
+  .media-overview__preview {
+    flex-basis: 270px;
+    width: 270px;
+    height: 152px;
+  }
+}
+
+@media (max-width: 900px) {
+  .media-overview {
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
+    min-height: 0;
+  }
+
+  .media-overview__information {
+    height: 209px;
+    border-left: 0;
+    border-top: 1px solid #e0e0e0;
+  }
+}
+
+@media (max-width: 650px) {
+  .media-overview__main {
+    flex-direction: column;
+  }
+
+  .media-overview__preview {
+    flex-basis: auto;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+
+  .media-overview__summary {
+    width: 100%;
+  }
+}

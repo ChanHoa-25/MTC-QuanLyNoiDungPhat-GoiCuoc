@@ -1,0 +1,228 @@
+.two-factor-settings {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  padding: 0 24px 20px;
+  box-sizing: border-box;
+}
+
+.two-factor-settings__card {
+  flex: 1;
+  width: 100%;
+  max-width: 1296px;
+  min-width: 0;
+  min-height: 0;
+  margin: 0 auto;
+  padding: 70px 80px 60px;
+  border-radius: 12px;
+  background: #ffffff;
+  box-sizing: border-box;
+}
+
+.two-factor-settings__status {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.two-factor-settings__status-content {
+  min-width: 0;
+}
+
+.two-factor-settings__status-content h2 {
+  margin: 0 0 14px;
+  color: #f26d21;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 30px;
+}
+
+.two-factor-settings__status-content p {
+  margin: 0;
+  color: #777777;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.two-factor-settings__switch.ant-switch {
+  flex-shrink: 0;
+  width: 50px;
+  min-width: 50px;
+  height: 26px;
+  background: #ffc4a4;
+  border-radius: 4px;
+}
+
+.two-factor-settings__switch.ant-switch .ant-switch-handle {
+  top: 3px;
+  inset-inline-start: 3px;
+  width: 20px;
+  height: 20px;
+}
+
+.two-factor-settings__switch.ant-switch .ant-switch-handle::before {
+  border-radius: 3px;
+  background: #ffffff;
+  box-shadow: none;
+}
+
+.two-factor-settings__switch.ant-switch-checked {
+  background: #f26d21;
+}
+
+.two-factor-settings__switch.ant-switch-checked .ant-switch-handle {
+  inset-inline-start: calc(100% - 23px);
+}
+
+.two-factor-settings__switch.ant-switch:hover:not(.ant-switch-disabled) {
+  background: #ffb58f;
+}
+
+.two-factor-settings__switch.ant-switch-checked:hover:not(
+    .ant-switch-disabled
+  ) {
+  background: #e9631b;
+}
+
+.two-factor-settings__methods {
+  margin-top: 44px;
+}
+
+.two-factor-settings__methods h3 {
+  margin: 0 0 16px;
+  color: #666666;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 25px;
+}
+
+.two-factor-settings__list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.two-factor-settings__method {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  width: 100%;
+  min-height: 88px;
+  padding: 14px 20px;
+  border: 1px solid #bfbfbf;
+  border-radius: 8px;
+  background: #ffffff;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.two-factor-settings__method:hover {
+  border-color: #f26d21;
+  background: #fffaf7;
+}
+
+.two-factor-settings__method-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.two-factor-settings__method-info h4 {
+  margin: 0;
+  color: #f26d21;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 25px;
+}
+
+.two-factor-settings__method-info span {
+  color: #ff4d4f;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.two-factor-settings__method-action {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-shrink: 0;
+}
+
+.two-factor-settings__method-action strong {
+  color: #333333;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.two-factor-settings__arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  background: #ff9960;
+  color: #ffffff;
+}
+
+@media (max-width: 1200px) {
+  .two-factor-settings__card {
+    padding: 60px 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .two-factor-settings {
+    padding: 0 16px 20px;
+  }
+
+  .two-factor-settings__card {
+    min-height: 0;
+    padding: 30px 20px;
+  }
+
+  .two-factor-settings__status {
+    align-items: flex-start;
+  }
+
+  .two-factor-settings__status-content h2 {
+    font-size: 18px;
+    line-height: 26px;
+  }
+
+  .two-factor-settings__status-content p {
+    font-size: 14px;
+  }
+
+  .two-factor-settings__method {
+    min-height: 80px;
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .two-factor-settings__method-info h4 {
+    font-size: 16px;
+  }
+
+  .two-factor-settings__method-info span {
+    font-size: 13px;
+  }
+
+  .two-factor-settings__method-action strong {
+    display: none;
+  }
+
+  .two-factor-settings__arrow {
+    width: 40px;
+    height: 40px;
+  }
+}

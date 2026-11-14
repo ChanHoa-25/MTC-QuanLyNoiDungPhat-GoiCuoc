@@ -1,14 +1,22 @@
 .facility-device-form-modal .ant-modal-content {
   min-height: 759px;
+  padding: 40px;
+  border-radius: 12px;
+}
+
+.facility-device-form-modal .ant-modal-title {
+  margin-bottom: 28px;
+  color: var(--color-primary);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 32px;
 }
 
 .facility-device-form-modal__grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  column-gap: 80px;
-}
-.facility-device-form-modal .ant-modal-title {
-  color: var(--color-primary);
+  column-gap: 40px;
+  width: 100%;
 }
 
 .facility-device-form-modal__column {
@@ -20,6 +28,7 @@
 
 .facility-device-form-modal__column .ant-form-item {
   margin-bottom: 0;
+  min-width: 0;
 }
 
 .facility-device-form-modal__column .ant-form-item-label {
@@ -27,28 +36,78 @@
 }
 
 .facility-device-form-modal__column .ant-form-item-label > label {
+  height: auto;
+  color: #4d4d4d;
   font-size: 16px;
   font-weight: 600;
+  line-height: 22px;
+}
+
+.facility-device-form-modal__column .ant-form-item-required::before {
+  color: #ff4444 !important;
+}
+
+.facility-device-form-modal__row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+  min-width: 0;
+}
+
+.facility-device-form-modal__row > .ant-form-item {
+  min-width: 0;
+}
+
+.facility-device-form-modal__radio-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  min-height: 44px;
+}
+
+.facility-device-form-modal__radio-group .ant-radio-wrapper {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
   color: #4d4d4d;
+  font-size: 14px;
 }
 
-.facility-device-form-modal__password {
-  height: 44px;
-  border-radius: 6px;
+.facility-device-form-modal__radio-group .ant-radio-inner {
+  width: 20px;
+  height: 20px;
+  border-color: #f26d21;
 }
 
-.facility-device-form-modal__facility {
-  height: 44px;
+.facility-device-form-modal__radio-group .ant-radio-checked .ant-radio-inner {
+  background: #f26d21;
+  border-color: #f26d21;
+}
+
+.facility-device-form-modal__textarea {
+  min-height: 132px !important;
+  padding: 12px;
+  border: 1px solid #c2c2c2;
   border-radius: 6px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: none;
+}
+
+.facility-device-form-modal__textarea:hover,
+.facility-device-form-modal__textarea:focus {
+  border-color: #f26d21;
 }
 
 .facility-device-form-modal__required-note {
   display: flex;
   align-items: center;
   gap: 4px;
-  margin-top: 12px;
-  font-size: 12px;
+  margin-top: 20px;
   color: #858585;
+  font-size: 12px;
+  line-height: 18px;
 }
 
 .facility-device-form-modal__required-note > span:first-child {
@@ -58,22 +117,34 @@
 .facility-device-form-modal__actions {
   display: flex;
   justify-content: center;
+  align-items: center;
   gap: 40px;
-  margin-top: 58px;
+  margin-top: 32px;
 }
 
 @media (max-width: 800px) {
   .facility-device-form-modal .ant-modal-content {
     min-height: auto;
+    padding: 24px;
   }
 
   .facility-device-form-modal__grid {
     grid-template-columns: 1fr;
-    gap: 16px;
+    row-gap: 16px;
   }
 
   .facility-device-form-modal__actions {
     gap: 20px;
     margin-top: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .facility-device-form-modal__row {
+    grid-template-columns: 1fr;
+  }
+
+  .facility-device-form-modal__radio-group {
+    gap: 12px;
   }
 }

@@ -21,6 +21,6 @@ export const authStorage = {
   },
 
   isAuthenticated: (): boolean => {
-    return Boolean(sessionStorage.getItem(ACCESS_TOKEN_KEY));
+    return Boolean(authStorage.getAccessToken());
   },
 };

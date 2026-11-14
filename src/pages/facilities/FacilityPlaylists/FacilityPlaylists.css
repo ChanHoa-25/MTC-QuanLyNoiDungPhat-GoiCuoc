@@ -1,16 +1,28 @@
 .facility-playlists {
+  display: flex;
+  flex-direction: column;
   width: 100%;
   min-width: 0;
+  height: 100%;
+  min-height: 0;
+  box-sizing: border-box;
 }
 
 .facility-playlists__panel {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  min-height: 600px;
+  padding: 10px 20px;
   background: #ffffff;
   border-radius: 12px;
-  padding: 10px 20px;
-  min-width: 0;
+  box-sizing: border-box;
 }
 
 .facility-playlists__title {
+  flex-shrink: 0;
   margin: 0 0 16px;
   color: var(--color-primary);
   font-size: 20px;
@@ -19,6 +31,9 @@
 }
 
 .facility-playlists__filters {
+  flex-shrink: 0;
+  width: 100%;
+  min-width: 0;
   margin-bottom: 12px;
 }
 
@@ -39,8 +54,35 @@
   color: var(--color-primary);
 }
 
+/* Bảng chiếm toàn bộ chiều cao còn lại */
+.facility-playlists__panel > .ant-table-wrapper,
+.facility-playlists__panel > .app-table {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Đẩy phân trang xuống cuối */
+.facility-playlists__panel .ant-pagination,
+.facility-playlists__panel .app-pagination {
+  margin-top: auto;
+}
+
+/* Responsive */
 @media (max-width: 1200px) {
   .facility-playlists__search {
     margin-left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .facility-playlists__panel {
+    padding: 12px;
+  }
+
+  .facility-playlists__title {
+    font-size: 18px;
   }
 }

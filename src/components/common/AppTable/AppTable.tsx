@@ -91,7 +91,7 @@ function AppTable<T extends object>({
           selectionEnabled
             ? {
                 type: "checkbox",
-                columnWidth: 80,
+                columnWidth: 46,
                 align: "center",
                 ...rowSelection,
                 selectedRowKeys,
@@ -120,6 +120,7 @@ function AppTable<T extends object>({
           current={currentPage}
           pageSize={pageSize}
           total={total}
+          displayedCount={paginatedData.length}
           onChange={handlePageChange}
         />
       )}

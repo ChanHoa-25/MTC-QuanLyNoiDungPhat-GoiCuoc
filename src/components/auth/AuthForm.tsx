@@ -30,6 +30,8 @@ export interface AuthField {
   confirmWith?: string;
 }
 
+export type AuthFormValues = Record<string, string | boolean | undefined>;
+
 interface AuthFormProps {
   title: string;
   description?: string;
@@ -37,7 +39,7 @@ interface AuthFormProps {
   buttonText: string;
   footer?: ReactNode;
   error?: string;
-  onSubmit: (values: Record<string, string>) => Promise<void> | void;
+  onSubmit: (values: AuthFormValues) => Promise<void> | void;
 }
 
 function AuthForm({
@@ -51,7 +53,7 @@ function AuthForm({
 }: AuthFormProps) {
   const [loading, setLoading] = useState(false);
 
-  const handleSubmit = async (values: Record<string, string>) => {
+  const handleSubmit = async (values: AuthFormValues) => {
     setLoading(true);
 
     try {

@@ -1,4 +1,5 @@
 import mediaDefaultThumb from "../../../../assets/images/media.png";
+
 import type {
   MediaBroadcastUsageItem,
   MediaResolutionItem,
@@ -46,42 +47,68 @@ export const initialSourceMediaMock: SourceMediaItem[] = Array.from(
   { length: 45 },
   (_, index) => {
     const id = `source-media-${index + 1}`;
+
     const mediaTypes: SourceMediaItem["type"][] = [
       "video",
       "video",
       "audio",
       "image",
     ];
+
     const type = mediaTypes[index % mediaTypes.length];
 
-    const approvalStatus: SourceMediaItem["approvalStatus"] =
+    const approvalStatus =
       index === 4 ? "rejected" : index % 7 === 5 ? "pending" : "approved";
 
+    const isProcessing = index >= 5 && index <= 9;
+
+    const status: SourceMediaItem["status"] = isProcessing
+      ? "processing"
+      : approvalStatus;
+
     const day = String((index % 20) + 10).padStart(2, "0");
+
+    const attachmentOrLink = "Snail.com/tintuc/ttbs.mp4";
 
     return {
       id,
       title: index < 15 ? "Thông tin buổi sáng" : TITLES[index % TITLES.length],
+
       fileName:
         "GREENfinity_Recycled_Plastic_3D_Printing_Closed_Loop_Process_Product_Showcase_Alta_Media_Version01",
+
       category: CATEGORIES[index % CATEGORIES.length],
       type,
-      approvalStatus,
+      status,
+      contentType: "file",
+
       duration: type === "image" ? "00:00:15" : "00:01:30",
+
       sizeMB: 165,
       detailSizeLabel: "300MB",
+
       thumbnail: SAMPLE_THUMBNAILS[index % SAMPLE_THUMBNAILS.length],
-      attachmentOrLink: "Snail.com/tintuc/ttbs.mp4",
+
+      attachmentOrLink,
+      sourceUrl: attachmentOrLink,
+
       approvedBy: "Tòng Sỹ Nguyên",
       createdBy: "Tuyết Nguyễn",
+
       createdAt:
         index < 15
           ? "2021-08-31T19:00:00"
           : `2021-08-${day === "30" ? "31" : day}T19:00:00`,
+
       sharedArea: "Thủ Đức",
-      isProcessing: index >= 5 && index <= 9,
-      processingNote: "Đang tiến hành xử lý các phiên bản",
-      resolutions: DEFAULT_RESOLUTIONS,
+
+      processingNote: isProcessing
+        ? "Đang tiến hành xử lý các phiên bản"
+        : undefined,
+
+      resolutions: DEFAULT_RESOLUTIONS.map((item) => ({
+        ...item,
+      })),
     };
   },
 );
@@ -194,6 +221,7 @@ export function createMediaBroadcastUsageMock(
 
   return Array.from({ length: 30 }, (_, idx) => {
     const base = rows[idx % rows.length];
+
     return {
       ...base,
       id: `${mediaId}-broadcast-${idx + 1}`,
@@ -264,12 +292,15 @@ export function createMediaSharedFacilitiesMock(
 
   return Array.from({ length: 20 }, (_, idx) => {
     const seed = facilitySeeds[idx % facilitySeeds.length];
+
     return {
       id: `${mediaId}-shared-facility-${idx + 1}`,
       facilityName:
         idx < facilitySeeds.length
           ? seed.facilityName
-          : `${seed.facilityName} (${Math.floor(idx / facilitySeeds.length) + 1})`,
+          : `${seed.facilityName} (${
+              Math.floor(idx / facilitySeeds.length) + 1
+            })`,
       sharedAt: seed.sharedAt,
       receiveStatus: seed.receiveStatus,
     };

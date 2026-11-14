@@ -1,0 +1,179 @@
+.two-factor-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 540px;
+  margin: 0 auto;
+  font-family: var(--font-family);
+}
+
+/* Tiêu đề */
+.two-factor-heading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  width: 100%;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.two-factor-heading h1 {
+  margin: 0;
+  color: #e05200;
+  font-size: 48px;
+  font-weight: 700;
+  line-height: 36px;
+}
+
+.two-factor-heading p {
+  width: 494px;
+  max-width: 100%;
+  margin: 0;
+  color: #666;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+/* Form */
+.two-factor-form {
+  width: 100%;
+}
+
+.two-factor-form .ant-form-item:first-child,
+.two-factor-remember,
+.two-factor-submit {
+  margin-bottom: 25px;
+}
+
+/* OTP */
+.two-factor-form .ant-otp {
+  display: flex;
+  justify-content: space-between;
+  gap: 20.95px;
+  width: 100%;
+}
+
+.two-factor-form .ant-otp .ant-input {
+  box-sizing: border-box;
+  flex: 0 0 64px;
+  width: 64px;
+  height: 72px;
+  padding: 0;
+  border: 1px solid #a3a3a3;
+  border-radius: 8px;
+  background: #fff;
+  color: #4d4d4d;
+  font-family: var(--font-family);
+  font-size: 31.42px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.two-factor-form .ant-otp .ant-input:focus {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 2px rgb(242 109 33 / 15%);
+}
+
+/* Checkbox */
+.two-factor-remember .ant-checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  color: #666;
+  font-size: 16px;
+  line-height: 22px;
+}
+
+.two-factor-remember .ant-checkbox-inner {
+  width: 21px;
+  height: 20px;
+  border: 1px solid var(--color-primary);
+  border-radius: 4px;
+}
+
+/* Nút xác nhận */
+.two-factor-submit .ant-btn {
+  width: 100%;
+  height: 56px;
+  padding: 9px 32px 11px;
+  border-radius: 8px;
+  background: var(--color-primary);
+  color: #fff;
+  font-family: var(--font-family);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.two-factor-submit .ant-btn:hover {
+  background: #e05200 !important;
+}
+
+/* Thử cách khác */
+.two-factor-alternative {
+  text-align: center;
+}
+
+.two-factor-alternative span {
+  color: var(--color-primary);
+  font-size: 14px;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+/* Quay lại đăng nhập */
+.two-factor-back {
+  position: fixed;
+  bottom: 36px;
+  left: 26.5625%;
+  transform: translateX(-50%);
+  color: var(--color-primary);
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.two-factor-back:hover {
+  color: #e05200;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .two-factor-back {
+    left: 50%;
+  }
+}
+
+@media (max-width: 576px) {
+  .two-factor-page {
+    box-sizing: border-box;
+    padding: 0 16px;
+  }
+
+  .two-factor-heading h1 {
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  .two-factor-heading p {
+    width: 100%;
+    font-size: 14px;
+  }
+
+  .two-factor-form .ant-otp {
+    gap: 8px;
+  }
+
+  .two-factor-form .ant-otp .ant-input {
+    flex: 1 1 0;
+    width: 100%;
+    min-width: 0;
+    height: 56px;
+    font-size: 24px;
+  }
+
+  .two-factor-back {
+    font-size: 14px;
+  }
+}

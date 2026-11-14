@@ -158,6 +158,7 @@ function FacilityTemplates({
         navigate(`/facilities/${facility.id}/templates/${id}/edit`)
       }
       onDetail={(id) => navigate(`/facilities/${facility.id}/templates/${id}`)}
+      pageSize={10}
     />
   );
 }

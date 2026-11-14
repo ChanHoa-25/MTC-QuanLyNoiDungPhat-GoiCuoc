@@ -1,5 +1,6 @@
 export const ROUTES = {
   LOGIN: "/login",
+  VERIFY_2FA: "/verify-2fa",
   FORGOT_PASSWORD: "/forgot-password",
   RESET_PASSWORD: "/reset-password",
 

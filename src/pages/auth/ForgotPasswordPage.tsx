@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { MailOutlined } from "@ant-design/icons";
 
 import AuthForm from "../../components/auth/AuthForm";
-import type { AuthField } from "../../components/auth/AuthForm";
+import type { AuthField, AuthFormValues } from "../../components/auth/AuthForm";
 
 import "./ForgotPasswordPage.css";
 
@@ -17,9 +17,11 @@ const forgotPasswordFields: AuthField[] = [
 ];
 
 function ForgotPasswordPage() {
-  const handleForgotPassword = async (values: Record<string, string>) => {
+  const handleForgotPassword = async (values: AuthFormValues) => {
+    const email = String(values.email ?? "").trim();
+
     // TODO: Tích hợp API gửi yêu cầu đặt lại mật khẩu.
-    console.log("Email yêu cầu đặt lại mật khẩu:", values.email);
+    console.log("Email yêu cầu đặt lại mật khẩu:", email);
   };
 
   return (

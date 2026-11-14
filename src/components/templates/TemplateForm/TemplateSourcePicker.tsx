@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { Checkbox, Input } from "antd";
-import { Search } from "lucide-react";
+import { CalendarDays, Folder, Search, UserRound } from "lucide-react";
 
 import type {
   TemplateSource,
@@ -89,26 +89,76 @@ function TemplateSourcePicker({
                 "template-source-picker__item",
                 selected ? "is-selected" : "",
                 disabled ? "is-disabled" : "",
-              ].join(" ")}>
+              ]
+                .filter(Boolean)
+                .join(" ")}>
               <button
                 type="button"
                 disabled={disabled}
                 className="template-source-picker__select"
                 onClick={() => onToggle(source.id)}
-                aria-label={`Chọn nguồn ${source.name}`}>
-                <img src={source.thumbnail} alt={source.name} />
+                aria-label={`${selected ? "Bỏ chọn" : "Chọn"} ${source.name}`}
+                aria-pressed={selected}>
+                <div className="template-source-picker__thumbnail">
+                  <img
+                    src={source.thumbnail}
+                    alt={source.name}
+                    loading="lazy"
+                  />
+                </div>
+
+                <div className="template-source-picker__info">
+                  <span className="template-source-picker__name">
+                    {source.name}
+                  </span>
+
+                  <div className="template-source-picker__badges">
+                    <span className="template-source-picker__badge template-source-picker__badge--folder">
+                      <Folder size={13} />
+                      FHD
+                    </span>
+
+                    {source.resolution?.map((resolution, index) => (
+                      <span
+                        key={`${resolution}-${index}`}
+                        className={[
+                          "template-source-picker__badge",
+                          `template-source-picker__badge--${resolution.toLowerCase()}`,
+                        ].join(" ")}>
+                        {resolution}
+                      </span>
+                    ))}
+                  </div>
+
+                  {(source.createdBy || source.createdAt) && (
+                    <div className="template-source-picker__meta">
+                      {source.createdBy && (
+                        <span>
+                          <UserRound size={14} />
+                          <span>{source.createdBy}</span>
+                        </span>
+                      )}
+
+                      {source.createdAt && (
+                        <span>
+                          <CalendarDays size={14} />
+                          <span>{source.createdAt}</span>
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </div>
               </button>
 
-              <span className="template-source-picker__checkbox">
+              <span
+                className="template-source-picker__checkbox"
+                onClick={(event) => event.stopPropagation()}>
                 <Checkbox
                   checked={selected}
                   disabled={disabled}
                   onChange={() => onToggle(source.id)}
+                  aria-label={`Chọn ${source.name}`}
                 />
-              </span>
-
-              <span className="template-source-picker__name">
-                {source.name}
               </span>
             </div>
           );

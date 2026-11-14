@@ -1,0 +1,57 @@
+.backup-codes-modal .ant-modal-content {
+  padding: 36px 40px 40px;
+  border-radius: 16px;
+}
+
+.backup-codes-modal h2 {
+  margin: 0 0 16px;
+  color: #f26d21;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.backup-codes-modal p {
+  margin-bottom: 24px;
+  color: #666666;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.backup-codes-modal__list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.backup-codes-modal__item {
+  padding: 12px;
+  background: #f7f8fa;
+  border: 1px solid #e5e5e5;
+  border-radius: 6px;
+  color: #333333;
+  font-size: 15px;
+  font-weight: 600;
+  text-align: center;
+  letter-spacing: 1px;
+}
+
+.backup-codes-modal__actions {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 32px;
+}
+
+@media (max-width: 576px) {
+  .backup-codes-modal .ant-modal-content {
+    padding: 24px 20px;
+  }
+
+  .backup-codes-modal__list {
+    grid-template-columns: 1fr;
+  }
+
+  .backup-codes-modal__actions {
+    gap: 12px;
+  }
+}

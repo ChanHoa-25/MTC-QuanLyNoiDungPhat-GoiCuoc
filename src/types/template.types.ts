@@ -6,6 +6,7 @@ export interface TemplateSource {
   type: TemplateSourceType;
   thumbnail: string;
   url: string;
+  resolution?: string[];
   createdBy?: string;
   createdAt?: string;
 }
@@ -42,4 +43,3 @@ export interface StoredFacilityTemplate extends TemplateFormData {
   createdBy: string;
   isUsed?: boolean;
 }
-

@@ -1,11 +1,13 @@
 import { useSyncExternalStore } from "react";
 import { initialSourceMediaMock } from "./sourceMedia.mock";
+
 import type {
   SourceMediaApprovalStatus,
   SourceMediaItem,
 } from "../types/sourceMedia.types";
 
 let mediaItemsState: SourceMediaItem[] = [...initialSourceMediaMock];
+
 const listeners = new Set<() => void>();
 
 function emitChange() {
@@ -14,21 +16,27 @@ function emitChange() {
 
 function subscribe(listener: () => void) {
   listeners.add(listener);
+
   return () => {
     listeners.delete(listener);
   };
 }
 
-function getSnapshot() {
+function getSnapshot(): SourceMediaItem[] {
   return mediaItemsState;
 }
 
 export function addSourceMediaItems(newItems: SourceMediaItem[]) {
   if (newItems.length === 0) return;
+
   const existingIds = new Set(mediaItemsState.map((item) => item.id));
+
   const uniqueItems = newItems.filter((item) => !existingIds.has(item.id));
+
   if (uniqueItems.length === 0) return;
+
   mediaItemsState = [...uniqueItems, ...mediaItemsState];
+
   emitChange();
 }
 
@@ -36,15 +44,33 @@ export function updateSourceMediaItem(
   id: string,
   patch: Partial<SourceMediaItem>,
 ) {
+  const exists = mediaItemsState.some((item) => item.id === id);
+
+  if (!exists) return;
+
   mediaItemsState = mediaItemsState.map((item) =>
-    item.id === id ? { ...item, ...patch } : item,
+    item.id === id
+      ? {
+          ...item,
+          ...patch,
+        }
+      : item,
   );
+
   emitChange();
 }
 
 export function deleteSourceMediaByIds(ids: string[]) {
+  if (ids.length === 0) return;
+
   const idSet = new Set(ids);
-  mediaItemsState = mediaItemsState.filter((item) => !idSet.has(item.id));
+
+  const updatedItems = mediaItemsState.filter((item) => !idSet.has(item.id));
+
+  if (updatedItems.length === mediaItemsState.length) return;
+
+  mediaItemsState = updatedItems;
+
   emitChange();
 }
 
@@ -53,17 +79,31 @@ export function updateSourceMediaApproval(
   status: SourceMediaApprovalStatus,
   rejectionReason?: string,
 ) {
+  if (ids.length === 0) return;
+
   const idSet = new Set(ids);
-  mediaItemsState = mediaItemsState.map((item) =>
-    idSet.has(item.id)
-      ? {
-          ...item,
-          approvalStatus: status,
-          isProcessing: false,
-          ...(rejectionReason !== undefined ? { rejectionReason } : {}),
-        }
-      : item,
+
+  const hasMatchingItems = mediaItemsState.some(
+    (item) => idSet.has(item.id) && item.status === "pending",
   );
+
+  if (!hasMatchingItems) return;
+
+  mediaItemsState = mediaItemsState.map((item) => {
+    if (!idSet.has(item.id) || item.status !== "pending") {
+      return item;
+    }
+
+    return {
+      ...item,
+      status,
+      rejectionReason:
+        status === "rejected"
+          ? (rejectionReason ?? item.rejectionReason)
+          : undefined,
+    };
+  });
+
   emitChange();
 }
 

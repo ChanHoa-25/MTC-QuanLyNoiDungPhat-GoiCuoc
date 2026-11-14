@@ -105,7 +105,18 @@
 .facilities-tree-state .ant-btn-primary {
   min-width: 120px;
 }
+/* Bố cục riêng cho tab Media */
+.facilities-content:has(.facility-media-layout) {
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  overflow: visible;
+}
 
+.facilities-content:has(.facility-media-layout) .facility-media-layout {
+  flex: 1;
+  min-height: 0;
+}
 /* Responsive */
 
 @media (max-width: 700px) {

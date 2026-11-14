@@ -19,6 +19,26 @@ export interface UserDto {
   lastActivityAt: string | null;
   createdAt: string;
 }
+export interface CreateUserDto {
+  username: string;
+  password: string;
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  organizationId: string;
+  facilityId: string;
+  roleId: string;
+  isActive: boolean;
+}
+export interface UpdateUserDto {
+  fullName: string;
+  email: string;
+  phoneNumber: string;
+  organizationId: string;
+  facilityId: string;
+  roleId: string;
+  isActive: boolean;
+}
 
 export interface UserQueryParams {
   Search?: string;
@@ -63,5 +83,34 @@ export const userApi = {
     }
 
     return response.data.data;
+  },
+  create: async (data: CreateUserDto): Promise<void> => {
+    const response = await axiosInstance.post<ApiResponse<unknown>>(
+      "/Users",
+      data,
+    );
+
+    if (!response.data.success) {
+      throw new Error(response.data.message || "Không thể tạo tài khoản");
+    }
+  },
+  update: async (id: string, data: UpdateUserDto): Promise<void> => {
+    const response = await axiosInstance.put<ApiResponse<unknown>>(
+      `/Users/${id}`,
+      data,
+    );
+
+    if (!response.data.success) {
+      throw new Error(response.data.message || "Không thể cập nhật tài khoản");
+    }
+  },
+  remove: async (id: string): Promise<void> => {
+    const response = await axiosInstance.delete<ApiResponse<unknown>>(
+      `/Users/${id}`,
+    );
+
+    if (response.data?.success === false) {
+      throw new Error(response.data.message || "Không thể xóa tài khoản");
+    }
   },
 };

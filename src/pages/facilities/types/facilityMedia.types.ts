@@ -1,27 +1,27 @@
-export type MediaType = "video" | "image" | "audio";
+import type { MediaItem, MediaContentType } from "../../../types/media.types";
 
-export type MediaStatus = "approved" | "pending";
+export type {
+  MediaType,
+  MediaStatus,
+  MediaContentType,
+} from "../../../types/media.types";
 
-export type MediaContentType = "file" | "live" | "url" | "frequency";
-
-export interface FacilityMediaItem {
-  id: string;
+export interface FacilityMediaItem extends MediaItem {
   facilityId: string;
-  title: string;
-  category: string;
-  type: MediaType;
-  status: MediaStatus;
   sourceStatus: "active" | "inactive";
-  createdAt: string;
-  createdBy: string;
-  sizeMB: number;
-  thumbnail: string;
-  url?: string;
 
   contentType?: MediaContentType;
   contentValue?: string;
   fileName?: string;
   mimeType?: string;
+
+  categoryId?: string | null;
+  organizationId?: string | null;
+  rejectionReason?: string | null;
+  sourceType?: number;
+  durationSeconds?: number | null;
+  frequencyHz?: number | null;
+  approvalStatus?: string;
 }
 
 export interface FacilityMediaFormValues {
@@ -30,4 +30,5 @@ export interface FacilityMediaFormValues {
   contentType: MediaContentType;
   contentValue?: string;
   file?: File | null;
+  fileType?: "Image" | "Audio" | "Video";
 }

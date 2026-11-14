@@ -1,7 +1,12 @@
 import AllRoute from "./routes/AllRoute";
+import { PermissionProvider } from "./contexts/PermissionContext";
 
 function App() {
-  return <AllRoute />;
+  return (
+    <PermissionProvider>
+      <AllRoute />
+    </PermissionProvider>
+  );
 }
 
 export default App;
