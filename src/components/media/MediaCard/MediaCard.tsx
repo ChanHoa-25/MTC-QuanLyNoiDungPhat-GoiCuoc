@@ -1,23 +1,22 @@
 import { useEffect, useState } from "react";
-import { Checkbox, Dropdown } from "antd";
-import type { MenuProps } from "antd";
+import { Checkbox } from "antd";
 
 import {
-  Ban,
-  CheckCheck,
-  Download,
   EllipsisVertical,
-  Info,
   Play,
-  RefreshCcw,
-  Share2,
-  SquarePen,
   Image as ImageIcon,
   Music2,
   Video,
 } from "lucide-react";
 
 import AppStatusTag from "../../common/AppStatusTag";
+import MediaActionMenu from "../MediaActionMenu/MediaActionMenu";
+
+import type {
+  MediaAction,
+  MediaMenuVariant,
+} from "../MediaActionMenu/MediaActionMenu";
+
 import type { MediaItem } from "../../../types/media.types";
 
 import "./MediaCard.css";
@@ -25,6 +24,7 @@ import "./MediaCard.css";
 export interface MediaCardProps<T extends MediaItem = MediaItem> {
   media: T;
   selected?: boolean;
+  menuVariant?: MediaMenuVariant;
   onSelect?: (id: string, checked: boolean) => void;
   onPreview?: (media: T) => void;
   onView?: (media: T) => void;
@@ -33,6 +33,11 @@ export interface MediaCardProps<T extends MediaItem = MediaItem> {
   onReject?: (media: T) => void;
   onShare?: (media: T) => void;
   onDownload?: (media: T) => void;
+  onConvert?: (media: T) => void;
+  onDelete?: (media: T) => void;
+  onCreateNews?: (media: T) => void;
+  onCreatePlaylist?: (media: T) => void;
+  onCreateTemplate?: (media: T) => void;
 }
 
 const mediaStatusConfig = {
@@ -57,6 +62,7 @@ const mediaStatusConfig = {
 function MediaCard<T extends MediaItem>({
   media,
   selected = false,
+  menuVariant = "detail",
   onSelect,
   onPreview,
   onView,
@@ -65,6 +71,11 @@ function MediaCard<T extends MediaItem>({
   onReject,
   onShare,
   onDownload,
+  onConvert,
+  onDelete,
+  onCreateNews,
+  onCreatePlaylist,
+  onCreateTemplate,
 }: MediaCardProps<T>) {
   const [imageError, setImageError] = useState(false);
 
@@ -96,50 +107,27 @@ function MediaCard<T extends MediaItem>({
         hour12: false,
       });
 
-  const menuItems: MenuProps["items"] = [
-    {
-      key: "detail",
-      label: "Xem chi tiết",
-      icon: <Info size={18} />,
-      disabled: !onView,
-      onClick: () => onView?.(media),
-    },
-  ];
+  const visibleActions: MediaAction[] = [];
+
+  if (onView) {
+    visibleActions.push("view");
+  }
 
   if (media.status === "pending") {
-    menuItems.push(
-      {
-        key: "approve",
-        label: "Duyệt",
-        icon: <CheckCheck size={18} />,
-        disabled: !onApprove,
-        onClick: () => onApprove?.(media),
-      },
-      {
-        key: "reject",
-        label: "Từ chối duyệt",
-        icon: <Ban size={18} />,
-        disabled: !onReject,
-        onClick: () => onReject?.(media),
-      },
-      {
-        key: "edit",
-        label: "Chỉnh sửa",
-        icon: <SquarePen size={18} />,
-        disabled: !onEdit,
-        onClick: () => onEdit?.(media),
-      },
-    );
+    if (onApprove) visibleActions.push("approve");
+    if (onReject) visibleActions.push("reject");
+    if (onEdit) visibleActions.push("edit");
   }
 
   if (media.status === "approved") {
-    menuItems.push({
-      key: "share",
-      label: "Chia sẻ",
-      icon: <Share2 size={18} />,
-      disabled: !onShare,
-      onClick: () => onShare?.(media),
-    });
+    if (onShare) visibleActions.push("share");
+    if (onConvert) visibleActions.push("convert");
+
+    if (menuVariant === "create") {
+      if (onCreateNews) visibleActions.push("createNews");
+      if (onCreatePlaylist) visibleActions.push("createPlaylist");
+      if (onCreateTemplate) visibleActions.push("createTemplate");
+    }
   }
 
   if (
@@ -147,23 +135,63 @@ function MediaCard<T extends MediaItem>({
     media.status === "pending" ||
     media.status === "rejected"
   ) {
-    menuItems.push({
-      key: "download",
-      label: "Tải xuống",
-      icon: <Download size={18} />,
-      disabled: !onDownload,
-      onClick: () => onDownload?.(media),
-    });
+    if (onDownload) visibleActions.push("download");
   }
 
-  if (media.status === "approved") {
-    menuItems.push({
-      key: "convert",
-      label: "Chuyển đổi chất lượng",
-      icon: <RefreshCcw size={18} />,
-      disabled: true,
-    });
+  if (onDelete) {
+    visibleActions.push("delete");
   }
+
+  const handleMenuAction = (action: MediaAction) => {
+    switch (action) {
+      case "view":
+        onView?.(media);
+        break;
+
+      case "edit":
+        onEdit?.(media);
+        break;
+
+      case "approve":
+        onApprove?.(media);
+        break;
+
+      case "reject":
+        onReject?.(media);
+        break;
+
+      case "share":
+        onShare?.(media);
+        break;
+
+      case "download":
+        onDownload?.(media);
+        break;
+
+      case "convert":
+        onConvert?.(media);
+        break;
+
+      case "delete":
+        onDelete?.(media);
+        break;
+
+      case "createNews":
+        onCreateNews?.(media);
+        break;
+
+      case "createPlaylist":
+        onCreatePlaylist?.(media);
+        break;
+
+      case "createTemplate":
+        onCreateTemplate?.(media);
+        break;
+
+      default:
+        break;
+    }
+  };
 
   return (
     <article
@@ -234,18 +262,19 @@ function MediaCard<T extends MediaItem>({
           </p>
         </div>
 
-        <Dropdown
-          menu={{ items: menuItems }}
-          trigger={["click"]}
-          placement="bottomRight"
-          overlayClassName="media-card-dropdown">
-          <button
-            type="button"
-            className="media-card__menu-trigger"
-            aria-label={`Thao tác với ${media.title}`}>
-            <EllipsisVertical size={18} />
-          </button>
-        </Dropdown>
+        {visibleActions.length > 0 && (
+          <MediaActionMenu
+            variant={menuVariant}
+            visibleActions={visibleActions}
+            onAction={handleMenuAction}>
+            <button
+              type="button"
+              className="media-card__menu-trigger"
+              aria-label={`Thao tác với ${media.title}`}>
+              <EllipsisVertical size={18} />
+            </button>
+          </MediaActionMenu>
+        )}
       </div>
     </article>
   );

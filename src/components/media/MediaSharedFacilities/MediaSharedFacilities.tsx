@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ColumnsType } from "antd/es/table";
 import type { Dayjs } from "dayjs";
 import dayjs from "dayjs";
@@ -12,18 +12,19 @@ import AppStatusTag from "../../common/AppStatusTag";
 
 import "./MediaSharedFacilities.css";
 
+export interface SharedFacility {
+  id: string;
+  facilityName: string;
+  sharedAt: string | null;
+  status: "Đã tiếp nhận" | "Chưa tiếp nhận";
+}
+
 interface MediaSharedFacilitiesProps {
   mediaId: string;
   data?: SharedFacility[];
 }
 
-export interface SharedFacility {
-  id: string;
-  facilityName: string;
-  sharedAt: string;
-  status: "Đã tiếp nhận" | "Chưa tiếp nhận";
-}
-
+// Dữ liệu tạm cho Facility khi chưa truyền data từ API.
 const demoFacilities: SharedFacility[] = [
   {
     id: "1",
@@ -77,72 +78,80 @@ const demoFacilities: SharedFacility[] = [
 
 const PAGE_SIZE = 10;
 
-function MediaSharedFacilities({
-  data = demoFacilities,
-}: MediaSharedFacilitiesProps) {
+const columns: ColumnsType<SharedFacility> = [
+  {
+    title: "Cơ sở chia sẻ",
+    dataIndex: "facilityName",
+    key: "facilityName",
+    width: 240,
+  },
+  {
+    title: "Thời gian chia sẻ",
+    dataIndex: "sharedAt",
+    key: "sharedAt",
+    width: 285,
+    render: (value: string | null) =>
+      value && dayjs(value).isValid()
+        ? dayjs(value).format("DD/MM/YYYY HH:mm:ss")
+        : "-",
+  },
+  {
+    title: "Trạng thái tiếp nhận",
+    dataIndex: "status",
+    key: "status",
+    render: (value: SharedFacility["status"]) => (
+      <AppStatusTag
+        type="status"
+        variant={value === "Đã tiếp nhận" ? "green" : "blue"}
+        label={value}
+      />
+    ),
+  },
+];
+
+function MediaSharedFacilities({ mediaId, data }: MediaSharedFacilitiesProps) {
+  // Chỉ dùng demo khi không truyền data; data=[] phải hiển thị danh sách rỗng.
+  const facilities = data ?? demoFacilities;
+
   const [dates, setDates] = useState<[Dayjs | null, Dayjs | null]>([
     null,
     null,
   ]);
-
   const [status, setStatus] = useState("all");
   const [keyword, setKeyword] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
+  useEffect(() => {
+    setDates([null, null]);
+    setStatus("all");
+    setKeyword("");
+    setCurrentPage(1);
+  }, [mediaId]);
+
   const filteredData = useMemo(() => {
-    return data.filter((item) => {
-      if (status !== "all" && item.status !== status) {
-        return false;
-      }
+    const search = keyword.trim().toLowerCase();
 
-      if (
-        keyword.trim() &&
-        !item.facilityName.toLowerCase().includes(keyword.trim().toLowerCase())
-      ) {
+    return facilities.filter((item) => {
+      if (status !== "all" && item.status !== status) return false;
+      if (search && !item.facilityName.toLowerCase().includes(search))
         return false;
-      }
 
-      const sharedDate = dayjs(item.sharedAt);
-
-      if (dates[0] && sharedDate.isBefore(dates[0], "day")) {
-        return false;
-      }
-
-      if (dates[1] && sharedDate.isAfter(dates[1], "day")) {
-        return false;
+      if (dates[0] || dates[1]) {
+        if (!item.sharedAt) return false;
+        const sharedDate = dayjs(item.sharedAt);
+        if (!sharedDate.isValid()) return false;
+        if (dates[0] && sharedDate.isBefore(dates[0], "day")) return false;
+        if (dates[1] && sharedDate.isAfter(dates[1], "day")) return false;
       }
 
       return true;
     });
-  }, [data, dates, status, keyword]);
+  }, [facilities, dates, status, keyword]);
 
-  const columns: ColumnsType<SharedFacility> = [
-    {
-      title: "Cơ sở chia sẻ",
-      dataIndex: "facilityName",
-      key: "facilityName",
-      width: 240,
-    },
-    {
-      title: "Thời gian chia sẻ",
-      dataIndex: "sharedAt",
-      key: "sharedAt",
-      width: 285,
-      render: (value: string) => dayjs(value).format("DD/MM/YYYY HH:mm:ss"),
-    },
-    {
-      title: "Trạng thái tiếp nhận",
-      dataIndex: "status",
-      key: "status",
-      render: (value: SharedFacility["status"]) => (
-        <AppStatusTag
-          type="status"
-          variant={value === "Đã tiếp nhận" ? "green" : "blue"}
-          label={value}
-        />
-      ),
-    },
-  ];
+  const safePage = Math.min(
+    currentPage,
+    Math.max(1, Math.ceil(filteredData.length / PAGE_SIZE)),
+  );
 
   return (
     <div className="media-shared-facilities">
@@ -158,7 +167,6 @@ function MediaSharedFacilities({
           <label className="media-shared-facilities__label">
             Thời gian chia sẻ
           </label>
-
           <AppDateRangePicker
             width="100%"
             value={dates}
@@ -171,7 +179,6 @@ function MediaSharedFacilities({
 
         <AppFilterField width={238}>
           <label className="media-shared-facilities__label">Trạng thái</label>
-
           <AppSelect
             width="100%"
             value={status}
@@ -180,25 +187,15 @@ function MediaSharedFacilities({
               setCurrentPage(1);
             }}
             options={[
-              {
-                value: "all",
-                label: "Tất cả",
-              },
-              {
-                value: "Đã tiếp nhận",
-                label: "Đã tiếp nhận",
-              },
-              {
-                value: "Chưa tiếp nhận",
-                label: "Chưa tiếp nhận",
-              },
+              { value: "all", label: "Tất cả" },
+              { value: "Đã tiếp nhận", label: "Đã tiếp nhận" },
+              { value: "Chưa tiếp nhận", label: "Chưa tiếp nhận" },
             ]}
           />
         </AppFilterField>
 
         <AppFilterField width={454}>
           <label className="media-shared-facilities__label">Từ khóa</label>
-
           <AppSearch
             width="100%"
             placeholder="Tên cơ sở"
@@ -217,14 +214,12 @@ function MediaSharedFacilities({
         columns={columns}
         dataSource={filteredData}
         pagination={{
-          current: currentPage,
+          current: safePage,
           pageSize: PAGE_SIZE,
           total: filteredData.length,
           onChange: setCurrentPage,
         }}
-        locale={{
-          emptyText: "Không có cơ sở phù hợp",
-        }}
+        locale={{ emptyText: "Không có cơ sở phù hợp" }}
       />
     </div>
   );

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Key } from "react";
 import type { ColumnsType } from "antd/es/table";
 import type { Dayjs } from "dayjs";
@@ -20,11 +20,7 @@ import AppTableActions from "../../common/AppTableActions";
 
 import "./MediaBroadcastList.css";
 
-interface MediaBroadcastListProps {
-  mediaId: string;
-}
-
-interface BroadcastItem {
+export interface BroadcastItem {
   id: string;
   name: string;
   type: "Tin ưu tiên" | "Tin thường";
@@ -34,6 +30,15 @@ interface BroadcastItem {
   endDate: string | null;
   broadcastTime: string;
   location: string;
+}
+
+interface MediaBroadcastListProps {
+  mediaId: string;
+  data?: BroadcastItem[];
+  onCancelSelected?: (ids: string[]) => void | Promise<void>;
+  onDeleteSelected?: (ids: string[]) => void | Promise<void>;
+  onEdit?: (item: BroadcastItem) => void;
+  onView?: (item: BroadcastItem) => void;
 }
 
 const demoBroadcasts: BroadcastItem[] = [
@@ -156,7 +161,17 @@ function formatDate(value: string | null) {
   return value ? dayjs(value).format("DD/MM/YYYY") : "-";
 }
 
-function MediaBroadcastList({ mediaId }: MediaBroadcastListProps) {
+function MediaBroadcastList({
+  mediaId,
+  data,
+  onCancelSelected,
+  onDeleteSelected,
+  onEdit,
+  onView,
+}: MediaBroadcastListProps) {
+  // Không có data: giữ demo cũ của Facility. data=[]: hiển thị danh sách rỗng.
+  const broadcasts = data ?? demoBroadcasts;
+
   const [type, setType] = useState("all");
   const [approval, setApproval] = useState("all");
   const [play, setPlay] = useState("all");
@@ -167,6 +182,18 @@ function MediaBroadcastList({ mediaId }: MediaBroadcastListProps) {
   const [keyword, setKeyword] = useState("");
   const [selectedRowKeys, setSelectedRowKeys] = useState<Key[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [submitting, setSubmitting] = useState(false);
+
+  // Chuyển sang media khác thì bỏ bộ lọc, phân trang và các hàng đã chọn.
+  useEffect(() => {
+    setType("all");
+    setApproval("all");
+    setPlay("all");
+    setDates([null, null]);
+    setKeyword("");
+    setSelectedRowKeys([]);
+    setCurrentPage(1);
+  }, [mediaId]);
 
   const resetTableState = () => {
     setCurrentPage(1);
@@ -174,52 +201,87 @@ function MediaBroadcastList({ mediaId }: MediaBroadcastListProps) {
   };
 
   const filteredData = useMemo(() => {
-    return demoBroadcasts.filter((item) => {
-      if (type !== "all" && item.type !== type) {
-        return false;
-      }
-
-      if (approval !== "all" && item.approvalStatus !== approval) {
-        return false;
-      }
-
-      if (play !== "all" && item.playStatus !== play) {
-        return false;
-      }
-
+    const search = keyword.trim().toLowerCase();
+    return broadcasts.filter((item) => {
+      if (type !== "all" && item.type !== type) return false;
+      if (approval !== "all" && item.approvalStatus !== approval) return false;
+      if (play !== "all" && item.playStatus !== play) return false;
       if (
-        keyword.trim() &&
-        !item.name.toLowerCase().includes(keyword.trim().toLowerCase())
+        search &&
+        !`${item.name} ${item.location}`.toLowerCase().includes(search)
       ) {
         return false;
       }
-
       if (
         dates[0] &&
         (!item.startDate || dayjs(item.startDate).isBefore(dates[0], "day"))
       ) {
         return false;
       }
-
       if (
         dates[1] &&
         (!item.startDate || dayjs(item.startDate).isAfter(dates[1], "day"))
       ) {
         return false;
       }
-
       return true;
     });
-  }, [type, approval, play, dates, keyword]);
+  }, [broadcasts, type, approval, play, dates, keyword]);
 
-  const hasSelection = selectedRowKeys.length > 0;
+  const safePage = Math.min(
+    currentPage,
+    Math.max(1, Math.ceil(filteredData.length / PAGE_SIZE)),
+  );
+  const currentPageIds = useMemo(
+    () =>
+      filteredData
+        .slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE)
+        .map((item) => item.id),
+    [filteredData, safePage],
+  );
+  const selectedIds = useMemo(
+    () => selectedRowKeys.map(String),
+    [selectedRowKeys],
+  );
+  const selectedSet = useMemo(() => new Set(selectedIds), [selectedIds]);
+  const hasSelection = selectedIds.length > 0;
+  const allCurrentPageSelected =
+    currentPageIds.length > 0 &&
+    currentPageIds.every((id) => selectedSet.has(id));
+  const someCurrentPageSelected = currentPageIds.some((id) =>
+    selectedSet.has(id),
+  );
 
-  const allSelected =
-    filteredData.length > 0 &&
-    filteredData.every((item) => selectedRowKeys.includes(item.id));
+  const toggleCurrentPage = (checked: boolean) => {
+    const pageSet = new Set(currentPageIds);
+    setSelectedRowKeys((prev) =>
+      checked
+        ? [...new Set([...prev.map(String), ...currentPageIds])]
+        : prev.filter((key) => !pageSet.has(String(key))),
+    );
+  };
 
   const handlePendingAction = (action: string) => {
     message.info(`${action}: Chức năng đang chờ tích hợp API bản tin.`);
+  };
+
+  const handleBulkAction = async (action: "cancel" | "delete") => {
+    if (!selectedIds.length || submitting) return;
+    const callback = action === "cancel" ? onCancelSelected : onDeleteSelected;
+    if (!callback) {
+      handlePendingAction(action === "cancel" ? "Hủy bản tin" : "Xóa bản tin");
+      return;
+    }
+    setSubmitting(true);
+    try {
+      await callback(selectedIds);
+      setSelectedRowKeys([]);
+    } catch (error) {
+      console.error("Lỗi xử lý danh sách bản tin:", error);
+      message.error("Không thể thực hiện thao tác. Vui lòng thử lại.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const columns: ColumnsType<BroadcastItem> = [
@@ -281,7 +343,7 @@ function MediaBroadcastList({ mediaId }: MediaBroadcastListProps) {
       title: "Ngày phát",
       key: "broadcastDates",
       width: 130,
-      render: (_, record) => (
+      render: (_: unknown, record: BroadcastItem) => (
         <div className="media-broadcast-list__dates">
           <span>{formatDate(record.startDate)}</span>
           <span>{formatDate(record.endDate)}</span>
@@ -306,7 +368,7 @@ function MediaBroadcastList({ mediaId }: MediaBroadcastListProps) {
       key: "actions",
       width: 110,
       align: "right",
-      render: (_, record) => (
+      render: (_: unknown, record: BroadcastItem) => (
         <AppTableActions
           actions={[
             ...(record.approvalStatus === "Chờ duyệt"
@@ -315,7 +377,10 @@ function MediaBroadcastList({ mediaId }: MediaBroadcastListProps) {
                     key: "edit",
                     icon: <SquarePen />,
                     tooltip: "Sửa bản tin",
-                    onClick: () => handlePendingAction("Sửa bản tin"),
+                    onClick: () =>
+                      onEdit
+                        ? onEdit(record)
+                        : handlePendingAction("Sửa bản tin"),
                   },
                 ]
               : []),
@@ -323,7 +388,8 @@ function MediaBroadcastList({ mediaId }: MediaBroadcastListProps) {
               key: "detail",
               icon: <Info />,
               tooltip: "Xem thông tin bản tin",
-              onClick: () => handlePendingAction("Xem bản tin"),
+              onClick: () =>
+                onView ? onView(record) : handlePendingAction("Xem bản tin"),
             },
           ]}
         />
@@ -336,7 +402,6 @@ function MediaBroadcastList({ mediaId }: MediaBroadcastListProps) {
       <h2 className="media-broadcast-list__title">
         Danh sách bản tin sử dụng media file
       </h2>
-
       <AppFilter
         showActions={false}
         className="media-broadcast-list__filter"
@@ -357,7 +422,6 @@ function MediaBroadcastList({ mediaId }: MediaBroadcastListProps) {
             ]}
           />
         </AppFilterField>
-
         <AppFilterField width={160}>
           <label className="media-broadcast-list__label">
             Trạng thái duyệt
@@ -373,18 +437,11 @@ function MediaBroadcastList({ mediaId }: MediaBroadcastListProps) {
               { value: "all", label: "Tất cả" },
               { value: "Chờ duyệt", label: "Chờ duyệt" },
               { value: "Đã duyệt", label: "Đã duyệt" },
-              {
-                value: "Từ chối duyệt",
-                label: "Từ chối duyệt",
-              },
-              {
-                value: "Đang hoạt động",
-                label: "Đang hoạt động",
-              },
+              { value: "Từ chối duyệt", label: "Từ chối duyệt" },
+              { value: "Đang hoạt động", label: "Đang hoạt động" },
             ]}
           />
         </AppFilterField>
-
         <AppFilterField width={160}>
           <label className="media-broadcast-list__label">Trạng thái phát</label>
           <AppSelect
@@ -401,10 +458,11 @@ function MediaBroadcastList({ mediaId }: MediaBroadcastListProps) {
               { value: "Chờ phát", label: "Chờ phát" },
               { value: "Đã kết thúc", label: "Đã kết thúc" },
               { value: "Chưa phát", label: "Chưa phát" },
+              { value: "Sắp tới lịch", label: "Sắp tới lịch" },
+              { value: "Đã hủy", label: "Đã hủy" },
             ]}
           />
         </AppFilterField>
-
         <AppFilterField width={388}>
           <label className="media-broadcast-list__label">
             Thời gian bắt đầu phát
@@ -418,12 +476,11 @@ function MediaBroadcastList({ mediaId }: MediaBroadcastListProps) {
             }}
           />
         </AppFilterField>
-
         <AppFilterField width={250}>
           <label className="media-broadcast-list__label">Từ khóa</label>
           <AppSearch
             width="100%"
-            placeholder="Tên bản tin"
+            placeholder="Tên bản tin / Cơ sở phát"
             value={keyword}
             onChange={(value) => {
               setKeyword(value);
@@ -436,35 +493,30 @@ function MediaBroadcastList({ mediaId }: MediaBroadcastListProps) {
       {hasSelection && (
         <div className="media-broadcast-list__selection">
           <Checkbox
-            indeterminate={!allSelected}
-            checked={allSelected}
-            onChange={() => setSelectedRowKeys([])}
-            aria-label="Bỏ chọn tất cả bản tin"
+            checked={allCurrentPageSelected}
+            indeterminate={someCurrentPageSelected && !allCurrentPageSelected}
+            onChange={(event) => toggleCurrentPage(event.target.checked)}
+            aria-label="Chọn hoặc bỏ chọn bản tin trên trang hiện tại"
           />
-
-          <strong>{selectedRowKeys.length} bản tin đã chọn</strong>
-
+          <strong>{selectedIds.length} bản tin đã chọn</strong>
           <button
             type="button"
-            onClick={() => handlePendingAction("Hủy bản tin")}>
-            <Ban size={17} />
-            Hủy bản tin
+            disabled={submitting}
+            onClick={() => void handleBulkAction("cancel")}>
+            <Ban size={17} /> Hủy bản tin
           </button>
-
           <button
             type="button"
+            disabled={submitting}
             className="media-broadcast-list__delete"
-            onClick={() => handlePendingAction("Xóa bản tin")}>
-            <Trash2 size={17} />
-            Xóa bản tin
+            onClick={() => void handleBulkAction("delete")}>
+            <Trash2 size={17} /> Xóa bản tin
           </button>
         </div>
       )}
 
       <AppTable<BroadcastItem>
-        className={`media-broadcast-list__table ${
-          hasSelection ? "media-broadcast-list__table--selected" : ""
-        }`}
+        className={`media-broadcast-list__table ${hasSelection ? "media-broadcast-list__table--selected" : ""}`}
         rowKey="id"
         columns={columns}
         dataSource={filteredData}
@@ -473,18 +525,16 @@ function MediaBroadcastList({ mediaId }: MediaBroadcastListProps) {
         rowSelection={{
           selectedRowKeys,
           preserveSelectedRowKeys: false,
-          onChange: (keys) => setSelectedRowKeys(keys),
+          onChange: (keys) => setSelectedRowKeys([...keys]),
         }}
         pagination={{
-          current: currentPage,
+          current: safePage,
           pageSize: PAGE_SIZE,
           total: filteredData.length,
           onChange: (page) => setCurrentPage(page),
         }}
         scroll={{ x: 1200 }}
-        locale={{
-          emptyText: "Không có bản tin phù hợp",
-        }}
+        locale={{ emptyText: "Không có bản tin phù hợp" }}
       />
     </div>
   );

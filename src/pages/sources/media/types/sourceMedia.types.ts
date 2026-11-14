@@ -1,38 +1,40 @@
-export type SourceMediaType = "video" | "audio" | "image";
+import type {
+  MediaItem,
+  MediaType,
+  MediaContentType,
+} from "../../../../types/media.types";
 
+// Loại media dùng chung
+export type SourceMediaType = MediaType;
+
+// Trạng thái duyệt media
 export type SourceMediaApprovalStatus = "approved" | "pending" | "rejected";
 
-export type SourceMediaContentType = "file" | "live" | "url" | "frequency";
+// Loại nội dung media
+export type SourceMediaContentType = MediaContentType;
 
+// Độ phân giải media
 export interface MediaResolutionItem {
   label: "4K" | "2K" | "FHD" | "HD";
   state: "processing" | "disabled" | "ready-blue" | "ready-green";
 }
 
-export interface SourceMediaItem {
-  id: string;
-  title: string;
+// Dữ liệu media của nguồn thông tin
+export interface SourceMediaItem extends MediaItem {
   fileName: string;
-  category: string;
-  type: SourceMediaType;
   contentType?: SourceMediaContentType;
-  approvalStatus: SourceMediaApprovalStatus;
   duration: string;
-  sizeMB: number;
   detailSizeLabel: string;
-  thumbnail: string;
   attachmentOrLink: string;
   approvedBy: string;
-  createdBy: string;
-  createdAt: string;
   sharedArea: string;
   sharedFacilityIds?: string[];
   rejectionReason?: string;
-  isProcessing?: boolean;
   processingNote?: string;
   resolutions: MediaResolutionItem[];
 }
 
+// Dữ liệu form thêm / sửa media
 export interface SourceMediaFormValues {
   title: string;
   category: string;
@@ -41,10 +43,13 @@ export interface SourceMediaFormValues {
   file?: File | null;
 }
 
+// Mức độ ưu tiên bản tin
 export type BroadcastPriorityType = "priority" | "normal";
 
+// Trạng thái duyệt bản tin
 export type BroadcastApprovalStatus = "pending" | "approved" | "rejected";
 
+// Trạng thái phát bản tin
 export type BroadcastPlayStatus =
   | "playing"
   | "paused"
@@ -54,6 +59,7 @@ export type BroadcastPlayStatus =
   | "upcoming"
   | "cancelled";
 
+// Thông tin bản tin đang sử dụng media
 export interface MediaBroadcastUsageItem {
   id: string;
   mediaId: string;
@@ -67,6 +73,7 @@ export interface MediaBroadcastUsageItem {
   facilitiesText: string;
 }
 
+// Thông tin cơ sở được chia sẻ media
 export interface MediaSharedFacilityItem {
   id: string;
   facilityName: string;
