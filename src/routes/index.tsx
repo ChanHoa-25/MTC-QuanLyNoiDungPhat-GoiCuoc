@@ -34,15 +34,12 @@ import FacilityTemplateFormPage from "../pages/facilities/FacilityTemplates/Faci
 
 import SourceMediaPage, { SourceMediaDetailPage } from "../pages/sources/media";
 
-import SourceTemplatesPage, {
+import {
+  SourceTemplatesPage,
   SourceTemplateFormPage,
-  SourceTemplateDetailPage,
 } from "../pages/sources/templates";
 
-import SourcePlaylistsPage, {
-  SourcePlaylistFormPage,
-  SourcePlaylistDetailPage,
-} from "../pages/sources/playlists";
+import SourcePlaylistsPage from "../pages/sources/playlists";
 
 import SourceSharedPage from "../pages/sources/shared";
 
@@ -65,6 +62,7 @@ import RecoveryCodesPage from "../pages/account/two-factor/RecoveryCodesPage";
 import AccountLayout from "../layouts/AccountLayout/AccountLayout";
 import PermissionRoute from "../app/PermissionRoute";
 import FacilityMediaDetail from "../pages/facilities/FacilityMedia/FacilityMediaDetail/FacilityMediaDetail";
+import SourcePlaylistDetail from "../pages/sources/playlists/SourcePlaylistDetail";
 
 export const routes: RouteObject[] = [
   // Auth
@@ -208,19 +206,10 @@ export const routes: RouteObject[] = [
             element: <SourcePlaylistsPage />,
           },
           {
-            path: "sources/playlists/create",
-            element: <SourcePlaylistFormPage mode="create" />,
+            path: "sources/playlists/:playlistId",
+            element: <SourcePlaylistDetail />,
           },
-          {
-            path: "sources/playlists/:id/edit",
-            element: <SourcePlaylistFormPage mode="edit" />,
-          },
-          {
-            path: "sources/playlists/:id",
-            element: <SourcePlaylistDetailPage />,
-          },
-
-          // Source Templates
+        
           {
             path: ROUTES.SOURCE_TEMPLATES,
             element: <SourceTemplatesPage />,
@@ -230,12 +219,12 @@ export const routes: RouteObject[] = [
             element: <SourceTemplateFormPage mode="create" />,
           },
           {
-            path: "sources/templates/:id/edit",
+            path: "sources/templates/:templateId/edit",
             element: <SourceTemplateFormPage mode="edit" />,
           },
           {
-            path: "sources/templates/:id",
-            element: <SourceTemplateDetailPage />,
+            path: "sources/templates/:templateId",
+            element: <SourceTemplateFormPage mode="view" />,
           },
 
           // Devices
