@@ -18,6 +18,7 @@ interface SourceMediaQuickPreviewProps {
   media: SourceMediaItem;
   onClose: () => void;
   onOpenDetail: (media: SourceMediaItem) => void;
+  onPlayModal?: (media: SourceMediaItem) => void;
 }
 
 const APPROVAL_MAP: Record<
@@ -39,8 +40,11 @@ function SourceMediaQuickPreview({
   media,
   onClose,
   onOpenDetail,
+  onPlayModal,
 }: SourceMediaQuickPreviewProps) {
-  const statusInfo = APPROVAL_MAP[media.approvalStatus];
+  const statusInfo = media.isProcessing
+    ? { label: "Đang xử lý", variant: "blue" as AppStatusVariant }
+    : APPROVAL_MAP[media.approvalStatus];
   const formattedCreatedAt = dayjs(media.createdAt).format(
     "DD/MM/YYYY HH:mm:ss",
   );
@@ -71,7 +75,15 @@ function SourceMediaQuickPreview({
         <button
           type="button"
           className="source-media-preview__play"
-          aria-label="Phát xem trước">
+          aria-label="Phát xem trước"
+          onClick={(event) => {
+            event.stopPropagation();
+            if (onPlayModal) {
+              onPlayModal(media);
+            } else {
+              onOpenDetail(media);
+            }
+          }}>
           <Play size={16} fill="currentColor" />
         </button>
 

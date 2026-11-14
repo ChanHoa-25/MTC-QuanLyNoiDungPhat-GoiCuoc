@@ -31,6 +31,36 @@
   margin-bottom: 14px;
 }
 
+.source-media-panel__header-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.source-media-panel__storage-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid #ffd5b8;
+  border-radius: 8px;
+  background: #fff8f3;
+  color: var(--color-primary);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.source-media-panel__storage-btn:hover {
+  background: #ffefe3;
+  border-color: var(--color-primary);
+}
+
 .source-media-panel__title {
   margin: 0;
   color: var(--color-primary);
@@ -86,14 +116,14 @@
   margin-left: auto;
 }
 
-/* Lưới 5 cột mặc định (khi đóng khung preview - khớp ảnh 3 & 4) */
+/* Lưới 5 cột mặc định (khi đóng khung preview) */
 .source-media-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 16px;
 }
 
-/* Lưới khi mở khung preview bên phải (khớp ảnh 1: 4 cột & ảnh 2: 3 cột) */
+/* Lưới khi mở khung preview bên phải */
 .source-media-grid--with-preview {
   grid-template-columns: repeat(4, minmax(0, 1fr));
 }

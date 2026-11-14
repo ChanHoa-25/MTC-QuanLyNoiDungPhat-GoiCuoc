@@ -44,7 +44,7 @@ import SourcePlaylistsPage, {
   SourcePlaylistDetailPage,
 } from "../pages/sources/playlists";
 
-import SourcePlaceholderPage from "../pages/sources/components/SourcePlaceholderPage";
+import SourceSharedPage from "../pages/sources/shared";
 
 import SystemSettings from "../pages/settings/system/SystemSettings";
 import PersonalSettings from "../pages/settings/personal/PersonalSettings";
@@ -199,7 +199,7 @@ export const routes: RouteObject[] = [
           },
           {
             path: ROUTES.SOURCE_SHARED,
-            element: <SourcePlaceholderPage title="Media được chia sẻ" />,
+            element: <SourceSharedPage />,
           },
 
           // Source Playlists
