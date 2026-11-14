@@ -4,6 +4,7 @@ import type { TableColumnsType } from "antd";
 import { Form, Input, message } from "antd";
 import { Info, Search, SquarePen } from "lucide-react";
 import dayjs from "dayjs";
+import { useNavigate } from "react-router-dom";
 
 import AppFilter, {
   AppFilterField,
@@ -14,10 +15,19 @@ import AppTableActions from "../../../components/common/AppTableActions";
 import AppDateRangePicker from "../../../components/common/AppDateRangePicker";
 import type { DateRangeValue } from "../../../components/common/AppDateRangePicker";
 
+import PlaylistForm from "../../../components/playlists/PlaylistForm/PlaylistForm";
+import type {
+  PlaylistFormData,
+  PlaylistFormSource,
+} from "../../../components/playlists/PlaylistForm/PlaylistForm";
+import PlaylistSourcePickerModal from "../../../components/playlists/PlaylistSourcePickerModal/PlaylistSourcePickerModal";
+import type { PlaylistPickableSource } from "../../../components/playlists/PlaylistSourcePickerModal/PlaylistSourcePickerModal";
+
 import { createFacilityPlaylistsMock } from "../data/facilitiesPlaylists.mock";
 import type { FacilityPlaylist } from "../types/facilityPlaylist.types";
 import type { Facility } from "../types/facility.types";
-import { useNavigate } from "react-router-dom";
+import { createFacilityMediaMock } from "../data/facilitiesMedia.mock";
+import { createFacilityTemplatesMock } from "../data/facilitiesTemplates.mock";
 
 import "./FacilityPlaylists.css";
 
@@ -31,6 +41,8 @@ interface FacilityPlaylistsProps {
   onDeleteComplete?: () => void;
 }
 
+type FormMode = "create" | "edit";
+
 const categoryOptions = [
   { label: "Tất cả", value: "all" },
   { label: "Thể dục dưỡng sinh", value: "Thể dục dưỡng sinh" },
@@ -38,6 +50,10 @@ const categoryOptions = [
   { label: "Văn nghệ giải trí", value: "Văn nghệ giải trí" },
   { label: "Giáo dục", value: "Giáo dục" },
 ];
+
+const formCategoryOptions = categoryOptions.filter(
+  (option) => option.value !== "all",
+);
 
 const newsTypeOptions = [
   { label: "Tất cả", value: "all" },
@@ -51,11 +67,12 @@ function FacilityPlaylists({
   selectedRowKeys,
   onSelectionChange,
   openCreate = false,
-  onCloseCreate = () => {},
+  onCloseCreate,
   deleteRequestId = 0,
-  onDeleteComplete = () => {},
+  onDeleteComplete,
 }: FacilityPlaylistsProps) {
   const navigate = useNavigate();
+
   const [playlists, setPlaylists] = useState<FacilityPlaylist[]>(() =>
     createFacilityPlaylistsMock(facility.id),
   );
@@ -68,13 +85,62 @@ function FacilityPlaylists({
   const [handledDeleteRequest, setHandledDeleteRequest] =
     useState(deleteRequestId);
 
+  const [formMode, setFormMode] = useState<FormMode | null>(null);
+  const [editingPlaylist, setEditingPlaylist] =
+    useState<FacilityPlaylist | null>(null);
+
+  const [sourcePickerOpen, setSourcePickerOpen] = useState(false);
+
+  const [pickerSelectedSources, setPickerSelectedSources] = useState<
+    PlaylistFormSource[]
+  >([]);
+
+  const [pickerConfirm, setPickerConfirm] = useState<
+    ((sources: PlaylistFormSource[]) => void) | null
+  >(null);
+
+  const availableSources = useMemo<PlaylistPickableSource[]>(() => {
+    const mediaSources: PlaylistPickableSource[] = createFacilityMediaMock(
+      facility.id,
+    )
+      .filter(
+        (media) =>
+          media.status === "approved" && media.sourceStatus === "active",
+      )
+      .map((media) => ({
+        sourceId: media.id,
+        sourceType: "media",
+        name: media.title,
+        duration: "00:00:00",
+        category: media.category,
+        mediaType: media.type,
+        thumbnail: media.thumbnail,
+        createdBy: media.createdBy,
+        createdAt: media.createdAt,
+      }));
+
+    const templateSources: PlaylistPickableSource[] =
+      createFacilityTemplatesMock(facility.id).map((template) => ({
+        sourceId: template.id,
+        sourceType: "template",
+        name: template.name,
+        duration: "00:00:00",
+        createdBy: template.createdBy,
+        createdAt: template.createdAt,
+      }));
+
+    return [...mediaSources, ...templateSources];
+  }, [facility.id]);
+
   useEffect(() => {
     setPlaylists(createFacilityPlaylistsMock(facility.id));
-
     setCategory("all");
     setNewsType("all");
     setKeyword("");
     setDateRange([null, null]);
+    setFormMode(null);
+    setEditingPlaylist(null);
+    setSourcePickerOpen(false);
   }, [facility.id]);
 
   const filteredPlaylists = useMemo(() => {
@@ -136,7 +202,7 @@ function FacilityPlaylists({
     }
 
     onSelectionChange([]);
-    onDeleteComplete();
+    onDeleteComplete?.();
   }, [
     deleteRequestId,
     handledDeleteRequest,
@@ -150,10 +216,92 @@ function FacilityPlaylists({
   useEffect(() => {
     if (!openCreate) return;
 
-    message.info("Chức năng thêm danh sách phát sẽ được triển khai tiếp.");
-
-    onCloseCreate();
+    setEditingPlaylist(null);
+    setFormMode("create");
+    onCloseCreate?.();
   }, [openCreate, onCloseCreate]);
+
+  const handleEdit = (playlist: FacilityPlaylist) => {
+    setEditingPlaylist(playlist);
+    setFormMode("edit");
+  };
+
+  const handleCancelForm = () => {
+    setFormMode(null);
+    setEditingPlaylist(null);
+    setSourcePickerOpen(false);
+  };
+
+  const handleOpenSourcePicker = (
+    selectedSources: PlaylistFormSource[],
+    onConfirm: (sources: PlaylistFormSource[]) => void,
+  ) => {
+    setPickerSelectedSources(selectedSources);
+    setPickerConfirm(() => onConfirm);
+    setSourcePickerOpen(true);
+  };
+
+  const handleConfirmSources = (sources: PlaylistFormSource[]) => {
+    pickerConfirm?.(sources);
+    setSourcePickerOpen(false);
+    setPickerConfirm(null);
+  };
+
+  const handleSave = (data: PlaylistFormData) => {
+    if (formMode === "create") {
+      const newPlaylist = {
+        id: `playlist-${Date.now()}`,
+        facilityId: facility.id,
+        name: data.name,
+        duration: data.duration,
+        category: data.category,
+        createdBy: "Người dùng hiện tại",
+        createdAt: new Date().toISOString(),
+        newsType: "",
+        playMode: data.playMode,
+        description: data.description,
+        sources: data.sources,
+      } as FacilityPlaylist;
+
+      setPlaylists((previous) => [newPlaylist, ...previous]);
+      message.success("Thêm danh sách phát thành công");
+    }
+
+    if (formMode === "edit" && editingPlaylist) {
+      setPlaylists((previous) =>
+        previous.map((playlist) =>
+          playlist.id === editingPlaylist.id
+            ? {
+                ...playlist,
+                name: data.name,
+                duration: data.duration,
+                category: data.category,
+                playMode: data.playMode,
+                description: data.description,
+                sources: data.sources,
+              }
+            : playlist,
+        ),
+      );
+
+      message.success("Cập nhật danh sách phát thành công");
+    }
+    onSelectionChange([]);
+    handleCancelForm();
+  };
+
+  const initialFormData = useMemo<PlaylistFormData | undefined>(() => {
+    if (!editingPlaylist) return undefined;
+
+    return {
+      name: editingPlaylist.name,
+      category: editingPlaylist.category,
+      duration: editingPlaylist.duration,
+      playMode: editingPlaylist.playMode ?? "sequential",
+      description: editingPlaylist.description ?? "",
+      sources: editingPlaylist.sources ?? [],
+    };
+  }, [editingPlaylist]);
 
   const columns: TableColumnsType<FacilityPlaylist> = [
     {
@@ -207,9 +355,7 @@ function FacilityPlaylists({
               key: "edit",
               icon: <SquarePen />,
               tooltip: "Chỉnh sửa danh sách phát",
-              onClick: () => {
-                message.info(`Chỉnh sửa: ${record.name}`);
-              },
+              onClick: () => handleEdit(record),
             },
             {
               key: "detail",
@@ -224,6 +370,33 @@ function FacilityPlaylists({
       ),
     },
   ];
+
+  if (formMode) {
+    return (
+      <>
+        <PlaylistForm
+          key={formMode === "edit" ? `edit-${editingPlaylist?.id}` : "create"}
+          mode={formMode}
+          initialData={initialFormData}
+          categoryOptions={formCategoryOptions}
+          onSave={handleSave}
+          onCancel={handleCancelForm}
+          onOpenSourcePicker={handleOpenSourcePicker}
+        />
+
+        <PlaylistSourcePickerModal
+          open={sourcePickerOpen}
+          sources={availableSources}
+          selectedSources={pickerSelectedSources}
+          onConfirm={handleConfirmSources}
+          onCancel={() => {
+            setSourcePickerOpen(false);
+            setPickerConfirm(null);
+          }}
+        />
+      </>
+    );
+  }
 
   return (
     <div className="facility-playlists">
