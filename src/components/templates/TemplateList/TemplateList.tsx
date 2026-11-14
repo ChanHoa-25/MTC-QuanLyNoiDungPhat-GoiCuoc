@@ -11,6 +11,7 @@ import AppTable from "../../common/AppTable";
 import AppTableActions from "../../common/AppTableActions";
 import AppDateRangePicker from "../../common/AppDateRangePicker";
 import type { DateRangeValue } from "../../common/AppDateRangePicker";
+import AppStatusTag from "../../common/AppStatusTag";
 
 import "./TemplateList.css";
 
@@ -30,6 +31,8 @@ interface TemplateListProps<T extends TemplateListItem> {
   onEdit: (id: string) => void;
   onDetail: (id: string) => void;
   showUsageStatus?: boolean;
+  pageSize?: number;
+  canEdit?: (template: T) => boolean;
 }
 
 const aspectRatioOptions = [
@@ -46,6 +49,8 @@ function TemplateList<T extends TemplateListItem>({
   onEdit,
   onDetail,
   showUsageStatus = false,
+  pageSize = 10,
+  canEdit,
 }: TemplateListProps<T>) {
   const [aspectRatio, setAspectRatio] = useState("all");
   const [keyword, setKeyword] = useState("");
@@ -65,8 +70,10 @@ function TemplateList<T extends TemplateListItem>({
       const createdDate = dayjs(template.createdAt);
 
       const matchDate =
-        (!startDate || !createdDate.isBefore(startDate, "day")) &&
-        (!endDate || !createdDate.isAfter(endDate, "day"));
+        (!startDate && !endDate) ||
+        (createdDate.isValid() &&
+          (!startDate || !createdDate.isBefore(startDate, "day")) &&
+          (!endDate || !createdDate.isAfter(endDate, "day")));
 
       return matchAspectRatio && matchKeyword && matchDate;
     });
@@ -112,33 +119,52 @@ function TemplateList<T extends TemplateListItem>({
       dataIndex: "usageStatus",
       key: "usageStatus",
       width: 170,
-      render: (value?: string) => value || "-",
+      render: (value?: string) => {
+        if (!value) return "-";
+
+        if (value === "in_use" || value === "Đang sử dụng") {
+          return <AppStatusTag variant="green" label="Đang sử dụng" />;
+        }
+
+        if (value === "unused" || value === "Chưa sử dụng") {
+          return <AppStatusTag variant="blue" label="Chưa sử dụng" />;
+        }
+
+        return value;
+      },
     });
   }
-
   columns.push({
     title: "Hành động",
     key: "actions",
     width: 120,
     align: "center",
-    render: (_, record) => (
-      <AppTableActions
-        actions={[
-          {
-            key: "edit",
-            icon: <SquarePen />,
-            tooltip: "Chỉnh sửa bản mẫu",
-            onClick: () => onEdit(record.id),
-          },
-          {
-            key: "detail",
-            icon: <Info />,
-            tooltip: "Xem chi tiết bản mẫu",
-            onClick: () => onDetail(record.id),
-          },
-        ]}
-      />
-    ),
+    render: (_, record) => {
+      const showEdit = canEdit ? canEdit(record) : true;
+
+      return (
+        <AppTableActions
+          actions={[
+            ...(showEdit
+              ? [
+                  {
+                    key: "edit",
+                    icon: <SquarePen />,
+                    tooltip: "Chỉnh sửa bản mẫu",
+                    onClick: () => onEdit(record.id),
+                  },
+                ]
+              : []),
+            {
+              key: "detail",
+              icon: <Info />,
+              tooltip: "Xem chi tiết bản mẫu",
+              onClick: () => onDetail(record.id),
+            },
+          ]}
+        />
+      );
+    },
   });
 
   return (
@@ -197,7 +223,7 @@ function TemplateList<T extends TemplateListItem>({
             selectedRowKeys,
             onChange: (keys) => onSelectionChange([...keys]),
           }}
-          pagination={{ pageSize: 10 }}
+          pagination={{ pageSize }}
           scroll={{ x: showUsageStatus ? 1120 : 950 }}
         />
       </div>

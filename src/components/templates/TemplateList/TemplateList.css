@@ -134,6 +134,30 @@
   flex-shrink: 0;
 }
 
+.template-list__status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 26px;
+  padding: 3px 10px;
+  border: 1px solid;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.template-list__status--used {
+  color: #52c41a;
+  background: #f6ffed;
+  border-color: #52c41a;
+}
+
+.template-list__status--unused {
+  color: #1677ff;
+  background: #e6f4ff;
+  border-color: #91caff;
+}
 /* Responsive */
 @media (max-width: 1200px) {
   .template-list__search {

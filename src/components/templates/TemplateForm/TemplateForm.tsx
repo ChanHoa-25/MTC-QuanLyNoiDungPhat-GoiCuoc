@@ -24,6 +24,7 @@ interface TemplateFormProps {
   onCancel: () => void;
   onSave?: (data: TemplateFormData) => void;
   onEdit?: () => void;
+  canEdit?: boolean;
 }
 
 const emptyData: TemplateFormData = {
@@ -41,6 +42,7 @@ function TemplateForm({
   onCancel,
   onSave,
   onEdit,
+  canEdit = true,
 }: TemplateFormProps) {
   const isView = mode === "view";
   const isCreate = mode === "create";
@@ -348,9 +350,12 @@ function TemplateForm({
           </AppButton>
 
           {isView ? (
-            <AppButton variant="primary" width={158} onClick={onEdit}>
-              Chỉnh sửa
-            </AppButton>
+            canEdit &&
+            onEdit && (
+              <AppButton variant="primary" width={158} onClick={onEdit}>
+                Chỉnh sửa
+              </AppButton>
+            )
           ) : (
             <AppButton variant="primary" width={158} onClick={handleSave}>
               Lưu
