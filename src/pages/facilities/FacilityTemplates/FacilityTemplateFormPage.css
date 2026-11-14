@@ -42,3 +42,22 @@
     width: 100%;
   }
 }
+/* Khung nội dung danh sách bản mẫu */
+.facility-templates {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  width: 100%;
+  min-width: 0;
+}
+
+/* Khu vực chứa bảng */
+.facility-templates__table {
+  flex: 1;
+  min-height: 0;
+}
+
+/* Phân trang nằm cuối */
+.facility-templates .ant-pagination {
+  margin-top: auto;
+}

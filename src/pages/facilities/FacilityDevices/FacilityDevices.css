@@ -1,17 +1,29 @@
 .facility-devices {
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
   width: 100%;
+  height: 100%;
   min-width: 0;
+  min-height: 0;
 }
 
 .facility-devices__panel {
+  box-sizing: border-box;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
   width: 100%;
   min-width: 0;
+  min-height: 0;
   padding: 10px 20px;
-  border-radius: 12px;
   background: #ffffff;
+  border-radius: 12px;
 }
 
 .facility-devices__title {
+  flex-shrink: 0;
   margin: 0 0 12px;
   color: var(--color-primary);
   font-size: 20px;
@@ -20,6 +32,8 @@
 }
 
 .facility-devices__filters {
+  flex-shrink: 0;
+  width: 100%;
   margin-bottom: 12px;
 }
 
@@ -27,6 +41,13 @@
   display: flex;
   align-items: flex-end;
   flex-wrap: wrap;
+  width: 100%;
+  min-width: 0;
+}
+
+.facility-devices__filters .app-filter__field {
+  min-width: 0;
+  max-width: 100%;
 }
 
 .facility-devices__filters .ant-form-item {
@@ -59,6 +80,7 @@
 }
 
 .facility-devices__search .ant-input-affix-wrapper {
+  box-sizing: border-box;
   width: 100%;
   height: 40px;
   border: 1px solid #c2c2c2;
@@ -66,7 +88,14 @@
   box-shadow: none;
 }
 
+.facility-devices__search .ant-input-affix-wrapper:hover,
+.facility-devices__search .ant-input-affix-wrapper-focused {
+  border-color: var(--color-primary);
+  box-shadow: none;
+}
+
 .facility-devices__search .ant-input {
+  min-width: 0;
   font-size: 14px;
 }
 
@@ -89,6 +118,7 @@
 .facility-devices__status-dot {
   width: 5px;
   height: 5px;
+  flex-shrink: 0;
   border-radius: 50%;
   background: currentColor;
 }
@@ -113,6 +143,8 @@
   }
 
   .facility-devices__filters .facility-devices__search {
+    flex: 1 1 100%;
+    width: 100% !important;
     margin-left: 0;
   }
 }
@@ -122,7 +154,20 @@
     padding: 16px;
   }
 
+  .facility-devices__filters .app-filter__fields {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+  }
+
   .facility-devices__filters .app-filter__field {
+    flex: 0 0 auto;
     width: 100% !important;
+    max-width: 100%;
+  }
+
+  .facility-devices__filters .facility-devices__search {
+    width: 100% !important;
+    margin-left: 0;
   }
 }

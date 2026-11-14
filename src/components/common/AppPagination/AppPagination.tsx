@@ -1,12 +1,13 @@
 import { Pagination } from "antd";
 import type { PaginationProps } from "antd";
+import { Triangle } from "lucide-react";
 
 import "./AppPagination.css";
-import { Triangle } from "lucide-react";
 
 export interface AppPaginationProps extends Omit<PaginationProps, "showTotal"> {
   showSummary?: boolean;
   itemLabel?: string;
+  displayedCount?: number;
 }
 
 function AppPagination({
@@ -15,21 +16,29 @@ function AppPagination({
   total = 0,
   showSummary = true,
   itemLabel = "nội dung",
+  displayedCount,
   showSizeChanger = false,
   showQuickJumper = false,
   className = "",
   size = "middle",
   ...rest
 }: AppPaginationProps) {
+  // Số dòng thực tế trên trang hiện tại
+  const actualDisplayedCount =
+    displayedCount ??
+    Math.max(0, Math.min(pageSize, total - (current - 1) * pageSize));
+
   return (
     <div className={`app-pagination ${className}`.trim()}>
       {showSummary && (
         <div className="app-pagination__summary">
           <span>Hiển thị</span>
 
-          <span className="app-pagination__page-size">{pageSize}</span>
+          <span className="app-pagination__page-size">
+            {actualDisplayedCount}
+          </span>
 
-          <span>{itemLabel} trong mỗi trang</span>
+          <span>{itemLabel} trong trang hiện tại</span>
         </div>
       )}
 

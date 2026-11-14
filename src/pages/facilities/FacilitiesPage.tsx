@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-
+import { useSearchParams } from "react-router-dom";
 import { Alert, Button, Empty, Spin, message } from "antd";
 
 import AppTabs from "../../components/common/AppTabs";
@@ -19,6 +19,7 @@ import type { Facility } from "./types/facility.types";
 import { facilityTabs, useFacilityTabs } from "./hooks/useFacilityTabs";
 
 import { useFacilitySelection } from "./hooks/useFacilitySelection";
+import { findFacilityById } from "./utils/facility.utils";
 
 import "./FacilitiesPage.css";
 
@@ -40,6 +41,9 @@ function FacilitiesPage() {
   } = useFacilityContext();
   const { setActions } = useActionPanel();
   const { activeTab, changeTab, resetTab } = useFacilityTabs();
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const facilityIdFromUrl = searchParams.get("facilityId");
   const {
     selectedUserKeys,
     setSelectedUserKeys,
@@ -86,6 +90,7 @@ function FacilitiesPage() {
     deleteDeviceRequestId,
     volumePopoverOpen,
     deviceVolume,
+    commandLoading,
 
     handleAddDevice,
     handleCloseCreateDevice,
@@ -163,7 +168,16 @@ function FacilitiesPage() {
 
   const handleSelectFacility = (facility: Facility) => {
     setSelectedFacilityId(facility.id);
-    resetTab();
+
+    setSearchParams((previous) => {
+      const next = new URLSearchParams(previous);
+
+      next.set("facilityId", facility.id);
+      next.delete("tab");
+
+      return next;
+    });
+
     resetTabState();
     setActiveModal(null);
     setTargetFacility(null);
@@ -278,6 +292,37 @@ function FacilitiesPage() {
       setActions([]);
     };
   }, [setActions]);
+  useEffect(() => {
+    if (loading || facilities.length === 0) return;
+
+    if (facilityIdFromUrl) {
+      const facility = findFacilityById(facilities, facilityIdFromUrl);
+
+      if (facility && selectedFacilityId !== facility.id) {
+        setSelectedFacilityId(facility.id);
+      }
+
+      return;
+    }
+
+    if (!selectedFacilityId) return;
+
+    setSearchParams(
+      (previous) => {
+        const next = new URLSearchParams(previous);
+        next.set("facilityId", selectedFacilityId);
+        return next;
+      },
+      { replace: true },
+    );
+  }, [
+    loading,
+    facilities,
+    facilityIdFromUrl,
+    selectedFacilityId,
+    setSelectedFacilityId,
+    setSearchParams,
+  ]);
 
   return (
     <div className="facilities-page">
@@ -377,6 +422,7 @@ function FacilitiesPage() {
       />
       <FacilityConfirmModals
         openDeleteFacility={activeModal === "delete"}
+        deviceCommandLoading={commandLoading}
         deletingFacility={submitting}
         onCloseFacility={handleCloseModal}
         onConfirmDeleteFacility={handleDeleteFacility}

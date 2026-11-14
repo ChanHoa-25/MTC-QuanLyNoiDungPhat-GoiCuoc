@@ -1,7 +1,7 @@
 export type DeviceActivityStatus = "active" | "inactive";
 export type DeviceConnectionStatus = "connected" | "disconnected";
+export type DeviceLocationMode = "gps" | "manual";
 
-// Thông tin thiết bị thuộc cơ sở
 export interface FacilityDevice {
   id: string;
   facilityId: string;
@@ -12,26 +12,39 @@ export interface FacilityDevice {
   activityStatus: DeviceActivityStatus;
   connectionStatus: DeviceConnectionStatus;
 
-  // Thông tin SIM
   provider?: string;
   simPhoneNumber?: string;
   simSerial?: string;
   tag?: string;
 
-  // Vị trí thiết bị
+  deviceGroup?: string;
+  width?: number;
+  height?: number;
+  locationMode?: DeviceLocationMode;
+  description?: string;
+
   address?: string;
   longitude?: string;
   latitude?: string;
 }
 
-// Dữ liệu form thêm hoặc cập nhật thiết bị
 export interface FacilityDeviceFormValues {
   name: string;
-  ipAddress: string;
   identifier: string;
-  password?: string;
+  osType: string;
+  activityStatus: DeviceActivityStatus;
+  deviceGroup?: string;
   provider: string;
-  simPhoneNumber?: string;
-  simSerial?: string;
+  simSerial: string;
+  simPhoneNumber: string;
+  width?: number;
+  height?: number;
+  locationMode: DeviceLocationMode;
+  longitude?: string;
+  latitude?: string;
+  description?: string;
+
+  ipAddress?: string;
+  password?: string;
   tag?: string;
 }

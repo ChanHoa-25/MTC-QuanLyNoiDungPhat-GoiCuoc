@@ -1,8 +1,9 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Key } from "react";
 import type { TableColumnsType } from "antd";
 import { Form, Input, message } from "antd";
 import { Search, SquarePen } from "lucide-react";
+import axios from "axios";
 
 import AppFilter, {
   AppFilterField,
@@ -10,10 +11,16 @@ import AppFilter, {
 import AppSelect from "../../../components/common/AppSelect";
 import AppTable from "../../../components/common/AppTable";
 import AppTableActions from "../../../components/common/AppTableActions";
-
+import deviceApi from "../../../api/deviceApi";
+import deviceVendorApi from "../../../api/deviceVendorApi";
 import FacilityDeviceFormModal from "./FacilityDeviceFormModal";
-import { createFacilityDevicesMock } from "../data/facilitiesDevices.mock";
 
+import type {
+  CreateDeviceRequest,
+  DeviceResponse,
+  UpdateDeviceRequest,
+} from "../../../types/device.types";
+import type { DeviceVendor } from "../../../types/deviceVendor.types";
 import type { Facility } from "../types/facility.types";
 import type {
   FacilityDevice,
@@ -21,6 +28,7 @@ import type {
 } from "../types/facilityDevice.types";
 
 import "./FacilityDevices.css";
+import deviceCommandApi from "../../../api/deviceCommandApi";
 
 interface FacilityDevicesProps {
   facility: Facility;
@@ -32,31 +40,48 @@ interface FacilityDevicesProps {
   onDeleteComplete?: () => void;
 }
 
-const providers = [
-  { label: "Mobifone", value: "Mobifone" },
-  { label: "Viettel", value: "Viettel" },
-  { label: "Vinaphone", value: "Vinaphone" },
-];
+type DeviceRow = FacilityDevice & { deviceVendorId?: string | null };
 
-// Lưu dữ liệu mock theo cơ sở trong phiên chạy ứng dụng.
-// Không bị reset khi chuyển tab hoặc chuyển cơ sở.
-const deviceStore = new Map<string, FacilityDevice[]>();
+function mapDevice(device: DeviceResponse, facilityName: string): DeviceRow {
+  const status = device.connectionStatus?.trim().toLowerCase();
 
-function getFacilityDevices(facility: Facility): FacilityDevice[] {
-  const existing = deviceStore.get(facility.id);
+  const isConnected =
+    status === "connected" ||
+    status === "online" ||
+    status === "kết nối" ||
+    status === "đã kết nối";
+  return {
+    id: device.id,
+    facilityId: device.facilityId,
+    facilityName,
+    identifier: device.deviceCode,
+    name: device.deviceName,
+    ipAddress: device.ipAddress ?? "",
+    provider: device.deviceVendorId ?? "",
+    deviceVendorId: device.deviceVendorId,
+    simPhoneNumber: device.simPhoneNumber ?? "",
+    simSerial: device.simSerialNumber ?? "",
+    tag: device.tag ?? "",
+    deviceGroup: device.deviceGroupId ?? undefined,
+    description: device.description ?? "",
+    longitude: device.longitude != null ? String(device.longitude) : "",
+    latitude: device.latitude != null ? String(device.latitude) : "",
+    locationMode: "manual",
+    activityStatus: device.activeStatus ? "active" : "inactive",
+    connectionStatus: isConnected ? "connected" : "disconnected",
+  };
+}
 
-  if (existing) {
-    return existing;
+function getApiError(error: unknown, fallback: string): string {
+  if (axios.isAxiosError(error)) {
+    const data = error.response?.data as
+      | { message?: string; errors?: string[] | null }
+      | undefined;
+    return (
+      data?.errors?.filter(Boolean).join("; ") || data?.message || fallback
+    );
   }
-
-  const initialDevices = createFacilityDevicesMock(
-    facility.id,
-    facility.facilityName,
-  );
-
-  deviceStore.set(facility.id, initialDevices);
-
-  return initialDevices;
+  return error instanceof Error ? error.message : fallback;
 }
 
 function FacilityDevices({
@@ -68,212 +93,369 @@ function FacilityDevices({
   deleteRequestId = 0,
   onDeleteComplete,
 }: FacilityDevicesProps) {
-  const [devices, setDevices] = useState<FacilityDevice[]>(() =>
-    getFacilityDevices(facility),
-  );
-
+  const [devices, setDevices] = useState<DeviceRow[]>([]);
+  const [vendors, setVendors] = useState<DeviceVendor[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [vendorsLoading, setVendorsLoading] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [activityFilter, setActivityFilter] = useState("all");
   const [connectionFilter, setConnectionFilter] = useState("all");
   const [keyword, setKeyword] = useState("");
-
-  const [editingDevice, setEditingDevice] = useState<FacilityDevice | null>(
-    null,
-  );
-
-  const [saving, setSaving] = useState(false);
+  const [editingDevice, setEditingDevice] = useState<DeviceRow | null>(null);
 
   const handledDeleteRequestRef = useRef(deleteRequestId);
+  const requestVersionRef = useRef(0);
+  const deletingRef = useRef(false);
+  const currentFacilityIdRef = useRef(facility.id);
+  currentFacilityIdRef.current = facility.id;
 
-  // Cập nhật đồng thời React state và mock store.
-  const updateDevices = (
-    updater: (previous: FacilityDevice[]) => FacilityDevice[],
-  ) => {
-    const currentDevices = getFacilityDevices(facility);
-    const nextDevices = updater(currentDevices);
+  const loadDevices = useCallback(async () => {
+    const version = ++requestVersionRef.current;
+    setLoading(true);
+    try {
+      const result = await deviceApi.getAll({ facilityId: facility.id });
+      if (version !== requestVersionRef.current) return;
+      setDevices(
+        result
+          .filter((device) => device.facilityId === facility.id)
+          .map((device) => mapDevice(device, facility.facilityName)),
+      );
+    } catch (error) {
+      if (version !== requestVersionRef.current) return;
+      setDevices([]);
+      message.error(getApiError(error, "Không thể tải danh sách thiết bị"));
+    } finally {
+      if (version === requestVersionRef.current) setLoading(false);
+    }
+  }, [facility.id, facility.facilityName]);
 
-    deviceStore.set(facility.id, nextDevices);
-    setDevices(nextDevices);
-  };
-
-  // Khi chuyển cơ sở, lấy dữ liệu đã lưu thay vì tạo lại mock.
   useEffect(() => {
-    setDevices(getFacilityDevices(facility));
+    setDevices([]);
     setActivityFilter("all");
     setConnectionFilter("all");
     setKeyword("");
     setEditingDevice(null);
-  }, [facility]);
+    void loadDevices();
+    return () => {
+      requestVersionRef.current += 1;
+    };
+  }, [loadDevices]);
 
-  // Danh sách sau khi lọc.
+  useEffect(() => {
+    let cancelled = false;
+    setVendors([]);
+    setVendorsLoading(true);
+
+    const loadVendors = async () => {
+      try {
+        const result = await deviceVendorApi.getAll();
+
+        if (!cancelled) {
+          setVendors(
+            result.filter(
+              (vendor) =>
+                vendor.organizationId === null ||
+                vendor.organizationId === facility.organizationId,
+            ),
+          );
+        }
+      } catch (error) {
+        if (!cancelled) {
+          message.error(getApiError(error, "Không thể tải nhà phân phối"));
+        }
+      } finally {
+        if (!cancelled) setVendorsLoading(false);
+      }
+    };
+
+    void loadVendors();
+    return () => {
+      cancelled = true;
+    };
+  }, [facility.organizationId]);
+
+  const providers = useMemo(
+    () =>
+      vendors.map((vendor) => ({ label: vendor.vendorName, value: vendor.id })),
+    [vendors],
+  );
+
   const filteredDevices = useMemo(() => {
     const search = keyword.trim().toLowerCase();
-
     return devices.filter((device) => {
-      const matchFacility = device.facilityId === facility.id;
-
       const matchActivity =
         activityFilter === "all" || device.activityStatus === activityFilter;
-
       const matchConnection =
         connectionFilter === "all" ||
         device.connectionStatus === connectionFilter;
-
       const matchKeyword =
         !search ||
         device.identifier.toLowerCase().includes(search) ||
         device.name.toLowerCase().includes(search) ||
         device.ipAddress.toLowerCase().includes(search);
-
-      return matchFacility && matchActivity && matchConnection && matchKeyword;
+      return matchActivity && matchConnection && matchKeyword;
     });
-  }, [devices, facility.id, activityFilter, connectionFilter, keyword]);
+  }, [devices, activityFilter, connectionFilter, keyword]);
 
-  // Xử lý yêu cầu xóa từ FacilitiesPage.
   useEffect(() => {
-    if (deleteRequestId === handledDeleteRequestRef.current) {
+    if (deleteRequestId === handledDeleteRequestRef.current) return;
+    handledDeleteRequestRef.current = deleteRequestId;
+    if (deletingRef.current) return;
+
+    const ids = selectedRowKeys.map(String);
+    if (ids.length === 0) {
+      onDeleteComplete?.();
       return;
     }
 
-    handledDeleteRequestRef.current = deleteRequestId;
-
-    const selectedIds = new Set(selectedRowKeys);
-    const currentDevices = getFacilityDevices(facility);
-
-    const deletedDevices = currentDevices.filter(
-      (device) =>
-        device.facilityId === facility.id && selectedIds.has(device.id),
-    );
-
-    if (deletedDevices.length > 0) {
-      const nextDevices = currentDevices.filter(
-        (device) =>
-          !(device.facilityId === facility.id && selectedIds.has(device.id)),
-      );
-
-      deviceStore.set(facility.id, nextDevices);
-      setDevices(nextDevices);
-
-      setEditingDevice((previous) =>
-        previous && selectedIds.has(previous.id) ? null : previous,
-      );
-
-      message.success(`Đã xóa ${deletedDevices.length} thiết bị thành công`);
-    }
-
-    onSelectionChange([]);
-    onDeleteComplete?.();
+    deletingRef.current = true;
+    const deleteDevices = async () => {
+      try {
+        const results = await Promise.allSettled(
+          ids.map((id) => deviceApi.remove(id)),
+        );
+        const deletedIds = ids.filter(
+          (_, index) => results[index].status === "fulfilled",
+        );
+        const failedIds = ids.filter(
+          (_, index) => results[index].status === "rejected",
+        );
+        if (deletedIds.length) {
+          message.success(`Đã xóa ${deletedIds.length} thiết bị thành công`);
+        }
+        if (failedIds.length) {
+          message.error(`Không thể xóa ${failedIds.length} thiết bị`);
+        }
+        onSelectionChange(failedIds);
+        await loadDevices();
+      } catch (error) {
+        message.error(getApiError(error, "Không thể hoàn tất xóa thiết bị"));
+      } finally {
+        deletingRef.current = false;
+        onDeleteComplete?.();
+      }
+    };
+    void deleteDevices();
   }, [
     deleteRequestId,
     selectedRowKeys,
-    facility,
     onSelectionChange,
     onDeleteComplete,
+    loadDevices,
   ]);
 
-  // Kiểm tra mã định danh đã tồn tại.
-  const isIdentifierExists = (identifier: string) => {
-    const normalized = identifier.trim().toLowerCase();
-
-    for (const facilityDevices of deviceStore.values()) {
-      if (
-        facilityDevices.some(
-          (device) => device.identifier.trim().toLowerCase() === normalized,
-        )
-      ) {
-        return true;
-      }
-    }
-
-    return false;
+  const getSelectedVendor = (vendorId: string) => {
+    return vendors.find(
+      (vendor) =>
+        vendor.id === vendorId &&
+        (vendor.organizationId === null ||
+          vendor.organizationId === facility.organizationId),
+    );
   };
 
-  // Thêm thiết bị.
-  const handleCreateDevice = (values: FacilityDeviceFormValues) => {
+  const handleCreateDevice = async (values: FacilityDeviceFormValues) => {
     if (saving) return;
+    if (vendorsLoading) {
+      message.warning("Đang tải danh sách nhà phân phối");
+      return;
+    }
+    const vendor = getSelectedVendor(values.provider);
+    if (!vendor) {
+      message.error("Vui lòng chọn nhà phân phối hợp lệ của tổ chức");
+      return;
+    }
 
-    if (isIdentifierExists(values.identifier)) {
-      message.error("Mã định danh thiết bị đã tồn tại");
+    const payload: CreateDeviceRequest = {
+      organizationId: facility.organizationId,
+      facilityId: facility.id,
+      deviceCode: values.identifier.trim(),
+      deviceName: values.name.trim(),
+      osType: values.osType,
+      description: values.description?.trim() || null,
+      ipAddress: values.ipAddress?.trim() || null,
+      deviceVendorId: vendor.id,
+      vendorName: vendor.vendorName,
+      deviceGroupId: values.deviceGroup || null,
+      activeStatus: values.activityStatus === "active",
+      screenshotSizeInBytes: 0,
+      simPhoneNumber: values.simPhoneNumber?.trim() || null,
+      simSerialNumber: values.simSerial?.trim() || null,
+      tag: values.tag?.trim() || null,
+      longitude:
+        values.locationMode === "manual" && values.longitude?.trim()
+          ? Number(values.longitude)
+          : null,
+      latitude:
+        values.locationMode === "manual" && values.latitude?.trim()
+          ? Number(values.latitude)
+          : null,
+    };
+
+    setSaving(true);
+    try {
+      await deviceApi.create(payload);
+      message.success("Thêm mới thiết bị thành công");
+      onCloseCreate?.();
+      await loadDevices();
+    } catch (error) {
+      message.error(getApiError(error, "Không thể thêm thiết bị"));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleUpdateDevice = async (values: FacilityDeviceFormValues) => {
+    if (!editingDevice || saving) return;
+    const vendor = getSelectedVendor(values.provider);
+    if (!vendor) {
+      message.error("Vui lòng chọn nhà phân phối hợp lệ của tổ chức");
       return;
     }
 
     setSaving(true);
-
     try {
-      const newDevice: FacilityDevice = {
-        id: crypto.randomUUID(),
-        facilityId: facility.id,
-        facilityName: facility.facilityName,
-        identifier: values.identifier.trim(),
-        name: values.name.trim(),
-        ipAddress: values.ipAddress.trim(),
-        provider: values.provider,
-        simPhoneNumber: values.simPhoneNumber?.trim() ?? "",
-        simSerial: values.simSerial?.trim() ?? "",
-        tag: values.tag?.trim() ?? "",
-        activityStatus: "active",
-        connectionStatus: "disconnected",
+      const current = await deviceApi.getById(editingDevice.id);
+
+      if (!current.osType?.trim()) {
+        message.error("Thiết bị chưa có thông tin hệ điều hành");
+        return;
+      }
+
+      const payload: UpdateDeviceRequest = {
+        organizationId: current.organizationId,
+        facilityId: current.facilityId,
+        deviceCode: current.deviceCode,
+        deviceName: values.name.trim(),
+        description: values.description?.trim() || null,
+        serialNumber: current.serialNumber,
+        ipAddress: current.ipAddress,
+        simPhoneNumber: values.simPhoneNumber?.trim() || null,
+        simSerialNumber: values.simSerial?.trim() || null,
+        tag: current.tag,
+        osType: current.osType,
+        vendorName: vendor.vendorName,
+        deviceVendorId: vendor.id,
+        deviceGroupId: values.deviceGroup || null,
+        activeStatus: values.activityStatus === "active",
+        volume: current.volume,
+        screenshotUrl: current.screenshotUrl,
+        screenshotSizeInBytes: current.screenshotSizeInBytes ?? 0,
+        lastScreenshotAt: current.lastScreenshotAt,
+        latitude:
+          values.locationMode === "manual" && values.latitude?.trim()
+            ? Number(values.latitude)
+            : current.latitude,
+        longitude:
+          values.locationMode === "manual" && values.longitude?.trim()
+            ? Number(values.longitude)
+            : current.longitude,
+        installationAddress: current.installationAddress,
+        connectionStatus: current.connectionStatus,
+        playStatus: current.playStatus,
+        lastOnlineAt: current.lastOnlineAt,
       };
 
-      updateDevices((previous) => [newDevice, ...previous]);
-
-      message.success("Thêm mới thiết bị thành công");
-      onCloseCreate?.();
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  // Cập nhật thiết bị.
-  const handleUpdateDevice = (values: FacilityDeviceFormValues) => {
-    if (!editingDevice || saving) return;
-
-    setSaving(true);
-
-    try {
-      updateDevices((previous) =>
-        previous.map((device) =>
-          device.id === editingDevice.id
-            ? {
-                ...device,
-                name: values.name.trim(),
-                ipAddress: values.ipAddress.trim(),
-                provider: values.provider,
-                simPhoneNumber: values.simPhoneNumber?.trim() ?? "",
-                simSerial: values.simSerial?.trim() ?? "",
-                tag: values.tag?.trim() ?? "",
-              }
-            : device,
-        ),
-      );
-
+      await deviceApi.update(editingDevice.id, payload);
       message.success("Cập nhật thiết bị thành công");
       setEditingDevice(null);
+      await loadDevices();
+    } catch (error) {
+      message.error(getApiError(error, "Không thể cập nhật thiết bị"));
     } finally {
       setSaving(false);
     }
   };
 
-  const handleCloseCreate = () => {
-    if (!saving) onCloseCreate?.();
+  const [commandLoading, setCommandLoading] = useState(false);
+
+  const handleChangeVolume = async (volume: number) => {
+    const ids = selectedRowKeys.map(String);
+
+    if (ids.length === 0) {
+      message.warning("Vui lòng chọn ít nhất một thiết bị");
+      return;
+    }
+
+    if (commandLoading) return;
+
+    setCommandLoading(true);
+
+    try {
+      if (ids.length === 1) {
+        await deviceCommandApi.setVolume(ids[0], volume);
+      } else {
+        await deviceCommandApi.setVolumeMany(ids, volume);
+      }
+
+      message.success("Đã gửi lệnh điều chỉnh âm lượng");
+      await loadDevices();
+    } catch (error) {
+      message.error(getApiError(error, "Không thể điều chỉnh âm lượng"));
+    } finally {
+      setCommandLoading(false);
+    }
   };
 
-  const handleCloseEdit = () => {
-    if (!saving) setEditingDevice(null);
+  const handleRebootDevices = async () => {
+    const ids = selectedRowKeys.map(String);
+
+    if (ids.length === 0) {
+      message.warning("Vui lòng chọn ít nhất một thiết bị");
+      return;
+    }
+
+    if (commandLoading) return;
+
+    setCommandLoading(true);
+
+    try {
+      if (ids.length === 1) {
+        await deviceCommandApi.reboot(ids[0]);
+      } else {
+        await deviceCommandApi.rebootMany(ids);
+      }
+
+      message.success("Đã gửi lệnh khởi động lại thiết bị");
+    } catch (error) {
+      message.error(getApiError(error, "Không thể gửi lệnh khởi động lại"));
+    } finally {
+      setCommandLoading(false);
+    }
   };
 
-  const columns: TableColumnsType<FacilityDevice> = [
+  const handleOpenEditDevice = async (device: DeviceRow) => {
+    const facilityId = facility.id;
+
+    try {
+      const result = await deviceApi.getById(device.id);
+
+      if (currentFacilityIdRef.current !== facilityId) {
+        return;
+      }
+
+      if (result.facilityId !== facilityId) {
+        message.error("Thiết bị không thuộc cơ sở hiện tại");
+        return;
+      }
+
+      setEditingDevice(mapDevice(result, facility.facilityName));
+    } catch (error) {
+      if (currentFacilityIdRef.current !== facilityId) {
+        return;
+      }
+
+      message.error(getApiError(error, "Không thể tải thông tin thiết bị"));
+    }
+  };
+
+  const columns: TableColumnsType<DeviceRow> = [
     {
       title: "Mã định danh",
       dataIndex: "identifier",
       key: "identifier",
       width: 130,
     },
-    {
-      title: "Tên thiết bị",
-      dataIndex: "name",
-      key: "name",
-      width: 140,
-    },
+    { title: "Tên thiết bị", dataIndex: "name", key: "name", width: 140 },
     {
       title: "Địa chỉ IP",
       dataIndex: "ipAddress",
@@ -291,7 +473,7 @@ function FacilityDevices({
       dataIndex: "activityStatus",
       key: "activityStatus",
       width: 170,
-      render: (status: FacilityDevice["activityStatus"]) => (
+      render: (status: DeviceRow["activityStatus"]) => (
         <span
           className={`facility-devices__status facility-devices__status--${status}`}>
           <span className="facility-devices__status-dot" />
@@ -304,7 +486,7 @@ function FacilityDevices({
       dataIndex: "connectionStatus",
       key: "connectionStatus",
       width: 150,
-      render: (status: FacilityDevice["connectionStatus"]) => (
+      render: (status: DeviceRow["connectionStatus"]) => (
         <span
           className={`facility-devices__status facility-devices__status--${status}`}>
           <span className="facility-devices__status-dot" />
@@ -324,7 +506,7 @@ function FacilityDevices({
               key: "edit",
               icon: <SquarePen />,
               tooltip: "Cập nhật thiết bị",
-              onClick: () => setEditingDevice(record),
+              onClick: () => void handleOpenEditDevice(record),
             },
           ]}
         />
@@ -336,7 +518,6 @@ function FacilityDevices({
     <div className="facility-devices">
       <div className="facility-devices__panel">
         <h2 className="facility-devices__title">Danh sách thiết bị</h2>
-
         <AppFilter
           showActions={false}
           gap={28}
@@ -355,7 +536,6 @@ function FacilityDevices({
               />
             </Form.Item>
           </AppFilterField>
-
           <AppFilterField width={180}>
             <Form.Item label="Trạng thái kết nối">
               <AppSelect
@@ -370,7 +550,6 @@ function FacilityDevices({
               />
             </Form.Item>
           </AppFilterField>
-
           <AppFilterField width={353} className="facility-devices__search">
             <Form.Item label="Từ khóa">
               <Input
@@ -383,11 +562,11 @@ function FacilityDevices({
             </Form.Item>
           </AppFilterField>
         </AppFilter>
-
-        <AppTable<FacilityDevice>
+        <AppTable<DeviceRow>
           rowKey="id"
           columns={columns}
           dataSource={filteredDevices}
+          loading={loading}
           selectable
           selectedLabel="thiết bị"
           rowSelection={{
@@ -398,25 +577,27 @@ function FacilityDevices({
           scroll={{ x: 1070 }}
         />
       </div>
-
       <FacilityDeviceFormModal
         open={openCreate}
         mode="create"
         facilityName={facility.facilityName}
         providers={providers}
-        loading={saving}
-        onCancel={handleCloseCreate}
+        loading={saving || vendorsLoading}
+        onCancel={() => {
+          if (!saving) onCloseCreate?.();
+        }}
         onSubmit={handleCreateDevice}
       />
-
       <FacilityDeviceFormModal
         open={editingDevice !== null}
         mode="edit"
         initialValues={editingDevice}
         facilityName={facility.facilityName}
         providers={providers}
-        loading={saving}
-        onCancel={handleCloseEdit}
+        loading={saving || vendorsLoading}
+        onCancel={() => {
+          if (!saving) setEditingDevice(null);
+        }}
         onSubmit={handleUpdateDevice}
       />
     </div>

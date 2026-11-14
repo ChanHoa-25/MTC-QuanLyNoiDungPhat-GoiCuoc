@@ -1,28 +1,29 @@
 .facility-users {
   box-sizing: border-box;
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
-  flex: 0 0 auto;
   width: 100%;
-  height: auto;
+  height: 100%;
   min-width: 0;
-  min-height: min-content;
+  min-height: 0;
 }
 
 .facility-users__panel {
   box-sizing: border-box;
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
-  flex: 0 0 auto;
   width: 100%;
   min-width: 0;
-  min-height: min-content;
+  min-height: 0;
   padding: 10px 20px;
   background: #ffffff;
   border-radius: 12px;
 }
 
 .facility-users__title {
+  flex-shrink: 0;
   margin: 0 0 16px;
   color: var(--color-primary);
   font-size: 20px;

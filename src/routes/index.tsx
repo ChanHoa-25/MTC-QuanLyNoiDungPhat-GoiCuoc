@@ -20,6 +20,7 @@ import FacilityPlaylistDetail from "../pages/facilities/FacilityPlaylists/Facili
 import DevicesPage from "../pages/devices";
 
 import DeviceDetailPage from "../pages/devices/DeviceDetail/DeviceDetailPage";
+
 import DeviceForm from "../pages/devices/components/DeviceForm/DeviceForm";
 
 import ForbiddenPage from "../pages/errors/ForbiddenPage";
@@ -63,6 +64,7 @@ import AuthenticatorAppPage from "../pages/account/two-factor/AuthenticatorAppPa
 import RecoveryCodesPage from "../pages/account/two-factor/RecoveryCodesPage";
 import AccountLayout from "../layouts/AccountLayout/AccountLayout";
 import PermissionRoute from "../app/PermissionRoute";
+import FacilityMediaDetail from "../pages/facilities/FacilityMedia/FacilityMediaDetail/FacilityMediaDetail";
 
 export const routes: RouteObject[] = [
   // Auth
@@ -160,6 +162,11 @@ export const routes: RouteObject[] = [
             path: ROUTES.FACILITIES,
             element: <FacilitiesPage />,
           },
+          {
+            path: "facilities/:facilityId/media/:mediaId",
+            element: <FacilityMediaDetail />,
+          },
+
           {
             path: "facilities/:facilityId/playlists/:playlistId",
             element: <FacilityPlaylistDetail />,

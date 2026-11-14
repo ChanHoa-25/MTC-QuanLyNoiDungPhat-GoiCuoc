@@ -8,6 +8,9 @@ export const facilityTemplateSourcesMock: FacilityTemplateSource[] = [
     thumbnail:
       "https://images.unsplash.com/photo-1542838132-92c53300491e?w=600",
     url: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=1400",
+    resolution: ["FHD", "HD"],
+    createdBy: "Nguyễn Văn An",
+    createdAt: "10/11/2026",
   },
   {
     id: "source-2",
@@ -16,6 +19,9 @@ export const facilityTemplateSourcesMock: FacilityTemplateSource[] = [
     thumbnail:
       "https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=600",
     url: "https://images.unsplash.com/photo-1433086966358-54859d0ed716?w=1400",
+    resolution: ["2K", "FHD"],
+    createdBy: "Trần Thị Bình",
+    createdAt: "09/11/2026",
   },
   {
     id: "source-3",
@@ -24,6 +30,9 @@ export const facilityTemplateSourcesMock: FacilityTemplateSource[] = [
     thumbnail:
       "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=600",
     url: "https://images.unsplash.com/photo-1490750967868-88aa4486c946?w=1400",
+    resolution: ["FHD"],
+    createdBy: "Lê Minh Tuấn",
+    createdAt: "08/11/2026",
   },
   {
     id: "source-4",
@@ -32,6 +41,9 @@ export const facilityTemplateSourcesMock: FacilityTemplateSource[] = [
     thumbnail:
       "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=600",
     url: "https://images.unsplash.com/photo-1552728089-57bdde30beb3?w=1400",
+    resolution: ["2K", "HD"],
+    createdBy: "Phạm Hoàng Nam",
+    createdAt: "07/11/2026",
   },
   {
     id: "source-5",
@@ -40,6 +52,9 @@ export const facilityTemplateSourcesMock: FacilityTemplateSource[] = [
     thumbnail:
       "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=600",
     url: "https://images.unsplash.com/photo-1540420773420-3366772f4999?w=1400",
+    resolution: ["FHD", "HD"],
+    createdBy: "Nguyễn Thị Mai",
+    createdAt: "06/11/2026",
   },
   {
     id: "source-6",
@@ -48,5 +63,8 @@ export const facilityTemplateSourcesMock: FacilityTemplateSource[] = [
     thumbnail:
       "https://images.unsplash.com/photo-1546470427-e5b89a5e7a3c?w=600",
     url: "https://images.unsplash.com/photo-1546470427-e5b89a5e7a3c?w=1400",
+    resolution: ["HD"],
+    createdBy: "Trần Minh Khang",
+    createdAt: "05/11/2026",
   },
 ];

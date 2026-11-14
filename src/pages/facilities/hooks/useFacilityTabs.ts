@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import type { FacilityTab, FacilityTabKey } from "../types/facility.types";
 
@@ -12,19 +12,40 @@ export const facilityTabs: FacilityTab[] = [
 ];
 
 export function useFacilityTabs() {
-  const [activeTab, setActiveTab] = useState<FacilityTabKey>("info");
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const changeTab = (key: string) => {
+  const tabParam = searchParams.get("tab");
+
+  const currentTab = facilityTabs.find((tab) => tab.key === tabParam);
+
+  const activeTab: FacilityTabKey = currentTab?.key ?? "info";
+
+  const changeTab = (key: string): boolean => {
     const nextTab = facilityTabs.find((tab) => tab.key === key);
 
     if (!nextTab) return false;
 
-    setActiveTab(nextTab.key);
+    setSearchParams((previous) => {
+      const next = new URLSearchParams(previous);
+
+      if (nextTab.key === "info") {
+        next.delete("tab");
+      } else {
+        next.set("tab", nextTab.key);
+      }
+
+      return next;
+    });
+
     return true;
   };
 
   const resetTab = () => {
-    setActiveTab("info");
+    setSearchParams((previous) => {
+      const next = new URLSearchParams(previous);
+      next.delete("tab");
+      return next;
+    });
   };
 
   return {

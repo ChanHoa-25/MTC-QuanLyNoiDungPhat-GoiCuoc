@@ -57,7 +57,6 @@ function TemplateForm({
   const previewWidth = Number(screenWidth) || 1920;
   const previewHeight = Number(screenHeight) || 1080;
 
-  // Khởi tạo dữ liệu khi thêm, sửa hoặc xem chi tiết
   useEffect(() => {
     const data = initialData ?? emptyData;
 
@@ -65,29 +64,24 @@ function TemplateForm({
       name: data.name,
       screenWidth: data.screenWidth,
       screenHeight: data.screenHeight,
-      duration: data.duration,
     });
 
     setLayers(data.layers.map((layer) => ({ ...layer })));
     setActiveLayerId(data.layers[0]?.id ?? null);
   }, [initialData, form]);
 
-  // Danh sách ID nguồn thông tin đã chọn
   const selectedIds = useMemo(
     () => layers.map((layer) => layer.sourceId),
     [layers],
   );
 
-  // Layer đang được chọn
   const activeLayer = layers.find((layer) => layer.id === activeLayerId);
 
-  // Thêm hoặc bỏ nguồn thông tin
   const toggleSource = (sourceId: string) => {
     if (isView) return;
 
     const existing = layers.find((layer) => layer.sourceId === sourceId);
 
-    // Nếu đã tồn tại thì xóa layer
     if (existing) {
       const nextLayers = layers.filter((layer) => layer.sourceId !== sourceId);
 
@@ -100,7 +94,6 @@ function TemplateForm({
       return;
     }
 
-    // Nếu chưa tồn tại thì thêm layer mới
     const newLayer: TemplateLayer = {
       id: crypto.randomUUID(),
       sourceId,
@@ -109,15 +102,15 @@ function TemplateForm({
       x: 0,
       y: 0,
       zIndex: layers.length + 1,
+      hasAudio: true,
     };
 
     setLayers((previous) => [...previous, newLayer]);
     setActiveLayerId(newLayer.id);
   };
 
-  // Cập nhật thuộc tính của layer đang chọn
   const updateActiveLayer = (
-    field: keyof Omit<TemplateLayer, "id" | "sourceId">,
+    field: "width" | "height" | "x" | "y" | "zIndex",
     value: number | null,
   ) => {
     if (isView || !activeLayer || value === null) return;
@@ -129,7 +122,18 @@ function TemplateForm({
     );
   };
 
-  // Mở chế độ trình chiếu
+  const updateLayer = (layerId: string, changes: Partial<TemplateLayer>) => {
+    if (isView) return;
+
+    setLayers((previous) =>
+      previous.map((layer) =>
+        layer.id === layerId ? { ...layer, ...changes } : layer,
+      ),
+    );
+
+    setActiveLayerId(layerId);
+  };
+
   const handlePresent = () => {
     if (layers.length === 0) {
       message.warning("Vui lòng chọn ít nhất một nguồn thông tin");
@@ -139,7 +143,6 @@ function TemplateForm({
     setIsPresenting(true);
   };
 
-  // Lưu dữ liệu bản mẫu
   const handleSave = async () => {
     if (isView) return;
 
@@ -155,22 +158,31 @@ function TemplateForm({
         name: values.name.trim(),
         screenHeight: values.screenHeight ?? null,
         screenWidth: values.screenWidth ?? null,
-        duration: values.duration ?? "00:00:00",
+        duration: initialData?.duration ?? "00:00:00",
         layers,
       });
     } catch {
-      // Ant Design tự hiển thị lỗi validation.
+      return;
     }
   };
 
   return (
     <div className="template-form">
-      {/* SIDEBAR - THÔNG TIN BẢN MẪU */}
       <section className="template-form__sidebar">
-        <h2>{isCreate ? "Thêm mới" : isView ? "Chi tiết" : "Chỉnh sửa"}</h2>
+        <h2>{isCreate ? "Thêm mới" : isView ? "Chi tiết" : "Cập nhật"}</h2>
 
-        <Form form={form} layout="vertical" className="template-form__fields">
-          {/* Tên bản mẫu */}
+        <Form
+          form={form}
+          layout="vertical"
+          className="template-form__fields"
+          requiredMark={(label, { required }) => (
+            <>
+              {label}
+              {required && (
+                <span className="template-form__required-star">{" *"}</span>
+              )}
+            </>
+          )}>
           <Form.Item
             label="Tên bản mẫu"
             name="name"
@@ -188,7 +200,6 @@ function TemplateForm({
             />
           </Form.Item>
 
-          {/* Tỷ lệ màn hình */}
           <div className="template-form__field-group">
             <label>Tỷ lệ màn hình</label>
 
@@ -212,35 +223,14 @@ function TemplateForm({
               </Form.Item>
             </div>
           </div>
-
-          {/* Thời lượng */}
-          {isCreate && (
-            <Form.Item
-              label="Thời lượng"
-              name="duration"
-              rules={[
-                {
-                  required: true,
-                  message: "Vui lòng nhập thời lượng",
-                },
-                {
-                  pattern: /^([0-9]{2,}):[0-5][0-9]:[0-5][0-9]$/,
-                  message: "Định dạng phải là HH:mm:ss",
-                },
-              ]}>
-              <Input placeholder="00:00:00" />
-            </Form.Item>
-          )}
         </Form>
 
-        {/* Ghi chú trường bắt buộc */}
-        {isCreate && (
+        {!isView && (
           <p className="template-form__required-note">
             <span>*</span> là những trường thông tin bắt buộc
           </p>
         )}
 
-        {/* Danh sách nguồn thông tin */}
         <div className="template-form__sources">
           <h3>Nguồn thông tin</h3>
 
@@ -253,10 +243,8 @@ function TemplateForm({
         </div>
       </section>
 
-      {/* WORKSPACE */}
       <section className="template-form__workspace">
         <div className="template-form__design">
-          {/* CỘT TRÁI - PREVIEW VÀ THUỘC TÍNH */}
           <div className="template-form__editor">
             <TemplatePreview
               layers={layers}
@@ -267,9 +255,7 @@ function TemplateForm({
               onSelect={setActiveLayerId}
             />
 
-            {/* THUỘC TÍNH LAYER */}
             <div className="template-form__properties">
-              {/* Kích thước (%) */}
               <div className="template-form__property-group">
                 <label>Kích thước (%)</label>
 
@@ -296,7 +282,6 @@ function TemplateForm({
                 </div>
               </div>
 
-              {/* Vị trí hiển thị */}
               <div className="template-form__property-group">
                 <label>Vị trí hiển thị (pixel)</label>
 
@@ -321,7 +306,6 @@ function TemplateForm({
                 </div>
               </div>
 
-              {/* z-index */}
               <div className="template-form__property-group">
                 <label>z-index</label>
 
@@ -335,7 +319,6 @@ function TemplateForm({
                 />
               </div>
 
-              {/* Nút trình chiếu - chỉ hiển thị khi thêm mới */}
               {isCreate && (
                 <div className="template-form__present-action">
                   <AppButton
@@ -349,16 +332,16 @@ function TemplateForm({
             </div>
           </div>
 
-          {/* CỘT PHẢI - DANH SÁCH LAYER */}
           <TemplateLayerList
             layers={layers}
             sources={sources}
             activeLayerId={activeLayerId}
             onSelect={setActiveLayerId}
+            onUpdateLayer={updateLayer}
+            disabled={isView}
           />
         </div>
 
-        {/* NÚT CHỨC NĂNG */}
         <div className="template-form__actions">
           <AppButton variant="outline" width={136} onClick={onCancel}>
             Hủy
@@ -376,7 +359,6 @@ function TemplateForm({
         </div>
       </section>
 
-      {/* MODAL TRÌNH CHIẾU */}
       <AppModal
         open={isPresenting}
         onCancel={() => setIsPresenting(false)}

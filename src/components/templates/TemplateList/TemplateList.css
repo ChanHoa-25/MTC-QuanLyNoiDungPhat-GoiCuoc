@@ -1,25 +1,43 @@
 .template-list {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+
   width: 100%;
   min-width: 0;
+  min-height: 0;
 }
 
+/* Khung nội dung */
 .template-list__panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+
   width: 100%;
   min-width: 0;
+  min-height: 0;
+
   padding: 10px 20px;
   background: #ffffff;
   border-radius: 12px;
+  box-sizing: border-box;
 }
 
+/* Tiêu đề */
 .template-list__title {
+  flex-shrink: 0;
   margin: 0 0 16px;
+
   color: var(--color-primary);
   font-size: 20px;
   font-weight: 700;
   line-height: 28px;
 }
 
+/* Bộ lọc */
 .template-list__filters {
+  flex-shrink: 0;
   width: 100%;
   min-width: 0;
   margin-bottom: 12px;
@@ -46,6 +64,7 @@
   font-weight: 600;
 }
 
+/* Tìm kiếm */
 .template-list__search {
   margin-left: auto;
 }
@@ -66,11 +85,33 @@
   color: var(--color-primary);
 }
 
+/* Bảng danh sách */
 .template-list__table {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+
   width: 100%;
   min-width: 0;
+  min-height: 0;
 }
 
+/* Ant Design Table */
+.template-list__table .ant-table-wrapper {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Giữ bảng ở phía trên */
+.template-list__table .ant-table {
+  flex-shrink: 0;
+}
+
+/* Header bảng */
 .template-list__table .ant-table-thead > tr > th {
   background: #ffe2d4 !important;
   color: #e85e15 !important;
@@ -79,12 +120,21 @@
   white-space: nowrap;
 }
 
+/* Nội dung bảng */
 .template-list__table .ant-table-tbody > tr > td {
   color: #777777;
   font-size: 12px;
   vertical-align: middle;
 }
 
+/* Đẩy phân trang xuống cuối */
+.template-list__table .ant-table-pagination,
+.template-list__table .ant-pagination {
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+/* Responsive */
 @media (max-width: 1200px) {
   .template-list__search {
     margin-left: 0;

@@ -12,10 +12,11 @@ import AppSelect from "../../../../components/common/AppSelect";
 import AppSearch from "../../../../components/common/AppSearch";
 import AppDateRangePicker from "../../../../components/common/AppDateRangePicker";
 import type { DateRangeValue } from "../../../../components/common/AppDateRangePicker";
-import AppTable from "../../../../components/common/AppTable";
 import AppStatusTag from "../../../../components/common/AppStatusTag";
 import AppTableActions from "../../../../components/common/AppTableActions";
 import AppConfirmModal from "../../../../components/common/AppConfirmModal";
+
+import PlaylistUsedNews from "../../../../components/playlists/PlaylistUsedNews/PlaylistUsedNews";
 
 import { useActionPanel } from "../../../../contexts/ActionPanelContext";
 import type { AppActionPanelItem } from "../../../../components/common/AppActionPanel";
@@ -29,8 +30,6 @@ import {
 } from "../../data/facilitiesPlaylistNews.mock";
 
 import type { FacilityPlaylistNews } from "../../types/facilityPlaylistNews.types";
-
-import "./FacilityPlaylistUsedNews.css";
 
 interface FacilityPlaylistUsedNewsProps {
   playlistId: string;
@@ -79,7 +78,6 @@ function FacilityPlaylistUsedNews({
 
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
 
-  // Đổi danh sách phát thì tải lại mock và bộ lọc
   useEffect(() => {
     setNews(createFacilityPlaylistNewsMock(playlistId));
     setSelectedRowKeys([]);
@@ -92,7 +90,6 @@ function FacilityPlaylistUsedNews({
     setDeleteModalOpen(false);
   }, [playlistId]);
 
-  // Lọc danh sách bản tin
   const filteredNews = useMemo(() => {
     const search = keyword.trim().toLowerCase();
     const [startDate, endDate] = dateRange ?? [null, null];
@@ -150,7 +147,6 @@ function FacilityPlaylistUsedNews({
     keyword,
   ]);
 
-  // Mở modal xác nhận xóa
   const handleDelete = useCallback(() => {
     if (selectedRowKeys.length === 0) {
       message.warning("Vui lòng chọn bản tin cần xóa");
@@ -160,11 +156,12 @@ function FacilityPlaylistUsedNews({
     setDeleteModalOpen(true);
   }, [selectedRowKeys.length]);
 
-  // Xác nhận xóa bản tin
   const handleConfirmDelete = () => {
     const selectedIds = new Set(selectedRowKeys.map(String));
 
-    setNews((previous) => previous.filter((item) => !selectedIds.has(item.id)));
+    setNews((previous) =>
+      previous.filter((item) => !selectedIds.has(String(item.id))),
+    );
 
     setSelectedRowKeys([]);
     setDeleteModalOpen(false);
@@ -172,12 +169,10 @@ function FacilityPlaylistUsedNews({
     message.success("Đã xóa bản tin được chọn");
   };
 
-  // Bỏ chọn bản tin
   const handleClearSelection = useCallback(() => {
     setSelectedRowKeys([]);
   }, []);
 
-  // Đăng ký nút thao tác trên ActionPanel
   useEffect(() => {
     const actions: AppActionPanelItem[] = [
       {
@@ -312,7 +307,7 @@ function FacilityPlaylistUsedNews({
       title: "Hành động",
       key: "actions",
       width: 100,
-      align: "center",
+      align: "right",
       render: (_, record) => (
         <AppTableActions
           actions={[
@@ -338,100 +333,86 @@ function FacilityPlaylistUsedNews({
     },
   ];
 
+  const filters = (
+    <AppFilter showActions={false} gap={10}>
+      <AppFilterField width="13%">
+        <Form.Item label="Loại bản tin">
+          <AppSelect
+            width="100%"
+            value={newsType}
+            onChange={setNewsType}
+            options={facilityNewsTypeOptions}
+          />
+        </Form.Item>
+      </AppFilterField>
+
+      <AppFilterField width="13%">
+        <Form.Item label="Trạng thái duyệt">
+          <AppSelect
+            width="100%"
+            value={approval}
+            onChange={setApproval}
+            options={facilityNewsApprovalOptions}
+          />
+        </Form.Item>
+      </AppFilterField>
+
+      <AppFilterField width="13%">
+        <Form.Item label="Trạng thái phát">
+          <AppSelect
+            width="100%"
+            value={broadcast}
+            onChange={setBroadcast}
+            options={facilityNewsBroadcastOptions}
+          />
+        </Form.Item>
+      </AppFilterField>
+
+      <AppFilterField width="13%">
+        <Form.Item label="Kiểu lặp">
+          <AppSelect
+            width="100%"
+            value={repeat}
+            onChange={setRepeat}
+            options={facilityNewsRepeatOptions}
+          />
+        </Form.Item>
+      </AppFilterField>
+
+      <AppFilterField width="25%">
+        <Form.Item label="Thời gian bắt đầu phát">
+          <AppDateRangePicker
+            width="100%"
+            value={dateRange}
+            onChange={setDateRange}
+          />
+        </Form.Item>
+      </AppFilterField>
+
+      <AppFilterField width="19%">
+        <Form.Item label="Từ khóa">
+          <AppSearch
+            width="100%"
+            value={keyword}
+            onChange={setKeyword}
+            placeholder="Nhập mã hoặc tiêu đề bản tin"
+            allowClear
+          />
+        </Form.Item>
+      </AppFilterField>
+    </AppFilter>
+  );
+
   return (
     <>
-      <div className="playlist-used-news">
-        <div className="playlist-used-news__heading">
-          <h2>Danh sách bản tin sử dụng danh sách phát</h2>
-        </div>
-
-        <AppFilter
-          className="playlist-used-news__filters"
-          showActions={false}
-          gap={10}>
-          <AppFilterField width="13%">
-            <Form.Item label="Loại bản tin">
-              <AppSelect
-                width="100%"
-                value={newsType}
-                onChange={setNewsType}
-                options={facilityNewsTypeOptions}
-              />
-            </Form.Item>
-          </AppFilterField>
-
-          <AppFilterField width="13%">
-            <Form.Item label="Trạng thái duyệt">
-              <AppSelect
-                width="100%"
-                value={approval}
-                onChange={setApproval}
-                options={facilityNewsApprovalOptions}
-              />
-            </Form.Item>
-          </AppFilterField>
-
-          <AppFilterField width="13%">
-            <Form.Item label="Trạng thái phát">
-              <AppSelect
-                width="100%"
-                value={broadcast}
-                onChange={setBroadcast}
-                options={facilityNewsBroadcastOptions}
-              />
-            </Form.Item>
-          </AppFilterField>
-
-          <AppFilterField width="13%">
-            <Form.Item label="Kiểu lặp">
-              <AppSelect
-                width="100%"
-                value={repeat}
-                onChange={setRepeat}
-                options={facilityNewsRepeatOptions}
-              />
-            </Form.Item>
-          </AppFilterField>
-
-          <AppFilterField width="25%">
-            <Form.Item label="Thời gian bắt đầu phát">
-              <AppDateRangePicker
-                width="100%"
-                value={dateRange}
-                onChange={setDateRange}
-              />
-            </Form.Item>
-          </AppFilterField>
-
-          <AppFilterField width="19%">
-            <Form.Item label="Từ khóa">
-              <AppSearch
-                width="100%"
-                value={keyword}
-                onChange={setKeyword}
-                placeholder="Nhập mã hoặc tiêu đề bản tin"
-                allowClear
-              />
-            </Form.Item>
-          </AppFilterField>
-        </AppFilter>
-
-        <AppTable<FacilityPlaylistNews>
-          key={playlistId}
-          className="playlist-used-news__table"
-          rowKey="id"
-          columns={columns}
-          dataSource={filteredNews}
-          selectable
-          selectedLabel="bản tin"
-          rowSelection={{
-            selectedRowKeys,
-            onChange: (keys) => setSelectedRowKeys([...keys]),
-          }}
-          pagination={{ pageSize: 10 }}
-          scroll={{ x: 1450 }}
-        />
-      </div>
+      <PlaylistUsedNews<FacilityPlaylistNews>
+        tableKey={playlistId}
+        data={filteredNews}
+        columns={columns}
+        selectedRowKeys={selectedRowKeys}
+        onSelectionChange={setSelectedRowKeys}
+        filters={filters}
+      />
 
       <AppConfirmModal
         open={deleteModalOpen}

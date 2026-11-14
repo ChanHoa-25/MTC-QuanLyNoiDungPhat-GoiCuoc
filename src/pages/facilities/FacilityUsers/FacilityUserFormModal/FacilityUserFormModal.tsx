@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import type { ChangeEvent } from "react";
+
 import { Form, Input, message } from "antd";
 import { Camera, UserRound } from "lucide-react";
 
@@ -20,31 +21,33 @@ export interface FacilityUserFormValues {
   identityNumber?: string;
   phone: string;
   email: string;
-  role: string;
+  roleId: string;
   avatar?: File;
+}
+
+interface RoleOption {
+  label: string;
+  value: string;
 }
 
 interface FacilityUserFormModalProps {
   open: boolean;
   mode?: "create" | "edit";
-  initialValues?: Partial<FacilityUser>;
+  initialValues?: Partial<FacilityUser> & {
+    roleId?: string | null;
+  };
   loading?: boolean;
+  roleOptions?: RoleOption[];
   onCancel: () => void;
   onSubmit: (values: FacilityUserFormValues) => void;
 }
-
-const roleOptions = [
-  {
-    label: "Quản trị viên",
-    value: "Group Admin",
-  },
-];
 
 function FacilityUserFormModal({
   open,
   mode = "edit",
   initialValues,
   loading = false,
+  roleOptions = [],
   onCancel,
   onSubmit,
 }: FacilityUserFormModalProps) {
@@ -62,21 +65,22 @@ function FacilityUserFormModal({
   const identityNumber = initialValues?.identityNumber;
   const phone = initialValues?.phone;
   const email = initialValues?.email;
-  const role = initialValues?.role;
+  const roleId = initialValues?.roleId;
 
+  // Khởi tạo dữ liệu khi mở modal
   useEffect(() => {
     if (!open) return;
 
     form.resetFields();
 
-    if (isEdit && username !== undefined) {
+    if (isEdit) {
       form.setFieldsValue({
         username: username ?? "",
         fullName: fullName ?? "",
         identityNumber: identityNumber ?? "",
         phone: phone ?? "",
         email: email ?? "",
-        role: role ?? "Group Admin",
+        roleId: roleId ?? undefined,
       });
     } else {
       form.setFieldsValue({
@@ -86,7 +90,7 @@ function FacilityUserFormModal({
         identityNumber: "",
         phone: "",
         email: "",
-        role: undefined,
+        roleId: undefined,
       });
     }
 
@@ -105,9 +109,10 @@ function FacilityUserFormModal({
     identityNumber,
     phone,
     email,
-    role,
+    roleId,
   ]);
 
+  // Giải phóng URL ảnh khi thay đổi hoặc đóng modal
   useEffect(() => {
     return () => {
       if (avatarPreview) {
@@ -116,6 +121,7 @@ function FacilityUserFormModal({
     };
   }, [avatarPreview]);
 
+  // Chọn ảnh đại diện
   const handleAvatarChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
 
@@ -144,16 +150,18 @@ function FacilityUserFormModal({
     onCancel();
   };
 
+  // Xử lý dữ liệu form
   const handleSubmit = (values: FacilityUserFormValues) => {
     if (loading) return;
 
     const submitValues: FacilityUserFormValues = {
       ...values,
       username: values.username.trim(),
-      fullName: values.fullName?.trim() ?? "",
+      fullName: values.fullName.trim(),
       identityNumber: values.identityNumber?.trim() ?? "",
       phone: values.phone.trim(),
       email: values.email.trim(),
+      roleId: values.roleId,
     };
 
     if (avatarFile) {
@@ -171,7 +179,7 @@ function FacilityUserFormModal({
     <AppModal
       open={open}
       title={isEdit ? "Cập nhật tài khoản quản trị" : "Thêm tài khoản quản trị"}
-      width={524}
+      width={500}
       className="facility-user-form-modal"
       onCancel={handleCancel}
       footer={null}>
@@ -180,6 +188,7 @@ function FacilityUserFormModal({
         columns={1}
         onFinish={handleSubmit}>
         <div className="facility-user-form-modal__fields">
+          {/* Tên đăng nhập */}
           <Form.Item
             label="Tên đăng nhập"
             name="username"
@@ -192,11 +201,13 @@ function FacilityUserFormModal({
             ]}>
             <AppInput
               width="100%"
-              height={44}
+              height={40}
               placeholder="Nhập tên đăng nhập"
+              disabled={isEdit}
             />
           </Form.Item>
 
+          {/* Mật khẩu chỉ xuất hiện khi thêm */}
           {!isEdit && (
             <Form.Item
               label="Mật khẩu"
@@ -220,14 +231,16 @@ function FacilityUserFormModal({
             </Form.Item>
           )}
 
+          {/* Tên người dùng */}
           <Form.Item label="Tên người dùng" name="fullName">
             <AppInput
               width="100%"
-              height={44}
+              height={40}
               placeholder="Nhập tên người dùng"
             />
           </Form.Item>
 
+          {/* CMND/CCCD */}
           <Form.Item
             label="Số CMND/CCCD"
             name="identityNumber"
@@ -239,11 +252,13 @@ function FacilityUserFormModal({
             ]}>
             <AppInput
               width="100%"
-              height={44}
+              height={40}
               placeholder="Nhập số CMND/CCCD"
+              disabled={isEdit}
             />
           </Form.Item>
 
+          {/* Số điện thoại */}
           <Form.Item
             label="Số điện thoại"
             name="phone"
@@ -259,11 +274,12 @@ function FacilityUserFormModal({
             ]}>
             <AppInput
               width="100%"
-              height={44}
+              height={40}
               placeholder="Nhập số điện thoại"
             />
           </Form.Item>
 
+          {/* Email */}
           <Form.Item
             label="Email"
             name="email"
@@ -277,12 +293,13 @@ function FacilityUserFormModal({
                 message: "Email không đúng định dạng",
               },
             ]}>
-            <AppInput width="100%" height={44} placeholder="Nhập email" />
+            <AppInput width="100%" height={40} placeholder="Nhập email" />
           </Form.Item>
 
+          {/* Vai trò */}
           <Form.Item
             label="Vai trò"
-            name="role"
+            name="roleId"
             rules={[
               {
                 required: true,
@@ -297,6 +314,7 @@ function FacilityUserFormModal({
           </Form.Item>
         </div>
 
+        {/* Hình đại diện */}
         <div className="facility-user-form-modal__avatar-section">
           <span className="facility-user-form-modal__avatar-label">
             Hình đại diện
@@ -312,7 +330,7 @@ function FacilityUserFormModal({
               />
             ) : (
               <UserRound
-                size={54}
+                size={46}
                 strokeWidth={1.5}
                 className="facility-user-form-modal__avatar-placeholder"
               />
@@ -324,7 +342,7 @@ function FacilityUserFormModal({
               aria-label="Chọn ảnh đại diện"
               disabled={loading}
               onClick={() => fileInputRef.current?.click()}>
-              <Camera size={14} strokeWidth={2} />
+              <Camera size={13} strokeWidth={2} />
             </button>
           </div>
 
@@ -338,16 +356,18 @@ function FacilityUserFormModal({
           />
         </div>
 
+        {/* Ghi chú trường bắt buộc */}
         <div className="facility-user-form-modal__required-note">
           <span>*</span>
           <span>là những trường thông tin bắt buộc</span>
         </div>
 
+        {/* Nút hành động */}
         <div className="app-form-actions facility-user-form-modal__actions">
           <AppButton
             variant="outline"
             width={120}
-            height={44}
+            height={40}
             disabled={loading}
             onClick={handleCancel}>
             Hủy
@@ -355,7 +375,7 @@ function FacilityUserFormModal({
 
           <AppButton
             width={120}
-            height={44}
+            height={40}
             htmlType="submit"
             loading={loading}>
             Lưu

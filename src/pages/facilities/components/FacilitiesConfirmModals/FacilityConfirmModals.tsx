@@ -14,8 +14,9 @@ interface FacilityConfirmModalsProps {
 
   deviceConfirmType: DeviceConfirmType;
   selectedDeviceCount: number;
+  deviceCommandLoading: boolean;
   onCloseDeviceConfirm: () => void;
-  onConfirmDeviceAction: () => void;
+  onConfirmDeviceAction: () => void | Promise<void>;
 
   openDeleteTemplate: boolean;
   selectedTemplateCount: number;
@@ -45,6 +46,7 @@ function FacilityConfirmModals({
 
   deviceConfirmType,
   selectedDeviceCount,
+  deviceCommandLoading,
   onCloseDeviceConfirm,
   onConfirmDeviceAction,
 
@@ -99,6 +101,7 @@ function FacilityConfirmModals({
         confirmText="Xác nhận"
         cancelText="Hủy"
         width={500}
+        confirmLoading={deviceCommandLoading}
         onCancel={onCloseDeviceConfirm}
         onConfirm={onConfirmDeviceAction}
       />

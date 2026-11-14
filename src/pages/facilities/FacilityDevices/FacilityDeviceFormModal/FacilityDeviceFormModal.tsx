@@ -1,6 +1,5 @@
 import { useEffect } from "react";
-import { Form, Input } from "antd";
-import { MapPin } from "lucide-react";
+import { Form, Input, Radio } from "antd";
 
 import AppModal from "../../../../components/common/AppModal";
 import AppForm from "../../../../components/common/AppForm";
@@ -11,6 +10,7 @@ import AppButton from "../../../../components/common/AppButton";
 import type {
   FacilityDevice,
   FacilityDeviceFormValues,
+  DeviceLocationMode,
 } from "../../types/facilityDevice.types";
 
 import "./FacilityDeviceFormModal.css";
@@ -22,54 +22,18 @@ interface FacilityDeviceFormModalProps {
   facilityName?: string;
   loading?: boolean;
   providers?: { label: string; value: string }[];
+  deviceGroups?: { label: string; value: string }[];
   onCancel: () => void;
   onSubmit: (values: FacilityDeviceFormValues) => void | Promise<void>;
-}
-
-// Kiểm tra địa chỉ IPv4 hoặc IPv6
-function isValidIpAddress(value: string): boolean {
-  const ip = value.trim();
-
-  // IPv4
-  const parts = ip.split(".");
-
-  if (
-    parts.length === 4 &&
-    parts.every(
-      (part) =>
-        /^\d{1,3}$/.test(part) && Number(part) >= 0 && Number(part) <= 255,
-    )
-  ) {
-    return true;
-  }
-
-  // IPv6
-  if (!/^[0-9a-fA-F:]+$/.test(ip)) return false;
-
-  const doubleColonCount = ip.split("::").length - 1;
-
-  if (doubleColonCount > 1) return false;
-
-  const groups = ip.split(":").filter(Boolean);
-
-  if (!groups.every((group) => /^[0-9a-fA-F]{1,4}$/.test(group))) {
-    return false;
-  }
-
-  if (doubleColonCount === 1) {
-    return groups.length < 8;
-  }
-
-  return groups.length === 8;
 }
 
 function FacilityDeviceFormModal({
   open,
   mode = "create",
   initialValues,
-  facilityName = "",
   loading = false,
   providers = [],
+  deviceGroups = [],
   onCancel,
   onSubmit,
 }: FacilityDeviceFormModalProps) {
@@ -77,60 +41,49 @@ function FacilityDeviceFormModal({
 
   const isEdit = mode === "edit";
 
-  // Reset và khởi tạo dữ liệu khi mở modal
+  const locationMode = Form.useWatch("locationMode", form);
+
   useEffect(() => {
     if (!open) return;
 
     form.resetFields();
 
-    if (isEdit && initialValues) {
-      form.setFieldsValue({
-        name: initialValues.name ?? "",
-        ipAddress: initialValues.ipAddress ?? "",
-        identifier: initialValues.identifier ?? "",
-        password: "",
-        provider: initialValues.provider,
-        simPhoneNumber: initialValues.simPhoneNumber ?? "",
-        simSerial: initialValues.simSerial ?? "",
-        tag: initialValues.tag ?? "",
-      });
-    } else {
-      form.setFieldsValue({
-        name: "",
-        ipAddress: "",
-        identifier: "",
-        password: "",
-        provider: undefined,
-        simPhoneNumber: "",
-        simSerial: "",
-        tag: "",
-      });
-    }
+    form.setFieldsValue({
+      name: isEdit ? (initialValues?.name ?? "") : "",
+      identifier: isEdit ? (initialValues?.identifier ?? "") : "",
+      activityStatus: isEdit
+        ? (initialValues?.activityStatus ?? "active")
+        : "active",
+      deviceGroup: isEdit ? initialValues?.deviceGroup : undefined,
+      provider: isEdit ? (initialValues?.provider ?? "") : "",
+      simSerial: isEdit ? (initialValues?.simSerial ?? "") : "",
+      simPhoneNumber: isEdit ? (initialValues?.simPhoneNumber ?? "") : "",
+      width: isEdit ? initialValues?.width : undefined,
+      height: isEdit ? initialValues?.height : undefined,
+      locationMode: isEdit
+        ? (initialValues?.locationMode ?? "manual")
+        : "manual",
+      longitude: isEdit ? (initialValues?.longitude ?? "") : "",
+      latitude: isEdit ? (initialValues?.latitude ?? "") : "",
+      description: isEdit ? (initialValues?.description ?? "") : "",
+    });
   }, [open, isEdit, initialValues, form]);
 
-  const handleCancel = () => {
-    if (loading) return;
-    onCancel();
-  };
-
-  // Chuẩn hóa dữ liệu trước khi gửi lên component cha
   const handleSubmit = (values: FacilityDeviceFormValues) => {
     if (loading) return;
 
     const submitValues: FacilityDeviceFormValues = {
       ...values,
       name: values.name.trim(),
-      ipAddress: values.ipAddress.trim(),
       identifier: values.identifier.trim(),
-      simPhoneNumber: values.simPhoneNumber?.trim() ?? "",
       simSerial: values.simSerial?.trim() ?? "",
-      tag: values.tag?.trim() ?? "",
+      simPhoneNumber: values.simPhoneNumber?.trim() ?? "",
+      description: values.description?.trim() ?? "",
+      longitude:
+        values.locationMode === "manual" ? values.longitude?.trim() : undefined,
+      latitude:
+        values.locationMode === "manual" ? values.latitude?.trim() : undefined,
     };
-
-    // Không gửi mật khẩu nếu người dùng để trống
-    if (!submitValues.password) {
-      delete submitValues.password;
-    }
 
     return onSubmit(submitValues);
   };
@@ -141,14 +94,13 @@ function FacilityDeviceFormModal({
       title={isEdit ? "Cập nhật thiết bị" : "Thêm mới thiết bị"}
       width={969}
       className="facility-device-form-modal"
-      onCancel={handleCancel}
+      onCancel={onCancel}
       footer={null}>
       <AppForm<FacilityDeviceFormValues>
         form={form}
         columns={1}
         onFinish={handleSubmit}>
         <div className="facility-device-form-modal__grid">
-          {/* Cột bên trái */}
           <div className="facility-device-form-modal__column">
             <Form.Item
               label="Tên thiết bị"
@@ -164,32 +116,6 @@ function FacilityDeviceFormModal({
                 width="100%"
                 height={44}
                 placeholder="Nhập tên thiết bị"
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Tên đăng nhập (Địa chỉ IP)"
-              name="ipAddress"
-              rules={[
-                {
-                  required: true,
-                  whitespace: true,
-                  message: "Vui lòng nhập địa chỉ IP",
-                },
-                {
-                  validator: async (_, value: string) => {
-                    if (!value?.trim()) return;
-
-                    if (!isValidIpAddress(value)) {
-                      throw new Error("Địa chỉ IP không đúng định dạng");
-                    }
-                  },
-                },
-              ]}>
-              <AppInput
-                width="100%"
-                height={44}
-                placeholder="Nhập tên đăng nhập (Địa chỉ IP)"
               />
             </Form.Item>
 
@@ -211,80 +137,13 @@ function FacilityDeviceFormModal({
               />
             </Form.Item>
 
-            {/* Mật khẩu hiển thị ở cả thêm và sửa */}
-            <Form.Item
-              label="Mật khẩu"
-              name="password"
-              rules={[
-                {
-                  required: !isEdit,
-                  message: "Vui lòng nhập mật khẩu",
-                },
-                {
-                  min: 8,
-                  message: "Mật khẩu phải có ít nhất 8 ký tự",
-                },
-              ]}>
-              <Input.Password
-                size="large"
-                placeholder={
-                  isEdit ? "Để trống nếu không đổi mật khẩu" : "Nhập mật khẩu"
-                }
-                autoComplete="new-password"
-                className="facility-device-form-modal__password"
+            <Form.Item label="Nhóm thiết bị" name="deviceGroup">
+              <AppSelect
+                width="100%"
+                placeholder="Chọn nhóm thiết bị"
+                options={deviceGroups}
               />
             </Form.Item>
-
-            {/* Thông tin bổ sung khi cập nhật */}
-            {isEdit && (
-              <>
-                <Form.Item label="Cơ sở">
-                  <Input
-                    value={initialValues?.facilityName ?? facilityName}
-                    readOnly
-                    suffix={<MapPin size={18} color="#F26D21" />}
-                    className="facility-device-form-modal__facility"
-                  />
-                </Form.Item>
-
-                <Form.Item label="Địa chỉ">
-                  <AppInput
-                    width="100%"
-                    height={44}
-                    value={initialValues?.address ?? ""}
-                    readOnly
-                    placeholder="Chưa có dữ liệu địa chỉ"
-                  />
-                </Form.Item>
-              </>
-            )}
-          </div>
-
-          {/* Cột bên phải */}
-          <div className="facility-device-form-modal__column">
-            {isEdit && (
-              <>
-                <Form.Item label="Kinh độ">
-                  <AppInput
-                    width="100%"
-                    height={44}
-                    value={initialValues?.longitude ?? ""}
-                    readOnly
-                    placeholder="Chưa có dữ liệu kinh độ"
-                  />
-                </Form.Item>
-
-                <Form.Item label="Vĩ độ">
-                  <AppInput
-                    width="100%"
-                    height={44}
-                    value={initialValues?.latitude ?? ""}
-                    readOnly
-                    placeholder="Chưa có dữ liệu vĩ độ"
-                  />
-                </Form.Item>
-              </>
-            )}
 
             <Form.Item
               label="Nhà cung cấp"
@@ -302,15 +161,16 @@ function FacilityDeviceFormModal({
               />
             </Form.Item>
 
-            <Form.Item label="Số thuê bao SIM" name="simPhoneNumber">
-              <AppInput
-                width="100%"
-                height={44}
-                placeholder="Nhập số thuê bao SIM"
-              />
-            </Form.Item>
-
-            <Form.Item label="Số seri SIM" name="simSerial">
+            <Form.Item
+              label="Số seri SIM"
+              name="simSerial"
+              rules={[
+                {
+                  required: true,
+                  whitespace: true,
+                  message: "Vui lòng nhập số seri SIM",
+                },
+              ]}>
               <AppInput
                 width="100%"
                 height={44}
@@ -318,26 +178,202 @@ function FacilityDeviceFormModal({
               />
             </Form.Item>
 
-            <Form.Item label="Tag" name="tag">
-              <AppInput width="100%" height={44} placeholder="Nhập tag" />
+            <Form.Item
+              label="Số thuê bao SIM"
+              name="simPhoneNumber"
+              rules={[
+                {
+                  required: true,
+                  whitespace: true,
+                  message: "Vui lòng nhập số thuê bao SIM",
+                },
+              ]}>
+              <AppInput
+                width="100%"
+                height={44}
+                placeholder="Nhập số thuê bao SIM"
+              />
+            </Form.Item>
+          </div>
+
+          <div className="facility-device-form-modal__column">
+            <Form.Item
+              label="Trạng thái hoạt động"
+              name="activityStatus"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng chọn trạng thái",
+                },
+              ]}>
+              <AppSelect
+                width="100%"
+                options={[
+                  { label: "Khả dụng", value: "active" },
+                  { label: "Không khả dụng", value: "inactive" },
+                ]}
+              />
+            </Form.Item>
+
+            <div className="facility-device-form-modal__row">
+              <Form.Item
+                label="Chiều ngang"
+                name="width"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập chiều ngang",
+                  },
+                  {
+                    type: "number",
+                    min: 1,
+                    message: "Chiều ngang phải lớn hơn 0",
+                  },
+                ]}
+                getValueFromEvent={(event) => {
+                  const value = event.target.value;
+                  return value === "" ? undefined : Number(value);
+                }}>
+                <AppInput
+                  width="100%"
+                  height={44}
+                  type="number"
+                  min={1}
+                  placeholder="Chiều ngang"
+                />
+              </Form.Item>
+
+              <Form.Item
+                label="Chiều cao"
+                name="height"
+                rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng nhập chiều cao",
+                  },
+                  {
+                    type: "number",
+                    min: 1,
+                    message: "Chiều cao phải lớn hơn 0",
+                  },
+                ]}
+                getValueFromEvent={(event) => {
+                  const value = event.target.value;
+                  return value === "" ? undefined : Number(value);
+                }}>
+                <AppInput
+                  width="100%"
+                  height={44}
+                  type="number"
+                  min={1}
+                  placeholder="Chiều cao"
+                />
+              </Form.Item>
+            </div>
+
+            <Form.Item
+              label="Vị trí thiết bị"
+              name="locationMode"
+              rules={[
+                {
+                  required: true,
+                  message: "Vui lòng chọn vị trí thiết bị",
+                },
+              ]}>
+              <Radio.Group className="facility-device-form-modal__radio-group">
+                <Radio value="gps">Nhận từ GPS thiết bị</Radio>
+                <Radio value="manual">Nhập tọa độ</Radio>
+              </Radio.Group>
+            </Form.Item>
+
+            <div className="facility-device-form-modal__row">
+              <Form.Item
+                label="Kinh độ"
+                name="longitude"
+                rules={[
+                  {
+                    required: locationMode === "manual",
+                    message: "Vui lòng nhập kinh độ",
+                  },
+                  {
+                    validator: async (_, value?: string) => {
+                      if (!value || locationMode !== "manual") return;
+
+                      const number = Number(value);
+
+                      if (
+                        !Number.isFinite(number) ||
+                        number < -180 ||
+                        number > 180
+                      ) {
+                        throw new Error("Kinh độ phải từ -180 đến 180");
+                      }
+                    },
+                  },
+                ]}>
+                <AppInput
+                  width="100%"
+                  height={44}
+                  placeholder="Nhập kinh độ"
+                  disabled={locationMode === "gps"}
+                />
+              </Form.Item>
+
+              <Form.Item
+                label="Vĩ độ"
+                name="latitude"
+                rules={[
+                  {
+                    required: locationMode === "manual",
+                    message: "Vui lòng nhập vĩ độ",
+                  },
+                  {
+                    validator: async (_, value?: string) => {
+                      if (!value || locationMode !== "manual") return;
+
+                      const number = Number(value);
+
+                      if (
+                        !Number.isFinite(number) ||
+                        number < -90 ||
+                        number > 90
+                      ) {
+                        throw new Error("Vĩ độ phải từ -90 đến 90");
+                      }
+                    },
+                  },
+                ]}>
+                <AppInput
+                  width="100%"
+                  height={44}
+                  placeholder="Nhập vĩ độ"
+                  disabled={locationMode === "gps"}
+                />
+              </Form.Item>
+            </div>
+
+            <Form.Item label="Mô tả" name="description">
+              <Input.TextArea
+                className="facility-device-form-modal__textarea"
+                placeholder="Nhập mô tả"
+                rows={4}
+              />
             </Form.Item>
           </div>
         </div>
 
-        {/* Chú thích trường bắt buộc */}
         <div className="facility-device-form-modal__required-note">
           <span>*</span>
           <span>là những trường thông tin bắt buộc</span>
         </div>
 
-        {/* Nút thao tác */}
         <div className="app-form-actions facility-device-form-modal__actions">
           <AppButton
             variant="outline"
             width={120}
             height={44}
             disabled={loading}
-            onClick={handleCancel}>
+            onClick={onCancel}>
             Hủy
           </AppButton>
 

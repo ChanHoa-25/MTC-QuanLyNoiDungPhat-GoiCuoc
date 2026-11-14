@@ -1,7 +1,10 @@
 .app-table {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
   width: 100%;
   min-width: 0;
-  /* overflow: hidden; */
+  min-height: 0;
   background: #ffffff;
   border-radius: 8px;
 }
@@ -69,15 +72,18 @@
 }
 
 .app-table .ant-table-selection-column {
-  width: 80px;
-  min-width: 80px;
+  width: 46px;
+  min-width: 46px;
+  padding: 0 !important;
   text-align: center;
+  vertical-align: middle;
 }
 
 .app-table .ant-table-selection-column .ant-checkbox-wrapper {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  margin: 0;
 }
 
 .app-table .ant-checkbox-inner {
@@ -111,4 +117,14 @@
   font-size: 12px;
   font-weight: 400;
   line-height: 100%;
+}
+
+.app-table > .ant-table-wrapper {
+  width: 100%;
+  flex-shrink: 0;
+}
+
+.app-table > .app-pagination {
+  margin-top: auto;
+  flex-shrink: 0;
 }

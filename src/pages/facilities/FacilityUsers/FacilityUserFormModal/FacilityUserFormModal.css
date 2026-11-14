@@ -9,27 +9,27 @@
   min-height: 0;
   max-height: calc(100dvh - 32px);
   overflow-y: auto;
-  padding: 40px;
+  padding: 20px 32px;
   background: #ffffff;
   border-radius: 16px;
   box-shadow: 0 4px 20px rgba(243, 198, 179, 0.2);
 }
 
 .facility-user-form-modal .ant-modal-header {
-  margin-bottom: 24px;
+  margin-bottom: 14px;
   background: transparent;
 }
 
 .facility-user-form-modal .ant-modal-title {
   color: var(--color-primary);
-  font-size: 23px;
+  font-size: 21px;
   font-weight: 700;
-  line-height: 31px;
+  line-height: 28px;
 }
 
 .facility-user-form-modal .ant-modal-close {
-  top: 16px;
-  right: 16px;
+  top: 14px;
+  right: 14px;
   width: 24px;
   height: 24px;
   color: #333333;
@@ -42,7 +42,7 @@
 .facility-user-form-modal__fields {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
 }
 
 .facility-user-form-modal__fields .ant-form-item {
@@ -50,21 +50,21 @@
 }
 
 .facility-user-form-modal__fields .ant-form-item-label {
-  padding-bottom: 6px;
+  padding-bottom: 4px;
 }
 
 .facility-user-form-modal__fields .ant-form-item-label label,
 .facility-user-form-modal__avatar-label {
   color: #4d4d4d;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
-  line-height: 22px;
+  line-height: 20px;
 }
 
 .facility-user-form-modal__fields .ant-input,
 .facility-user-form-modal__fields .ant-select {
   width: 100%;
-  min-height: 44px;
+  min-height: 40px;
 }
 
 .facility-user-form-modal__fields .ant-input {
@@ -72,12 +72,13 @@
 }
 
 .facility-user-form-modal__fields .ant-select-selector {
+  min-height: 40px !important;
   border-radius: 6px !important;
 }
 
 .facility-user-form-modal__password {
   width: 100%;
-  height: 48px;
+  height: 40px;
   border-radius: 6px;
   border-color: #c2c2c2;
 }
@@ -92,8 +93,8 @@
 .facility-user-form-modal__avatar-section {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-top: 24px;
+  gap: 8px;
+  margin-top: 12px;
 }
 
 .facility-user-form-modal__avatar {
@@ -102,8 +103,8 @@
   align-items: center;
   justify-content: center;
   box-sizing: border-box;
-  width: 84px;
-  height: 85px;
+  width: 68px;
+  height: 68px;
   border: 2px solid var(--color-primary);
   border-radius: 50%;
   background: #fff7f2;
@@ -122,7 +123,7 @@
 
 .facility-user-form-modal__camera {
   position: absolute;
-  right: 2px;
+  right: 0;
   bottom: 0;
   display: flex;
   align-items: center;
@@ -141,6 +142,11 @@
   background: #fff1e8;
 }
 
+.facility-user-form-modal__camera:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .facility-user-form-modal__file-input {
   display: none;
 }
@@ -149,9 +155,9 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  margin-top: 48px;
+  margin-top: 16px;
   color: #858585;
-  font-size: 12px;
+  font-size: 11px;
   line-height: 16px;
 }
 
@@ -164,24 +170,24 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 40px;
+  gap: 28px;
 }
 
 .facility-user-form-modal__actions {
-  margin-top: 32px;
+  margin-top: 16px;
 }
 
 @media (max-width: 600px) {
   .facility-user-form-modal .ant-modal-content {
-    padding: 24px;
+    padding: 18px 20px;
   }
 
   .facility-user-form-modal__required-note {
-    margin-top: 32px;
+    margin-top: 12px;
   }
 
   .facility-user-form-modal__actions {
-    margin-top: 32px;
+    margin-top: 14px;
   }
 
   .facility-user-form-modal .app-form-actions {

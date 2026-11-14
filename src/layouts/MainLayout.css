@@ -93,6 +93,9 @@
 }
 
 .header-breadcrumb .app-breadcrumb {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
   font-family: var(--font-family);
   font-size: 23px;
   line-height: 28px;
@@ -103,25 +106,35 @@
   align-items: center;
   flex-wrap: nowrap;
   margin: 0;
+  padding: 0;
 }
 
 .header-breadcrumb .app-breadcrumb li {
   display: inline-flex;
   align-items: center;
+  min-height: 28px;
+}
+
+.header-breadcrumb .app-breadcrumb .ant-breadcrumb-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  line-height: 28px;
 }
 
 .header-breadcrumb .app-breadcrumb .breadcrumb-item {
   display: inline-flex;
   align-items: center;
   gap: 8px;
+  min-height: 28px;
   line-height: 28px;
 }
 
 .header-breadcrumb .app-breadcrumb .breadcrumb-icon {
   display: block;
+  flex: 0 0 28px;
   width: 28px;
   height: 28px;
-  flex: 0 0 28px;
   color: var(--color-primary);
   stroke: var(--color-primary);
   stroke-width: 1.8;
@@ -131,6 +144,7 @@
 .header-breadcrumb .app-breadcrumb .breadcrumb-current {
   display: inline-flex;
   align-items: center;
+  min-height: 28px;
   font-size: 23px;
   font-weight: 700;
   line-height: 28px;
@@ -152,10 +166,11 @@
 .header-breadcrumb .app-breadcrumb .breadcrumb-home {
   display: inline-flex;
   align-items: center;
+  min-height: 28px;
   color: var(--color-primary);
   font-size: 23px;
   font-weight: 700;
-  line-height: 20px;
+  line-height: 28px;
   text-decoration: none;
 }
 
@@ -163,6 +178,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  min-height: 28px;
   margin-inline: 8px;
   color: #000000;
   line-height: 1;
@@ -173,6 +189,8 @@
   width: 14px;
   height: 14px;
   color: #000000;
+  stroke: currentColor;
+  stroke-width: 3;
 }
 
 /* SIDEBAR */

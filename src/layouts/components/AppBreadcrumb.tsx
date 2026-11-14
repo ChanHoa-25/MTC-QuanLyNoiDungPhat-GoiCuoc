@@ -110,7 +110,11 @@ function AppBreadcrumb() {
     return null;
   }
 
-  const items = segments.map((segment, index) => {
+  const isFacilityTemplateRoute =
+    segments[0] === ROUTES.FACILITIES.replace(/^\//, "") &&
+    segments[2] === "templates";
+
+  const items = segments.flatMap((segment, index) => {
     const path = `/${segments.slice(0, index + 1).join("/")}`;
 
     const isLast = index === segments.length - 1;
@@ -122,9 +126,31 @@ function AppBreadcrumb() {
       segments[0] === ROUTES.FACILITIES.replace(/^\//, "") &&
       segment !== "user";
 
-    const label = isFacilityDetail
-      ? "Thông tin chi tiết"
-      : (config?.label ?? segment);
+    if (isFacilityTemplateRoute) {
+      if (index === 1) {
+        return [];
+      }
+
+      if (index === 3 && segment !== "create") {
+        return [];
+      }
+    }
+
+    let label = config?.label ?? segment;
+
+    if (isFacilityDetail) {
+      label = "Thông tin chi tiết";
+    }
+
+    if (isFacilityTemplateRoute) {
+      if (segment === "templates") {
+        label = "Bản mẫu";
+      } else if (segment === "create") {
+        label = "Thêm mới";
+      } else if (segment === "edit") {
+        label = "Cập nhật";
+      }
+    }
 
     const parentPath =
       path === ROUTES.FACILITIES ||
@@ -133,24 +159,26 @@ function AppBreadcrumb() {
 
     const isClickable = !isLast && !parentPath;
 
-    return {
-      title: (
-        <span className="breadcrumb-item">
-          {index === 0 && config?.icon}
+    return [
+      {
+        title: (
+          <span className="breadcrumb-item">
+            {index === 0 && config?.icon}
 
-          {isClickable ? (
-            <Link to={path} className="breadcrumb-parent">
-              {label}
-            </Link>
-          ) : (
-            <span
-              className={isLast ? "breadcrumb-current" : "breadcrumb-parent"}>
-              {label}
-            </span>
-          )}
-        </span>
-      ),
-    };
+            {isClickable ? (
+              <Link to={path} className="breadcrumb-parent">
+                {label}
+              </Link>
+            ) : (
+              <span
+                className={isLast ? "breadcrumb-current" : "breadcrumb-parent"}>
+                {label}
+              </span>
+            )}
+          </span>
+        ),
+      },
+    ];
   });
 
   if (pathname === ROUTES.FACILITIES) {
