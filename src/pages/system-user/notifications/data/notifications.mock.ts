@@ -1,0 +1,9 @@
+import type { NotificationItem } from '../types/notification.types';
+
+export const INITIAL_NOTIFS: NotificationItem[] = [
+  { id: 'nt-1', title: 'Khám phá Hội An-Việt Nam', content: 'Khám phá Hội An-Việt Nam', status: 'unsent', statusLabel: 'Chưa gửi', receivers: 'Hồ Chí Minh, Hậu Giang, Cần...', receiverList: ['Bình Thạnh', 'Bình Tân', 'Tp.Thủ Đức', 'Gò Vấp'], sendTime: '01/03/12 22:43', createTime: '01/03/12 22:43', creator: 'Nguyễn Văn A' },
+  { id: 'nt-2', title: 'Bí quyết đầu tư chứng khoán', content: 'Bí quyết đầu tư chứng khoán', status: 'sent', statusLabel: 'Đã gửi', receivers: 'Hồ Chí Minh, Hậu Giang, Cần...', receiverList: ['Quận 1', 'Quận 7'], sendTime: '01/03/12 22:43', createTime: '01/03/12 22:43', creator: 'Nguyễn Văn A' },
+  { id: 'nt-3', title: 'Chuẩn bị gì sau khi tiêm vaccin...', content: 'Chuẩn bị gì sau khi tiêm vaccin...', status: 'unsent', statusLabel: 'Chưa gửi', receivers: 'Hồ Chí Minh, Hậu Giang, Cần...', receiverList: ['Quận 3'], sendTime: '01/03/12 22:43', createTime: '01/03/12 22:43', creator: 'Nguyễn Văn A' },
+  { id: 'nt-4', title: 'Những vườn quốc gia tuyệt vời...', content: 'Những vườn quốc gia tuyệt vời...', status: 'sent', statusLabel: 'Đã gửi', receivers: 'Hồ Chí Minh, Hậu Giang, Cần...', receiverList: ['Gò Vấp', 'Quận 12'], sendTime: '09/02/12 22:43', createTime: '09/02/12 22:43', creator: 'Nguyễn Văn A' },
+  { id: 'nt-5', title: 'Những ngày giãn cách ở Sài Gòn', content: 'Những ngày giãn cách ở Sài Gòn', status: 'unsent', statusLabel: 'Chưa gửi', receivers: 'Hồ Chí Minh, Hậu Giang, Cần...', receiverList: ['Bình Thạnh', 'Quận 2'], sendTime: '01/03/12 22:43', createTime: '01/03/12 22:43', creator: 'Nguyễn Văn A' },
+];

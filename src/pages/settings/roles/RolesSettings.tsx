@@ -3,7 +3,8 @@ import type { Key } from "react";
 import type { ColumnsType } from "antd/es/table";
 import { message } from "antd";
 import { Info, Plus, SquarePen, Trash2 } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { ROUTES, SYSTEM_ROUTES } from "../../../constants/route.constants";
 
 import AppTabs from "../../../components/common/AppTabs";
 import AppSearch from "../../../components/common/AppSearch";
@@ -31,6 +32,13 @@ const roleTabs = [
 function RolesSettings() {
   const { setActions } = useActionPanel();
   const navigate = useNavigate();
+  const { pathname } = useLocation();
+
+  const isSystemUser = pathname.startsWith(`${SYSTEM_ROUTES.ROOT}/`);
+
+  const rolesBasePath = isSystemUser
+    ? SYSTEM_ROUTES.SETTINGS_ROLES
+    : ROUTES.SETTINGS_ROLES;
 
   const [activeTab, setActiveTab] = useState<RoleTab>("roles");
 
@@ -61,8 +69,8 @@ function RolesSettings() {
   }, [roles, keyword]);
 
   const openCreateRole = useCallback(() => {
-    navigate("/settings/roles/create");
-  }, [navigate]);
+    navigate(`${rolesBasePath}/create`);
+  }, [navigate, rolesBasePath]);
 
   const openDeleteModal = useCallback(() => {
     if (selectedRowKeys.length === 0) {
@@ -137,12 +145,16 @@ function RolesSettings() {
         key: "description",
         width: 220,
       },
-      {
-        title: "Cập nhật lần cuối",
-        dataIndex: "updatedAt",
-        key: "updatedAt",
-        width: 240,
-      },
+      ...(!isSystemUser
+        ? [
+            {
+              title: "Cập nhật lần cuối",
+              dataIndex: "updatedAt",
+              key: "updatedAt",
+              width: 240,
+            },
+          ]
+        : []),
       {
         title: "Hành động",
         key: "actions",
@@ -155,20 +167,20 @@ function RolesSettings() {
                 key: "edit",
                 icon: <SquarePen size={20} />,
                 tooltip: "Cập nhật vai trò",
-                onClick: () => navigate(`/settings/roles/${record.id}/edit`),
+                onClick: () => navigate(`${rolesBasePath}/${record.id}/edit`),
               },
               {
                 key: "detail",
                 icon: <Info size={20} />,
                 tooltip: "Chi tiết vai trò",
-                onClick: () => navigate(`/settings/roles/${record.id}`),
+                onClick: () => navigate(`${rolesBasePath}/${record.id}`),
               },
             ]}
           />
         ),
       },
     ],
-    [navigate],
+    [navigate, isSystemUser, rolesBasePath],
   );
 
   const handleTabChange = (key: string) => {

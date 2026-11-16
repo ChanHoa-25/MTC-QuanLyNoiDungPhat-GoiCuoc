@@ -1,9 +1,8 @@
 import { Card } from "antd";
 
-import type { DashboardStat } from "../../types/dashboard.types";
-import "./DashboardStatCard.css";
+import type { DashboardStatCardProps } from "../dashboard.types";
 
-type DashboardStatCardProps = DashboardStat;
+import "./DashboardStatCard.css";
 
 function DashboardStatCard({
   variant,
@@ -11,10 +10,12 @@ function DashboardStatCard({
   title,
   value,
   total,
+  unit,
+  className = "",
 }: DashboardStatCardProps) {
   return (
     <Card
-      className={`stat-card stat-card--${variant}`}
+      className={`stat-card stat-card--${variant} ${className}`}
       variant="borderless"
       styles={{
         body: {
@@ -23,12 +24,18 @@ function DashboardStatCard({
         },
       }}>
       <div className="stat-card__inner">
-        <Icon className="stat-card__bg-icon" size={90} strokeWidth={1.25} />
+        {/* Icon: chỉ hiển thị khi được truyền */}
+        {Icon && (
+          <>
+            <Icon className="stat-card__bg-icon" size={90} strokeWidth={1.25} />
 
-        <span className="stat-card__badge">
-          <Icon size={18} />
-        </span>
+            <span className="stat-card__badge">
+              <Icon size={18} />
+            </span>
+          </>
+        )}
 
+        {/* Giá trị thống kê */}
         <div className="stat-card__body">
           <div className="stat-card__value">
             {value}
@@ -36,9 +43,12 @@ function DashboardStatCard({
             {total !== undefined && (
               <span className="stat-card__total">/{total}</span>
             )}
+
+            {unit && <span className="stat-card__unit">{unit}</span>}
           </div>
         </div>
 
+        {/* Tiêu đề */}
         <div className="stat-card__title">{title}</div>
       </div>
     </Card>

@@ -1,8 +1,8 @@
-import type { DashboardDevice } from "../../types/dashboard.types";
+import type { DashboardMapDevice } from "../dashboard.types";
 import "./DashboardDevicePopup.css";
 
 interface DashboardDevicePopupProps {
-  device: DashboardDevice;
+  device: DashboardMapDevice;
 }
 
 const statusText = {
@@ -19,6 +19,13 @@ function DashboardDevicePopup({ device }: DashboardDevicePopupProps) {
         <dt>Tên thiết bị:</dt>
         <dd>{device.name}</dd>
 
+        {device.organization !== undefined && (
+          <>
+            <dt>Tổ chức:</dt>
+            <dd>{device.organization}</dd>
+          </>
+        )}
+
         <dt>Địa chỉ:</dt>
         <dd>{device.address}</dd>
 
@@ -32,7 +39,6 @@ function DashboardDevicePopup({ device }: DashboardDevicePopupProps) {
           <span
             className={`device-popup__dot device-popup__dot--${device.status}`}
           />
-
           {statusText[device.status]}
         </dd>
       </dl>

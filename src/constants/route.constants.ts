@@ -30,9 +30,26 @@ export const ROUTES = {
   SETTINGS_LOGS: "/settings/logs",
   SETTINGS_NEWS_MODE: "/settings/news-mode",
   SETTINGS_SYSTEM: "/settings/system",
-
   SETTINGS_PERSONAL: "/settings/personal",
 
   FORBIDDEN: "/403",
   NOT_FOUND: "/404",
+} as const;
+
+// Các đường dẫn dành riêng cho System User
+export const SYSTEM_ROUTES = {
+  ROOT: "/system",
+
+  DASHBOARD: "/system/dashboard",
+  ORGANIZATIONS: "/system/organizations",
+  NOTIFICATIONS: "/system/notifications",
+  PACKAGES: "/system/packages",
+  REPORTS: "/system/reports",
+
+  SETTINGS: "/system/settings",
+  SETTINGS_CATEGORIES: "/system/settings/categories",
+  SETTINGS_ROLES: "/system/settings/roles",
+  SETTINGS_DISTRIBUTORS: "/system/settings/distributors",
+  SETTINGS_LOGS: "/system/settings/logs",
+  SETTINGS_NEWS_MODE: "/system/settings/news-mode",
 } as const;
