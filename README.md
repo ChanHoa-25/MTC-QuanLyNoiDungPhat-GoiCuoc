@@ -1,187 +1,149 @@
-# MTC – Quản lý nội dung phát & gói cước
+# MTC CMS – Quản lý nội dung phát & gói cước
 
-Dự án Front-end xây dựng giao diện hệ thống **MTC CMS** phục vụ quản lý cơ sở, thiết bị, media, bản mẫu, danh sách phát và các chức năng quản trị liên quan.
+MTC CMS là hệ thống quản lý nội dung phát và gói cước, hỗ trợ quản lý cơ sở, thiết bị phát tin, nguồn nội dung, bản tin và các hoạt động quản trị hệ thống.
 
-## 1. Công nghệ sử dụng
+Dự án được phát triển trong quá trình **Học kỳ doanh nghiệp**, tập trung xây dựng giao diện Front-end theo thiết kế Figma và tích hợp với hệ thống Back-end thông qua REST API.
 
-- **React** + **TypeScript**
-- **Vite** – công cụ chạy môi trường phát triển và build
-- **Ant Design** – thư viện giao diện
-- **React Router** – điều hướng trang
-- **Lucide React / Ant Design Icons** – biểu tượng giao diện
-- **Day.js** – xử lý ngày tháng
+## Giới thiệu hệ thống
 
-Một số thư viện khác có thể được sử dụng theo từng chức năng; xem danh sách chính xác trong `package.json`.
+Hệ thống MTC CMS được tổ chức thành hai phân hệ chính:
 
-## 2. Yêu cầu trước khi chạy
+### End User – Quản lý nội dung phát
 
-Cài đặt:
+Phân hệ dành cho người dùng quản lý các hoạt động liên quan đến cơ sở và nội dung phát.
 
-- **Node.js**: khuyến nghị phiên bản 24.x (phiên bản đang dùng khi phát triển: 24.13.0).
-- **npm**: đi kèm Node.js (phiên bản đang dùng khi phát triển: 11.6.2).
-- **Git**: để tải source code.
-- **Visual Studio Code** (khuyến nghị).
+Các chức năng chính:
 
-Kiểm tra trong Terminal:
+- **Dashboard:** Tổng quan và thống kê dữ liệu.
+- **Quản lý cơ sở:** Quản lý thông tin cơ sở, tài khoản và các nội dung liên quan.
+- **Quản lý thiết bị:** Theo dõi và quản lý thiết bị phát tin.
+- **Quản lý Media:** Quản lý tệp media, nguồn tin, bản mẫu và danh sách phát.
+- **Quản lý bản tin:** Quản lý thông tin và hoạt động phát bản tin.
+- **Báo cáo:** Thống kê dữ liệu theo các nhóm chức năng.
+- **Cài đặt:** Quản lý tài khoản, vai trò và các thiết lập liên quan.
 
-```bash
-node -v
-npm -v
-git --version
+### System User – Quản trị hệ thống
+
+Phân hệ dành cho người dùng thực hiện các chức năng quản trị hệ thống.
+
+Các chức năng chính:
+
+- **Dashboard:** Tổng quan hoạt động hệ thống.
+- **Quản lý tổ chức:** Quản lý thông tin và chi tiết tổ chức.
+- **Quản lý thông báo:** Quản lý và cấu hình thông báo.
+- **Quản lý gói cước:** Quản lý gói cước, chi tiết và lịch sử gói cước.
+- **Báo cáo:** Thống kê thiết bị, bản tin và nguồn tin theo tổ chức.
+- **Cài đặt hệ thống:** Quản lý vai trò, người dùng và các thiết lập hệ thống.
+
+## Công nghệ sử dụng
+
+| Công nghệ               | Vai trò                   |
+| ----------------------- | ------------------------- |
+| React                   | Xây dựng giao diện        |
+| TypeScript              | Ngôn ngữ phát triển       |
+| Create React App        | Công cụ xây dựng ứng dụng |
+| Ant Design              | Thư viện UI               |
+| React Router            | Điều hướng                |
+| Axios                   | Tích hợp REST API         |
+| Recharts                | Biểu đồ thống kê          |
+| Leaflet / React Leaflet | Bản đồ                    |
+| Lucide React            | Biểu tượng                |
+| Day.js                  | Xử lý ngày giờ            |
+
+**Back-end tích hợp:** ASP.NET Core (.NET 8) và PostgreSQL.
+
+## Cấu trúc dự án
+
+```text
+src/
+├── api/                 # Cấu hình và xử lý API
+├── assets/              # Hình ảnh, biểu tượng
+├── components/          # Component dùng chung
+├── config/              # Cấu hình ứng dụng
+├── constants/           # Hằng số, đường dẫn
+├── contexts/            # React Context
+├── data/                # Dữ liệu mock
+├── features/            # Các module chức năng
+├── layouts/             # Bố cục giao diện
+├── pages/               # Các trang của hệ thống
+│   ├── system-user/     # Phân hệ System User
+│   ├── reports/         # Báo cáo
+│   └── settings/        # Cài đặt
+├── routes/              # Cấu hình định tuyến
+├── types/               # Kiểu dữ liệu TypeScript
+├── App.tsx
+├── AppProviders.tsx
+└── index.tsx
 ```
 
-## 3. Tải source code
+Các component dùng chung được xây dựng nhằm tái sử dụng giữa các màn hình và hai phân hệ, giúp thống nhất giao diện và thuận tiện cho việc bảo trì.
 
-Mở Terminal tại thư mục muốn lưu dự án:
+## Cài đặt và khởi chạy
+
+**Yêu cầu:** Node.js, npm và Git.
+
+Clone repository:
 
 ```bash
 git clone https://github.com/ChanHoa-25/MTC-QuanLyNoiDungPhat-GoiCuoc.git
 cd MTC-QuanLyNoiDungPhat-GoiCuoc
 ```
 
-Nếu đã clone dự án trước đó, cập nhật mã nguồn từ nhánh đang làm việc theo quy trình Git của nhóm (ví dụ với nhánh `main`):
-
-```bash
-git checkout main
-git pull origin main
-```
-
-## 4. Cài đặt thư viện
-
-Tại thư mục gốc của dự án (nơi có `package.json`), chạy:
+Cài đặt dependencies:
 
 ```bash
 npm install
 ```
 
-Lệnh này sẽ cài các dependencies vào thư mục `node_modules/`.
-
-> Nếu repository có `package-lock.json` và muốn cài chính xác theo lockfile, có thể dùng `npm ci` thay cho `npm install`.
-
-## 5. Chạy dự án trên máy cá nhân
-
-Chạy môi trường phát triển:
+Khởi chạy ứng dụng:
 
 ```bash
-npm run dev
+npm start
 ```
 
-Terminal sẽ hiển thị đường dẫn truy cập, thường là:
+Truy cập tại: **http://localhost:3000**
 
-```text
-http://localhost:5173/
-```
-
-Mở đường dẫn được in ra trong Terminal bằng trình duyệt. Nếu cổng 5173 đang được sử dụng, Vite có thể tự chọn cổng khác; hãy dùng đúng URL hiển thị.
-
-Để dừng server, nhấn **Ctrl + C** trong Terminal.
-
-## 6. Các lệnh thường dùng
-
-| Lệnh              | Mục đích                               |
-| ----------------- | -------------------------------------- |
-| `npm install`     | Cài đặt dependencies                   |
-| `npm run dev`     | Chạy dự án trong môi trường phát triển |
-| `npm run build`   | Build phiên bản production             |
-| `npm run preview` | Xem thử bản build production           |
-
-Các lệnh bổ sung như lint hoặc kiểm tra TypeScript phụ thuộc vào phần `scripts` trong `package.json` hiện tại.
-
-## 7. Quy trình làm việc dành cho thành viên nhóm
-
-1. Cập nhật mã nguồn mới nhất trước khi bắt đầu làm việc.
-2. Tạo nhánh riêng cho chức năng hoặc công việc được phân công.
-3. Chỉnh sửa code và chạy `npm run dev` để kiểm tra giao diện.
-4. Kiểm tra lỗi và chạy build trước khi gửi code.
-5. Commit với nội dung rõ ràng và push nhánh lên GitHub.
-6. Tạo Pull Request để nhóm review trước khi merge vào `main`.
-
-Ví dụ:
-
-```bash
-git checkout main
-git pull origin main
-git checkout -b feature/site-media
-
-# Sau khi hoàn thành công việc
-git add .
-git commit -m "feat: hoàn thiện giao diện quản lý media"
-git push -u origin feature/site-media
-```
-
-## 8. Một số lỗi thường gặp
-
-### `npm` hoặc `node` không được nhận diện
-
-Kiểm tra Node.js đã được cài đặt và có trong PATH. Đóng rồi mở lại Terminal sau khi cài.
-
-### `Cannot find module` / thiếu thư viện
-
-Chạy lại:
-
-```bash
-npm install
-```
-
-Nếu vừa chuyển nhánh hoặc pull code mới, cần cài lại dependencies khi `package.json` hoặc lockfile thay đổi.
-
-### Cổng 5173 đã được sử dụng
-
-Dùng đúng đường dẫn Vite in ra trong Terminal, hoặc chạy:
-
-```bash
-npm run dev -- --port 5174
-```
-
-### Lỗi khi build
-
-Chạy:
+Build ứng dụng:
 
 ```bash
 npm run build
 ```
 
-Đọc thông báo trong Terminal và sửa lỗi TypeScript/import tương ứng. Đảm bảo tên file và đường dẫn import đúng cả chữ hoa, chữ thường.
+## Cấu hình API
 
-## 9. Lưu ý về dữ liệu và API
+Trong môi trường phát triển, Front-end sử dụng proxy để kết nối với Back-end.
 
-Dự án đang trong giai đoạn phát triển giao diện Front-end; một số chức năng sử dụng **dữ liệu mock** và các thao tác có thể chưa kết nối Backend/API thực tế. Vì vậy, việc hiển thị thông báo thành công chưa đồng nghĩa dữ liệu đã được lưu trên server.
+Cấu hình trong `package.json`:
 
-Nếu dự án bổ sung file môi trường như `.env.example`, hãy tạo file `.env` theo hướng dẫn được cập nhật của nhóm. Không commit mật khẩu, token hoặc khóa bí mật lên GitHub.
+```json
+"proxy": "http://localhost:5006"
+```
+
+Các yêu cầu API sử dụng đường dẫn `/api`, ví dụ:
+
+```text
+/api/Organizations
+```
+
+Back-end cần được khởi chạy riêng để sử dụng các chức năng có kết nối API.
+
+## Quy trình phát triển
+
+Dự án được phát triển theo nhóm, sử dụng Git và GitHub để quản lý mã nguồn.
+
+- Phát triển chức năng trên các nhánh riêng.
+- Sử dụng component dùng chung để thống nhất giao diện.
+- Kiểm tra TypeScript và build trước khi cập nhật mã nguồn.
+- Sử dụng Pull Request để kiểm tra và tích hợp thay đổi.
+
+## Trạng thái dự án
+
+**Đang phát triển.**
+
+Giao diện được xây dựng dựa trên Figma. Một số chức năng đang sử dụng dữ liệu mock và sẽ tiếp tục được tích hợp với Back-end thông qua API.
 
 ---
 
-**Repository:** https://github.com/ChanHoa-25/MTC-QuanLyNoiDungPhat-GoiCu
+**Repository:** [MTC – Quản lý nội dung phát &amp; gói cước](https://github.com/ChanHoa-25/MTC-QuanLyNoiDungPhat-GoiCuoc)
 
-# React + TypeScript + Vite
-
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
-
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+**Dự án Học kỳ doanh nghiệp – Front-end Development**
