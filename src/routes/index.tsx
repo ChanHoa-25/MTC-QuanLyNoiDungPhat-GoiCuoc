@@ -28,7 +28,7 @@ import NotFoundPage from "../pages/errors/NotFoundPage";
 
 import ComingSoonPage from "../pages/ComingSoonPage";
 
-import { ROUTES } from "../constants/route.constants";
+import { ROUTES, SYSTEM_ROUTES } from "../constants/route.constants";
 import ReportsPage from "../pages/reports/ReportsPage";
 import FacilityTemplateFormPage from "../pages/facilities/FacilityTemplates/FacilityTemplateFormPage";
 
@@ -66,6 +66,8 @@ import SourcePlaylistDetail from "../pages/sources/playlists/SourcePlaylistDetai
 import BroadcastPage from "../pages/broadcasts/BroadcastPage";
 import CreateBroadcastPage from "../pages/broadcasts/CreateBroadcast/CreateBroadcast";
 import BroadcastDetailPage from "../pages/broadcasts/BroadcastDetailPage/BroadcastDetailPage";
+import DashboardSystemUser from "../pages/system-user/dashboard/DashboardPage";
+import NotificationsPage from "../pages/notifications";
 
 export const routes: RouteObject[] = [
   // Auth
@@ -321,9 +323,48 @@ export const routes: RouteObject[] = [
             path: ROUTES.SETTINGS_LOGS,
             element: <UserLogsSettings />,
           },
+
           {
             path: ROUTES.SETTINGS_NEWS_MODE,
             element: <ComingSoonPage title="Chế độ tạo bản tin" />,
+          },
+        ],
+      },
+
+      // ===========================
+      // SYSTEM USER
+      // ===========================
+      {
+        path: SYSTEM_ROUTES.ROOT,
+        element: <MainLayout variant="system-user" />,
+        children: [
+          {
+            index: true,
+            element: <Navigate to={SYSTEM_ROUTES.DASHBOARD} replace />,
+          },
+          {
+            path: SYSTEM_ROUTES.DASHBOARD,
+            element: <DashboardSystemUser />,
+          },
+          {
+            path: SYSTEM_ROUTES.ORGANIZATIONS,
+            element: <ComingSoonPage title="Quản lý tổ chức" />,
+          },
+          {
+            path: SYSTEM_ROUTES.NOTIFICATIONS,
+            element: <NotificationsPage />,
+          },
+          {
+            path: SYSTEM_ROUTES.PACKAGES,
+            element: <ComingSoonPage title="Quản lý gói cước" />,
+          },
+          {
+            path: SYSTEM_ROUTES.REPORTS,
+            element: <ComingSoonPage title="Báo cáo" />,
+          },
+          {
+            path: SYSTEM_ROUTES.SETTINGS,
+            element: <ComingSoonPage title="Cài đặt hệ thống" />,
           },
         ],
       },

@@ -12,7 +12,7 @@ import {
   Settings,
 } from "lucide-react";
 
-import { ROUTES } from "../../constants/route.constants";
+import { ROUTES, SYSTEM_ROUTES } from "../../constants/route.constants";
 import { useFacilityContext } from "../../contexts/FacilityContext";
 import { getBroadcastBreadcrumbs } from "../../config/breadcrumbs/broadcastBreadcrumb";
 
@@ -95,6 +95,36 @@ const breadcrumbs: Record<string, BreadcrumbConfig> = {
   },
 };
 
+const systemBreadcrumbs: Record<string, BreadcrumbConfig> = {
+  [SYSTEM_ROUTES.DASHBOARD]: {
+    label: "Tổng quan",
+    icon: <Command className="breadcrumb-icon" />,
+  },
+
+  [SYSTEM_ROUTES.ORGANIZATIONS]: {
+    label: "Tổ chức",
+    icon: <Network className="breadcrumb-icon" />,
+  },
+
+  [SYSTEM_ROUTES.NOTIFICATIONS]: {
+    label: "Thông báo",
+  },
+
+  [SYSTEM_ROUTES.PACKAGES]: {
+    label: "Gói cước",
+  },
+
+  [SYSTEM_ROUTES.REPORTS]: {
+    label: "Báo cáo",
+    icon: <ChartLine className="breadcrumb-icon" />,
+  },
+
+  [SYSTEM_ROUTES.SETTINGS]: {
+    label: "Cài đặt hệ thống",
+    icon: <Settings className="breadcrumb-icon" />,
+  },
+};
+
 function AppBreadcrumb() {
   const { pathname } = useLocation();
   const [searchParams] = useSearchParams();
@@ -102,6 +132,35 @@ function AppBreadcrumb() {
   const { selectedFacilityPath, setSelectedFacilityId } = useFacilityContext();
 
   const segments = pathname.split("/").filter(Boolean);
+
+  // Breadcrumb dành riêng cho System User
+  if (
+    pathname === SYSTEM_ROUTES.ROOT ||
+    pathname.startsWith(`${SYSTEM_ROUTES.ROOT}/`)
+  ) {
+    const config = systemBreadcrumbs[pathname];
+
+    if (!config) {
+      return null;
+    }
+
+    return (
+      <Breadcrumb
+        className="app-breadcrumb"
+        items={[
+          {
+            title: (
+              <span className="breadcrumb-item">
+                {config.icon}
+                <span className="breadcrumb-current">{config.label}</span>
+              </span>
+            ),
+          },
+        ]}
+        separator={<RightOutlined className="breadcrumb-separator-icon" />}
+      />
+    );
+  }
 
   if (segments.length === 0) {
     return null;

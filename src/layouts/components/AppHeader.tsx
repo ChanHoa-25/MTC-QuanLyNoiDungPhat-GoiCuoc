@@ -10,11 +10,12 @@ import AppNotification from "../../components/common/AppNotification/AppNotifica
 import "../MainLayout.css";
 
 interface AppHeaderProps {
-  variant?: "default" | "profile";
+  variant?: "default" | "profile" | "system-user";
 }
 
 function AppHeader({ variant = "default" }: AppHeaderProps) {
   const isProfile = variant === "profile";
+  const isSystemUser = variant === "system-user";
 
   return (
     <div className={`header-inner ${isProfile ? "header-inner--profile" : ""}`}>
@@ -27,8 +28,8 @@ function AppHeader({ variant = "default" }: AppHeaderProps) {
 
       {/* Các chức năng bên phải Header */}
       <div className="header-actions">
-        {/* Tìm kiếm */}
-        {!isProfile && <AppSearch />}
+        {/* Tìm kiếm: chỉ End User mặc định */}
+        {!isProfile && !isSystemUser && <AppSearch />}
 
         {/* Chọn ngôn ngữ */}
         <AppLanguage className="header-language" />
@@ -41,8 +42,8 @@ function AppHeader({ variant = "default" }: AppHeaderProps) {
         {/* Thông báo */}
         <AppNotification />
 
-        {/* Tài khoản */}
-        <AppAccount />
+        {/* Tài khoản: System User hiển thị ở Sidebar */}
+        {!isSystemUser && <AppAccount />}
       </div>
     </div>
   );

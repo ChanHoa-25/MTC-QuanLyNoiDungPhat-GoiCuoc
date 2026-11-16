@@ -6,20 +6,18 @@ import { Maximize2, Minimize2 } from "lucide-react";
 import { MapContainer, Marker, Popup, TileLayer, useMap } from "react-leaflet";
 
 import { divIcon } from "leaflet";
-
-import DashboardDevicePopup from "../DashboardDevicePopup";
+import DashboardDevicePopup from "../DashboardDevicePopup/DashboardDevicePopup";
 
 import type {
-  DashboardDevice,
+  DashboardMapDevice,
   DashboardDeviceStatus,
-} from "../../types/dashboard.types";
+} from "../dashboard.types";
 
 import "./DashboardMap.css";
 
 interface DashboardMapProps {
-  devices: DashboardDevice[];
+  devices: DashboardMapDevice[];
 }
-
 const PIN_COLOR: Record<DashboardDeviceStatus, string> = {
   online: "#4CC764",
   offline: "#E8484F",

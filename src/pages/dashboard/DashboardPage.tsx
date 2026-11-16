@@ -1,7 +1,8 @@
 import { useMemo, useState } from "react";
-import DashboardStatCard from "./components/DashboardStatCard";
+
+import DashboardStatCard from "../../components/dashboard/DashboardStatCard/DashboardStatCard";
 import DashboardStorageCard from "./components/DashboardStorageCard";
-import DashboardMap from "./components/DashboardMap";
+import DashboardMap from "../../components/dashboard/DashboardMap/DashboardMap";
 import AppSelect from "../../components/common/AppSelect";
 
 import {
