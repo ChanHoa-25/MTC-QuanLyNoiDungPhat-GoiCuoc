@@ -67,7 +67,11 @@ import BroadcastPage from "../pages/broadcasts/BroadcastPage";
 import CreateBroadcastPage from "../pages/broadcasts/CreateBroadcast/CreateBroadcast";
 import BroadcastDetailPage from "../pages/broadcasts/BroadcastDetailPage/BroadcastDetailPage";
 import DashboardSystemUser from "../pages/system-user/dashboard/DashboardPage";
-import NotificationsPage from "../pages/notifications";
+import OrganizationsPage from "../pages/system-user/organizations/OrganizationsPage";
+import NotificationsPage from "../pages/system-user/notifications";
+import PackagesPage from "../pages/system-user/packages/PackagesPage";
+import PackageCreatePage from "../pages/system-user/packages/PackageCreatePage/PackageCreatePage";
+import PackageDetail from "../pages/system-user/packages/PackageDetail/PackageDetail";
 
 export const routes: RouteObject[] = [
   // Auth
@@ -348,7 +352,7 @@ export const routes: RouteObject[] = [
           },
           {
             path: SYSTEM_ROUTES.ORGANIZATIONS,
-            element: <ComingSoonPage title="Quản lý tổ chức" />,
+            element: <OrganizationsPage />,
           },
           {
             path: SYSTEM_ROUTES.NOTIFICATIONS,
@@ -356,15 +360,58 @@ export const routes: RouteObject[] = [
           },
           {
             path: SYSTEM_ROUTES.PACKAGES,
-            element: <ComingSoonPage title="Quản lý gói cước" />,
+            element: <PackagesPage />,
+          },
+          {
+            path: "/system/packages/create",
+            element: <PackageCreatePage />,
+          },
+          {
+            path: "/system/packages/:id",
+            element: <PackageDetail />,
           },
           {
             path: SYSTEM_ROUTES.REPORTS,
             element: <ComingSoonPage title="Báo cáo" />,
           },
+
           {
             path: SYSTEM_ROUTES.SETTINGS,
-            element: <ComingSoonPage title="Cài đặt hệ thống" />,
+            element: (
+              <Navigate to={SYSTEM_ROUTES.SETTINGS_CATEGORIES} replace />
+            ),
+          },
+          {
+            path: SYSTEM_ROUTES.SETTINGS_CATEGORIES,
+            element: <CategoriesSettings />,
+          },
+          {
+            path: `${SYSTEM_ROUTES.SETTINGS_CATEGORIES}/:id`,
+            element: <CategoryDetailSettings />,
+          },
+          {
+            path: SYSTEM_ROUTES.SETTINGS_ROLES,
+            element: <RolesSettings />,
+          },
+          {
+            path: `${SYSTEM_ROUTES.SETTINGS_ROLES}/:id/edit`,
+            element: <RoleUpdateSettings />,
+          },
+          {
+            path: `${SYSTEM_ROUTES.SETTINGS_ROLES}/:id`,
+            element: <RoleDetailSettings />,
+          },
+          {
+            path: SYSTEM_ROUTES.SETTINGS_DISTRIBUTORS,
+            element: <DeviceDistributorsSettings />,
+          },
+          {
+            path: SYSTEM_ROUTES.SETTINGS_LOGS,
+            element: <UserLogsSettings />,
+          },
+          {
+            path: SYSTEM_ROUTES.SETTINGS_NEWS_MODE,
+            element: <ComingSoonPage title="Chế độ tạo bản tin" />,
           },
         ],
       },

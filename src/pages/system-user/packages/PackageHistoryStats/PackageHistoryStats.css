@@ -1,0 +1,74 @@
+.package-history-stats {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+
+.package-history-stat-card {
+  position: relative;
+  display: flex;
+  flex: 0 0 208px;
+  flex-direction: column;
+  width: 208px;
+  height: 122px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-sizing: border-box;
+  color: #ffffff;
+}
+
+.package-history-stat-card--pink {
+  background: linear-gradient(118.61deg, #ffb4b4 0%, #ff8080 100%);
+  box-shadow: 0 2px 28px rgba(255, 119, 119, 0.4);
+}
+
+.package-history-stat-card--blue {
+  background: linear-gradient(118.61deg, #83daff 0%, #80adf1 100%);
+  box-shadow: 0 2px 28px rgba(128, 173, 241, 0.4);
+}
+
+.package-history-stat-value {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 0;
+  padding: 0 8px;
+  font-family: "Open Sans", sans-serif;
+  font-size: 50px;
+  font-weight: 700;
+  line-height: 68px;
+  letter-spacing: -0.03em;
+  text-align: center;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.package-history-stat-card--blue .package-history-stat-value {
+  font-size: 28px;
+  line-height: 38px;
+  letter-spacing: -0.04em;
+}
+
+.package-history-stat-label {
+  display: flex;
+  flex: 0 0 52px;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 52px;
+  padding: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  font-family: "Open Sans", sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 25px;
+  letter-spacing: -0.03em;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+  box-sizing: border-box;
+}

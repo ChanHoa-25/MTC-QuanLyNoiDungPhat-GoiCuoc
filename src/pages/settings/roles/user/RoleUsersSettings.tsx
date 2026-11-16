@@ -3,6 +3,7 @@ import type { Key } from "react";
 import type { ColumnsType } from "antd/es/table";
 import { message } from "antd";
 import { Plus, SquarePen, Trash2 } from "lucide-react";
+import { useLocation } from "react-router-dom";
 
 import AppSelect from "../../../../components/common/AppSelect";
 import AppSearch from "../../../../components/common/AppSearch";
@@ -28,12 +29,38 @@ import { mockRoles } from "../../data/roles.mock";
 
 import "./RoleUsersSettings.css";
 
+type PermissionTab = "assigned" | "unassigned";
+
+// Các trường bổ sung dành cho System User.
+// Cần đối chiếu tên trường với API khi tích hợp Backend.
+type SystemRoleUser = RoleUser & {
+  phoneNumber?: string;
+  phone?: string;
+  identityNumber?: string;
+  citizenId?: string;
+  isAssigned?: boolean;
+};
+
+const getAssignedStatus = (user: SystemRoleUser): boolean => {
+  if (typeof user.isAssigned === "boolean") {
+    return user.isAssigned;
+  }
+
+  // Quy tắc tạm thời cho dữ liệu mock.
+  return Boolean(user.role && user.role.trim());
+};
+
 function RoleUsersSettings() {
+  const { pathname } = useLocation();
+  const isSystemUser = pathname.startsWith("/system/");
+
   const { setActions } = useActionPanel();
 
   const [users, setUsers] = useState<RoleUser[]>(() =>
     mockRoleUsers.map((item) => ({ ...item })),
   );
+
+  const [permissionTab, setPermissionTab] = useState<PermissionTab>("assigned");
 
   const [statusFilter, setStatusFilter] = useState("all");
   const [roleFilter, setRoleFilter] = useState("all");
@@ -63,20 +90,54 @@ function RoleUsersSettings() {
     const search = keyword.trim().toLowerCase();
 
     return users.filter((user) => {
+      const systemUser = user as SystemRoleUser;
+
+      if (isSystemUser) {
+        const isAssigned = getAssignedStatus(systemUser);
+
+        if (permissionTab === "assigned" && !isAssigned) {
+          return false;
+        }
+
+        if (permissionTab === "unassigned" && isAssigned) {
+          return false;
+        }
+      }
+
       const matchesStatus =
         statusFilter === "all" || user.status === statusFilter;
 
-      const matchesRole = roleFilter === "all" || user.role === roleFilter;
+      const matchesRole =
+        isSystemUser || roleFilter === "all" || user.role === roleFilter;
 
       const matchesKeyword =
         !search ||
-        [user.username, user.fullName, user.email, user.role].some((value) =>
-          value.toLowerCase().includes(search),
+        [
+          user.username,
+          user.fullName,
+          user.email,
+          user.role,
+          systemUser.phoneNumber,
+          systemUser.phone,
+          systemUser.identityNumber,
+          systemUser.citizenId,
+        ].some((value) =>
+          String(value ?? "")
+            .toLowerCase()
+            .includes(search),
         );
 
       return matchesStatus && matchesRole && matchesKeyword;
     });
-  }, [users, statusFilter, roleFilter, keyword]);
+  }, [users, isSystemUser, permissionTab, statusFilter, roleFilter, keyword]);
+
+  const handlePermissionTabChange = (tab: PermissionTab) => {
+    setPermissionTab(tab);
+    setSelectedRowKeys([]);
+    setCurrentPage(1);
+    setStatusFilter("all");
+    setKeyword("");
+  };
 
   const openCreateModal = useCallback(() => {
     setEditingUser(null);
@@ -156,12 +217,16 @@ function RoleUsersSettings() {
 
   const actions = useMemo<AppActionPanelItem[]>(
     () => [
-      {
-        key: "add-user",
-        icon: <Plus size={24} />,
-        tooltip: "Thêm tài khoản quản trị",
-        onClick: openCreateModal,
-      },
+      ...(!isSystemUser
+        ? [
+            {
+              key: "add-user",
+              icon: <Plus size={24} />,
+              tooltip: "Thêm tài khoản quản trị",
+              onClick: openCreateModal,
+            },
+          ]
+        : []),
       {
         key: "delete-user",
         icon: <Trash2 size={24} />,
@@ -171,15 +236,21 @@ function RoleUsersSettings() {
         onClick: openDeleteModal,
       },
     ],
-    [openCreateModal, openDeleteModal, selectedRowKeys.length],
+    [isSystemUser, openCreateModal, openDeleteModal, selectedRowKeys.length],
   );
 
   useEffect(() => {
     setActions(actions);
   }, [actions, setActions]);
 
-  const columns = useMemo<ColumnsType<RoleUser>>(
-    () => [
+  useEffect(() => {
+    return () => {
+      setActions([]);
+    };
+  }, [setActions]);
+
+  const columns = useMemo<ColumnsType<RoleUser>>(() => {
+    const result: ColumnsType<RoleUser> = [
       {
         title: "Tên đăng nhập",
         dataIndex: "username",
@@ -192,65 +263,121 @@ function RoleUsersSettings() {
         key: "fullName",
         width: 180,
       },
-      {
-        title: "Email",
-        dataIndex: "email",
-        key: "email",
-        width: 220,
-      },
-      {
+    ];
+
+    if (isSystemUser) {
+      result.push({
+        title: "Số điện thoại",
+        key: "phoneNumber",
+        width: 150,
+        render: (_value, record) => {
+          const user = record as SystemRoleUser;
+          return user.phoneNumber || user.phone || "—";
+        },
+      });
+    }
+
+    result.push({
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+      width: 220,
+    });
+
+    if (isSystemUser) {
+      result.push({
+        title: "Số CMND/CCCD",
+        key: "identityNumber",
+        width: 160,
+        render: (_value, record) => {
+          const user = record as SystemRoleUser;
+          return user.identityNumber || user.citizenId || "—";
+        },
+      });
+    }
+
+    if (!isSystemUser || permissionTab === "assigned") {
+      result.push({
         title: "Vai trò",
         dataIndex: "role",
         key: "role",
         width: 150,
         render: (value: string) =>
-          roleOptions.find((role) => role.value === value)?.label ?? value,
-      },
-      {
-        title: "Trạng thái",
-        dataIndex: "status",
-        key: "status",
-        width: 170,
-        render: (status: RoleUserStatus) => (
-          <AppStatusTag
-            type="status"
-            variant={status === "active" ? "green" : "yellow"}
-            label={status === "active" ? "Đang hoạt động" : "Ngưng hoạt động"}
-          />
-        ),
-      },
-      {
+          roleOptions.find((role) => role.value === value)?.label ??
+          value ??
+          "—",
+      });
+    }
+
+    result.push({
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      width: 170,
+      render: (status: RoleUserStatus) => (
+        <AppStatusTag
+          type="status"
+          variant={status === "active" ? "green" : "yellow"}
+          label={status === "active" ? "Đang hoạt động" : "Ngưng hoạt động"}
+        />
+      ),
+    });
+
+    if (!isSystemUser) {
+      result.push({
         title: "Cập nhật lần cuối",
         dataIndex: "updatedAt",
         key: "updatedAt",
         width: 190,
-      },
-      {
-        title: "Cập nhật",
-        key: "actions",
-        width: 100,
-        align: "center",
-        render: (_value, record) => (
-          <AppTableActions
-            actions={[
-              {
-                key: "edit",
-                icon: <SquarePen size={20} />,
-                tooltip: "Cập nhật người dùng",
-                onClick: () => openEditModal(record),
-              },
-            ]}
-          />
-        ),
-      },
-    ],
-    [openEditModal, roleOptions],
-  );
+      });
+    }
+
+    result.push({
+      title: "Cập nhật",
+      key: "actions",
+      width: 100,
+      align: "center",
+      render: (_value, record) => (
+        <AppTableActions
+          actions={[
+            {
+              key: "edit",
+              icon: <SquarePen size={20} />,
+              tooltip: "Cập nhật người dùng",
+              onClick: () => openEditModal(record),
+            },
+          ]}
+        />
+      ),
+    });
+
+    return result;
+  }, [isSystemUser, permissionTab, roleOptions, openEditModal]);
 
   return (
     <section className="role-users-settings">
+      {isSystemUser && (
+        <div className="role-users-settings__permission-tabs">
+          <button
+            type="button"
+            className={permissionTab === "assigned" ? "active" : ""}
+            onClick={() => handlePermissionTabChange("assigned")}>
+            Đã phân quyền
+          </button>
+
+          <button
+            type="button"
+            className={permissionTab === "unassigned" ? "active" : ""}
+            onClick={() => handlePermissionTabChange("unassigned")}>
+            Chưa phân quyền
+          </button>
+        </div>
+      )}
+
       <h2 className="role-users-settings__title">
-        Danh sách người dùng hệ thống
+        {isSystemUser && permissionTab === "unassigned"
+          ? "Danh sách tài khoản chưa phân quyền"
+          : "Danh sách người dùng hệ thống"}
       </h2>
 
       <div className="role-users-settings__filters">
@@ -266,25 +393,27 @@ function RoleUsersSettings() {
               { label: "Ngưng hoạt động", value: "inactive" },
             ]}
             onChange={(value) => {
-              setStatusFilter(String(value));
+              setStatusFilter(String(value ?? "all"));
               setCurrentPage(1);
             }}
           />
         </div>
 
-        <div className="role-users-settings__filter-group">
-          <label>Vai trò</label>
+        {!isSystemUser && (
+          <div className="role-users-settings__filter-group">
+            <label>Vai trò</label>
 
-          <AppSelect
-            width={180}
-            value={roleFilter}
-            options={[{ label: "Tất cả", value: "all" }, ...roleOptions]}
-            onChange={(value) => {
-              setRoleFilter(String(value));
-              setCurrentPage(1);
-            }}
-          />
-        </div>
+            <AppSelect
+              width={180}
+              value={roleFilter}
+              options={[{ label: "Tất cả", value: "all" }, ...roleOptions]}
+              onChange={(value) => {
+                setRoleFilter(String(value ?? "all"));
+                setCurrentPage(1);
+              }}
+            />
+          </div>
+        )}
 
         <div className="role-users-settings__filter-group role-users-settings__search">
           <label htmlFor="role-users-search">Từ khóa</label>
@@ -310,7 +439,9 @@ function RoleUsersSettings() {
           selectable
           rowSelection={{
             selectedRowKeys,
-            onChange: (keys) => setSelectedRowKeys([...keys]),
+            onChange: (keys) => {
+              setSelectedRowKeys([...keys]);
+            },
             preserveSelectedRowKeys: true,
           }}
           selectedLabel="người dùng"

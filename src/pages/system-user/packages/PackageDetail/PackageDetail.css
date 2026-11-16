@@ -1,0 +1,133 @@
+.package-detail-page {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  padding: 20px 24px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-sizing: border-box;
+  font-family: "Open Sans", Arial, sans-serif;
+}
+
+.package-detail-title {
+  margin: 0 0 32px;
+  color: #f26d21;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+.package-detail-capacity {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 24px 110px;
+  margin-bottom: 30px;
+  padding-left: 4px;
+}
+
+.package-detail-capacity-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 16px;
+  line-height: 24px;
+}
+
+.package-detail-capacity-item > span {
+  color: #333333;
+  font-weight: 700;
+}
+
+.package-detail-capacity-item > strong {
+  color: #f26d21;
+  font-weight: 700;
+}
+
+.package-detail-info {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 24px;
+  row-gap: 24px;
+  width: 100%;
+  padding: 24px 40px;
+  background: #fafafa;
+  border: 1px solid #f26d21;
+  border-radius: 8px;
+  box-sizing: border-box;
+}
+
+.package-detail-field {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  align-items: center;
+  gap: 0;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 22px;
+}
+
+.package-detail-field-label {
+  color: #4d4d4d;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.package-detail-field-value {
+  color: #777777;
+  font-weight: 400;
+  overflow-wrap: anywhere;
+}
+
+.package-detail-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 200px;
+  color: #777777;
+  font-size: 14px;
+}
+.package-detail-packages {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  min-width: 0;
+}
+
+.package-detail-packages .package-detail-info {
+  flex-shrink: 0;
+}
+
+@media (max-width: 1200px) {
+  .package-detail-info {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 24px;
+  }
+
+  .package-detail-field {
+    grid-template-columns: 140px minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .package-detail-page {
+    padding: 16px;
+  }
+
+  .package-detail-capacity {
+    gap: 12px 24px;
+  }
+
+  .package-detail-info {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 16px;
+    padding: 20px;
+  }
+
+  .package-detail-field {
+    grid-template-columns: 140px minmax(0, 1fr);
+  }
+}

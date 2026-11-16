@@ -146,5 +146,27 @@ export const systemUserMenu: SidebarMenuEntry[] = [
     key: SYSTEM_ROUTES.SETTINGS,
     label: "Cài đặt hệ thống",
     icon: Settings,
+    children: [
+      {
+        key: SYSTEM_ROUTES.SETTINGS_CATEGORIES,
+        label: "Danh mục lĩnh vực",
+      },
+      {
+        key: SYSTEM_ROUTES.SETTINGS_ROLES,
+        label: "Quản lý vai trò",
+      },
+      {
+        key: SYSTEM_ROUTES.SETTINGS_DISTRIBUTORS,
+        label: "Danh mục nhà phân phối thiết bị",
+      },
+      {
+        key: SYSTEM_ROUTES.SETTINGS_LOGS,
+        label: "Nhật ký người dùng",
+      },
+      {
+        key: SYSTEM_ROUTES.SETTINGS_NEWS_MODE,
+        label: "Chế độ tạo bản tin",
+      },
+    ],
   },
 ];

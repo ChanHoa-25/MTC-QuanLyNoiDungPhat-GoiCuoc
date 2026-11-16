@@ -45,5 +45,11 @@ export const SYSTEM_ROUTES = {
   NOTIFICATIONS: "/system/notifications",
   PACKAGES: "/system/packages",
   REPORTS: "/system/reports",
+
   SETTINGS: "/system/settings",
+  SETTINGS_CATEGORIES: "/system/settings/categories",
+  SETTINGS_ROLES: "/system/settings/roles",
+  SETTINGS_DISTRIBUTORS: "/system/settings/distributors",
+  SETTINGS_LOGS: "/system/settings/logs",
+  SETTINGS_NEWS_MODE: "/system/settings/news-mode",
 } as const;

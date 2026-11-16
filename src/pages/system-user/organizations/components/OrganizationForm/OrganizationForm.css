@@ -1,0 +1,271 @@
+.org-modal-form-scroll {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-height: calc(100dvh - 170px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding-right: 4px;
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: #d9d9d9 transparent;
+}
+
+.org-modal-form-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+
+.org-modal-form-scroll::-webkit-scrollbar-thumb {
+  background: #d9d9d9;
+  border-radius: 4px;
+}
+
+.org-form-section {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.org-form-section-title {
+  margin: 0 0 10px;
+  color: #262626;
+  font-family: "Open Sans", Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 22px;
+}
+
+.org-form-field {
+  width: 100%;
+  min-width: 0;
+  margin-bottom: 10px;
+}
+
+.org-form-label {
+  display: block;
+  margin-bottom: 5px;
+  color: #4d4d4d;
+  font-family: "Open Sans", Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.org-form-required {
+  margin-left: 2px;
+  color: #ff4d4f;
+  font-size: 12px;
+  vertical-align: super;
+}
+
+.org-form-grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 16px;
+  width: 100%;
+}
+
+.org-form-grid-2 > * {
+  min-width: 0;
+}
+
+.org-form-grid-2 .org-form-field {
+  margin-bottom: 10px;
+}
+
+.org-modal-form-scroll .ant-input,
+.org-modal-form-scroll .ant-input-affix-wrapper,
+.org-modal-form-scroll .ant-select-selector,
+.org-modal-form-scroll .ant-picker {
+  min-height: 38px;
+  height: 38px;
+}
+
+.org-modal-form-scroll .ant-input-affix-wrapper .ant-input {
+  min-height: 0;
+  height: auto;
+}
+
+.org-form-auto-renew {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin: 6px 0 0;
+}
+
+.org-form-auto-renew__label {
+  color: #737373;
+  font-family: "Open Sans", Arial, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 22px;
+}
+
+.org-form-auto-renew__switch.ant-switch {
+  min-width: 44px;
+  height: 22px;
+  border-radius: 4px;
+  background: #c2c2c2;
+}
+
+.org-form-auto-renew__switch.ant-switch.ant-switch-checked {
+  background: #f26d21;
+}
+
+.org-form-auto-renew__switch.ant-switch .ant-switch-handle {
+  top: 2px;
+  width: 18px;
+  height: 18px;
+}
+
+.org-form-auto-renew__switch.ant-switch .ant-switch-handle::before {
+  border-radius: 4px;
+}
+
+.org-form-auto-renew__switch.ant-switch:hover:not(.ant-switch-disabled) {
+  background: #b7b7b7;
+}
+
+.org-form-auto-renew__switch.ant-switch.ant-switch-checked:hover:not(
+    .ant-switch-disabled
+  ) {
+  background: #f26d21;
+}
+
+.org-form-radio-group {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 12px;
+}
+
+.org-form-radio-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: #262626;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.org-form-radio {
+  appearance: none;
+  -webkit-appearance: none;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  flex-shrink: 0;
+  border: 1px solid #f26d21;
+  border-radius: 50%;
+  background: #ffffff;
+  cursor: pointer;
+}
+
+.org-form-radio:checked {
+  background: #f26d21;
+  border-color: #f26d21;
+}
+
+.org-form-radio:checked::after {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ffffff;
+}
+
+.org-form-price-input {
+  position: relative;
+  width: 100%;
+}
+
+.org-form-price-input .ant-input {
+  padding-right: 56px;
+}
+
+.org-form-currency {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  z-index: 1;
+  transform: translateY(-50%);
+  color: #262626;
+  font-size: 14px;
+  pointer-events: none;
+}
+
+.org-form-error {
+  display: block;
+  margin-top: 5px;
+  color: #ff4d4f;
+  font-size: 12px;
+  line-height: 18px;
+}
+
+.org-form-required-note {
+  margin: 0;
+  color: #999999;
+  font-size: 12px;
+  line-height: 20px;
+}
+
+.org-form-required-note span {
+  color: #ff4d4f;
+  font-size: 14px;
+}
+
+.org-modal-form--edit {
+  min-height: 0;
+}
+
+.org-modal-form--edit .org-form-section:last-of-type {
+  margin-bottom: 16px;
+}
+
+.org-modal-form-scroll .ant-input:disabled {
+  background: #f5f5f5;
+  color: #8c8c8c;
+  border-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+.org-modal-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  margin-top: 8px;
+}
+
+@media (max-width: 576px) {
+  .org-modal-form-scroll {
+    max-height: calc(100dvh - 160px);
+  }
+
+  .org-form-grid-2 {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .org-form-section-title {
+    font-size: 16px;
+  }
+
+  .org-form-label {
+    font-size: 14px;
+  }
+
+  .org-form-auto-renew {
+    gap: 16px;
+  }
+
+  .org-form-auto-renew__label {
+    font-size: 14px;
+  }
+
+  .org-modal-footer {
+    gap: 12px;
+  }
+}

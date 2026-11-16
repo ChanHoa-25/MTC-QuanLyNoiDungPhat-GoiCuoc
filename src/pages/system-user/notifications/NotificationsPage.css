@@ -1,0 +1,131 @@
+.notif-page-wrapper {
+  display: flex;
+  width: 100%;
+  min-width: 0;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+.notif-main-card {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 100%;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-sizing: border-box;
+}
+
+.notif-header-title {
+  margin: 0 0 20px;
+  color: #f26522;
+  font-family: "Open Sans", Arial, sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 28px;
+}
+
+.notif-filter-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 20px;
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.notif-filter-status {
+  width: 200px;
+  max-width: 100%;
+}
+
+.notif-filter-search {
+  width: 320px;
+  max-width: 100%;
+}
+
+.notif-filter-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #595959;
+  font-family: "Open Sans", Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+/* Bảng thông báo */
+
+.notif-table-wrapper {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  min-height: 0;
+  overflow-x: auto;
+}
+
+.notif-table-wrapper .ant-table-wrapper {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  width: 100%;
+  min-height: 0;
+}
+
+.notif-table-wrapper .ant-spin-nested-loading,
+.notif-table-wrapper .ant-spin-container {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.notif-table-wrapper .ant-table {
+  width: 100%;
+}
+
+.notif-table-wrapper .ant-table-thead > tr > th {
+  background-color: #ffefe5 !important;
+  color: #d9541c !important;
+  font-weight: 600;
+}
+
+.notif-table-wrapper .ant-table-cell {
+  white-space: nowrap !important;
+}
+
+/* Phân trang nằm cuối khung trắng */
+
+.notif-table-wrapper .ant-pagination,
+.notif-table-wrapper .app-pagination,
+.notif-table-wrapper .app-pagination-container {
+  margin-top: auto !important;
+  padding-top: 20px;
+}
+
+/* Responsive */
+
+@media (max-width: 768px) {
+  .notif-main-card {
+    padding: 16px;
+  }
+
+  .notif-filter-row {
+    align-items: stretch;
+    gap: 16px;
+  }
+
+  .notif-filter-status,
+  .notif-filter-search {
+    width: 100%;
+  }
+
+  .notif-table-wrapper {
+    overflow-x: auto;
+  }
+}
